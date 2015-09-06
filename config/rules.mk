@@ -10,11 +10,10 @@ INCLUDE_DIR += ../../projects/$(PROJECT) $(patsubst %,../../%,$(GLOBAL_INCLUDE_D
 
 vpath
 vpath %.c 		$(subst  ,:,$(SOURCE_DIR))
-vpath %.s 		$(subst  ,:,$(SOURCE_DIR))
 vpath %.rel 		$(OBJECTS_DIR)
 
 .SUFFIXES:
-.SUFFIXES: .c .s .rel
+.SUFFIXES: .c .rel
 
 .PHONY: all
 
@@ -39,10 +38,6 @@ $(EXECUTABLE): $(OBJECTS)
 	@echo Creating executable $(@F) ... in $(CURDIR)
 	$(LD) $(LDFLAGS) $(patsubst %,$(OBJECTS_DIR)/%,$(OBJECTS)) -L$(LIB_DIR) \
 	$(TARGET_LINK_LIBRARIES) -o $(BIN_DIR)/$(EXECUTABLE)
-
-%.rel: %.s
-	@echo $(<F)
-	$(CC) $(CFLAGS) $(CURDIR)/$<
 
 %.rel: %.c
 	@echo $(<F)

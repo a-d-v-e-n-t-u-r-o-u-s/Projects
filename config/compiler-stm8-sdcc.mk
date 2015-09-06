@@ -1,10 +1,6 @@
 CC = sdcc
 LD = sdcc
-#LD = arm-none-eabi-gcc
-#AS = arm-none-eabi-as
 AR = sdar
-#GDB = arm-none-eabi-gdb
-#OBJDUMP = arm-none-eabi-objdump
 
 CFLAGS = -c
 CFLAGS += -mstm8
