@@ -1,13 +1,26 @@
-
 MAKE_VERSION_REQUIRED := 3.81
 
-ifneq ($(filter $(MAKE_VERSION_REQUIRED),$(MAKE_VERSION)),$(MAKE_VERSION_REQUIRED))
-$(error You are using $(MAKE_VERSION) when you shall use the $(MAKE_VERSION_REQUIRED))
+ifneq ($(MAKE_VERSION_REQUIRED),$(firstword $(sort $(MAKE_VERSION) $(MAKE_VERSION_REQUIRED))))
+$(error You shall use make $(MAKE_VERSION) or higher)
 endif
 
-.DEFAULT_GOAL := all
+ifeq ($(OS),Windows_NT)
+    HOST = win32
+else
+    ifeq ($(shell uname -s),Linux)
+    HOST = linux
+    else
+    $(error Unrecognized host operating system)
+    endif
+endif
 
+ifeq ($(MAKECMDGOALS),)
+MAKECMDGOALS = all
+endif
+
+include config/host-$(HOST).mk
 include config/config.mk
+-include config-user.mk
 
 3RDPARTY_DIR:= 3rdparty
 DRIVERS_DIR:= drivers
@@ -29,82 +42,71 @@ MODULES_EXPORTS :=$(patsubst %,$(MODULES_DIR)/%/exports.mk,$(USED_MODULES))
 include $(3RDPARTYS_EXPORTS) $(DRIVERS_EXPORTS) $(MODULES_EXPORTS)
 
 OUTPUT := $(PROJECT)-$(VERSION_MAJOR)_$(VERSION_MINOR)_$(VERSION_PATCH)
+
 PROJECT_DIR := $(CURDIR)
 BUILD_DIR := $(CURDIR)/build
-OUTPUT_DIR := $(CURDIR)/bin
 BIN_DIR := $(BUILD_DIR)/bin
-LIB_DIR := $(BUILD_DIR)/libs
+LIB_DIR := $(BUILD_DIR)/lib
 
-MAKEFLAGS:= -I$(CURDIR) -I$(CURDIR)/config -I$(CURDIR)/projects/$(PROJECT) -R
+BUILD_DIR_FORMATED := $(subst /,$(DELIM),$(BUILD_DIR))
+BIN_DIR_FORMATED := $(subst /,$(DELIM),$(BIN_DIR))
+LIB_DIR_FORMATED := $(subst /,$(DELIM),$(LIB_DIR))
 
 include config/compiler-$(TARGET)-$(COMPILER).mk
 include config/exports.mk
 
+MAKEFLAGS:= -I$(CURDIR) -I$(CURDIR)/config -I$(CURDIR)/projects/$(PROJECT) -R
+
+
 .PHONY: all flash clean $(3RDPARTY_DIR) $(DRIVERS_DIR) $(MODULES_DIR)
 
-all: banner $(OUTPUT_DIR) executable done
+all: banner $(BUILD_DIR) executable done
+
 
 flash:
-	stm8flash -cstlink -s 0x8000 -pstm8l150 -w build/bin/$(OUTPUT).ihx
+	$(LOADER) $(LOADER_FLAGS)
 
-
-$(OUTPUT_DIR):
-	mkdir -p $(OUTPUT_DIR)
-	mkdir -p $(BIN_DIR)
-	mkdir -p $(LIB_DIR)
+$(BUILD_DIR):
+	-$(MKDIR) $(BIN_DIR_FORMATED)
+	-$(MKDIR) $(LIB_DIR_FORMATED)
 
 executable: $(OUTPUT)
-	@echo $(OUTPUT)
 
 $(OUTPUT): $(3RDPARTY_DIR) $(DRIVERS_DIR) $(MODULES_DIR)
 
 $(3RDPARTY_DIR):
-	@echo making $@
-	@echo $(3RDPARTYS_EXPORTS)
+	@echo Making $@
 	$(MAKE) -C $@ $(MAKECMDGOALS)
 
 $(DRIVERS_DIR):
-	@echo making $@
-	@echo $(DRIVERS_EXPORTS)
+	@echo Making $@
 	$(MAKE) -C $@ $(MAKECMDGOALS)
 
 $(MODULES_DIR):
-	@echo making $@
-	@echo $(MODULES_EXPORTS)
+	@echo Making $@
 	$(MAKE) -C $@ $(MAKECMDGOALS)
-
-debug:
-	@echo       3RDPARTYS_EXPORTS: $(3RDPARTYS_EXPORTS)
-	@echo       DRIVERS_EXPORTS: $(DRIVERS_EXPORTS)
-	@echo       MODULES_EXPORTS: $(MODULES_EXPORTS)
 
 banner:
 	@echo -------------------------------------------------------------------------------
-	@echo
 	@echo         PROJECT: $(PROJECT)
-	@echo       MAKEGOALS: $(MAKEGOALS)
+	@echo    MAKECMDGOALS: $(MAKECMDGOALS)
 	@echo       TARGET_OS: $(TARGET_OS)
 	@echo        COMPILER: $(CC) $(CCVERSION)
 	@echo          OUTPUT: $(OUTPUT)
-	@echo
 	@echo -------------------------------------------------------------------------------
 
 done:
 	@echo -------------------------------------------------------------------------------
 	@echo Through the Force the binary files I build.
-	@echo
 	@echo          OUTPUT: $(OUTPUT)
 	@echo        RAM :
 	@echo      FLASH :
-	@echo
 	@echo May the Force be with you!!!
 	@echo -------------------------------------------------------------------------------
 
 clean:
 	@echo ------------------------------------------------------------------------------
-	@echo
-	@echo         Performing clean:
-	@echo
+	@echo         Performing clean of $(PROJECT) ...
+	-$(RM_DIR) $(BUILD_DIR_FORMATED) $(CMDQUIET)
+	@echo         Done
 	@echo ------------------------------------------------------------------------------
-	-rm -rf $(BUILD_DIR)
-	-rm -rf $(OUTPUT_DIR)

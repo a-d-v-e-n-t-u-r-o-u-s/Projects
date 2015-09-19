@@ -1,1 +1,1 @@
-#USED_3RDPARTY += STM8L15x_StdPeriph_Driver
+USED_3RDPARTY += STM8L15x_StdPeriph_Driver

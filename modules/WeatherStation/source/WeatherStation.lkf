@@ -1,0 +1,28 @@
+#	LINK COMMAND FILE FOR TEST PROGRAM
+#	Copyright (c) 2006 by COSMIC Software
+#
+
++seg .text -b 0x8080 -n .text		# program start address
++seg .const -a .text -n .const		# constants follow vector
++seg .bsct -b 0x0 -m 0x100		# zero page start address
++seg .data -b 0x100 -n .data
++seg .bss -a .data -n .bss
+
+../../modules/WeatherStation/source/crtsi0.sm8
+../../build/modules/WeatherStation/main.o					# application program
+
+#
+# float and integer library names depend on the model used
+#
+../../modules/WeatherStation/source/libis0.sm8
+../../modules/WeatherStation/source/libm0.sm8
+
++seg .vector -b 0x8000 -m 0x80		# vectors start address
+../../build/modules/WeatherStation/vector.o					# interrupt vectors
+
+#
+# define these symbols if crtsi is used
+#
++def __endzp=@.ubsct			# end of uninitialized zpage
++def __memory=@.bss			# end of bss segment
++def __stack=0x1ff
