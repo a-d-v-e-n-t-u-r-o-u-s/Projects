@@ -30,6 +30,8 @@
 #ifndef __STM8L15x_H
  #define __STM8L15x_H
 
+#include "stm8l15x_conf.h"
+
 /** @addtogroup STM8L15x_StdPeriph_Driver
   * @{
   */

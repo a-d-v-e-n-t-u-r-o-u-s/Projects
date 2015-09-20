@@ -10,6 +10,7 @@
 
 ../../modules/WeatherStation/source/crtsi0.sm8
 ../../build/modules/WeatherStation/main.o					# application program
+../../build/3rdParty/STM8L15x_StdPeriph_Driver/stm8l15x_gpio.o
 
 #
 # float and integer library names depend on the model used
