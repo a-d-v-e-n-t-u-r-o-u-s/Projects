@@ -6,7 +6,11 @@
  */
 #define NULL 0
 
+#include "stm8l15x.h"
+
 extern void _stext();		/* startup routine */
+
+extern void SYSTEM_timer_tick(void);
 
 #pragma section const {vector}
 
@@ -38,7 +42,7 @@ void (* const @vector _vectab[32])() = {
 	NULL,			/* ADC         */
 	NULL,			/* TIMER 4 OVF */
 	NULL,			/* EEPROM ECC  */
-	NULL,			/* Reserved    */
+	SYSTEM_timer_tick,			/* Reserved    */
 	NULL,			/* Reserved    */
 	NULL,			/* Reserved    */
 	NULL,			/* Reserved    */

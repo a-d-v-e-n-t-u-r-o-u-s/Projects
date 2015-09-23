@@ -1,33 +1,40 @@
-#define PC_ODR *(unsigned char*)0x500A
-#define PC_IDR *(unsigned char*)0x500B
-#define PC_DDR *(unsigned char*)0x500C
-#define PC_CR1 *(unsigned char*)0x500D
-#define PC_CR2 *(unsigned char*)0x500E
+#include "stm8l15x.h"
+#include "stm8l15x_gpio.h"
+#include "hd44780.h"
+#include "system_kernel.h"
+#include "system_timer.h"
 
-#define PE_ODR *(unsigned char*)0x5014
-#define PE_IDR *(unsigned char*)0x5015
-#define PE_DDR *(unsigned char*)0x5016
-#define PE_CR1 *(unsigned char*)0x5017
-#define PE_CR2 *(unsigned char*)0x5018
+#define LED_GREEN_PORT              GPIOE
+#define LED_GREEN_PIN               GPIO_Pin_7
+
+static void delay(volatile uint16_t counter)
+{
+    while(counter--)
+    {
+    }
+}
+
+static void drivers_init(void)
+{
+}
+
+static void modules_init(void)
+{
+    SYSTEM_kernel_init();
+    SYSTEM_timer_init();
+}
 
 int main(void)
 {
-    long d;
+    GPIO_Init(LED_GREEN_PORT,LED_GREEN_PIN,GPIO_Mode_Out_PP_High_Fast);
+    GPIO_ToggleBits(LED_GREEN_PORT,LED_GREEN_PIN);
 
-    PE_DDR = 0x80;
-    PE_CR1 = 0x80;
-    PC_DDR = 0x80;
-    PC_CR1 = 0x80;
-    PC_ODR ^= 0x80;
+    drivers_init();
+    modules_init();
 
-    do
+    while(1)
     {
-        PE_ODR ^= 0x80;
-        PC_ODR ^= 0x80;
-
-        for(d = 0; d < 10000; d++)
-        {
-        }
-
-    } while(1);
+        GPIO_ToggleBits(LED_GREEN_PORT,LED_GREEN_PIN);
+        delay(50000);
+    }
 }

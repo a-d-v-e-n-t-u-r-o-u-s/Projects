@@ -9,8 +9,12 @@
 +seg .bss -a .data -n .bss
 
 ../../modules/WeatherStation/source/crtsi0.sm8
-../../build/modules/WeatherStation/main.o					# application program
 ../../build/3rdParty/STM8L15x_StdPeriph_Driver/stm8l15x_gpio.o
+../../build/3rdParty/STM8L15x_StdPeriph_Driver/stm8l15x_clk.o
+../../build/3rdParty/STM8L15x_StdPeriph_Driver/stm8l15x_tim4.o
+../../build/modules/WeatherStation/main.o
+../../build/modules/System/system_timer.o
+../../build/modules/System/system_kernel.o
 
 #
 # float and integer library names depend on the model used
@@ -18,8 +22,8 @@
 ../../modules/WeatherStation/source/libis0.sm8
 ../../modules/WeatherStation/source/libm0.sm8
 
-+seg .vector -b 0x8000 -m 0x80		# vectors start address
-../../build/modules/WeatherStation/vector.o					# interrupt vectors
++seg .vector -b 0x8000 -m 0x80
+../../build/modules/WeatherStation/vector.o
 
 #
 # define these symbols if crtsi is used
