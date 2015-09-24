@@ -1,3 +1,3 @@
-USED_MODULES += System
+#USED_MODULES +=
 
 MAIN_MODULE = WeatherStation
