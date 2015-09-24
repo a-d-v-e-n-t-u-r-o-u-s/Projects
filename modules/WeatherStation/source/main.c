@@ -1,6 +1,5 @@
 #include "stm8l15x.h"
 #include "stm8l15x_gpio.h"
-#include "hd44780.h"
 #include "system_kernel.h"
 #include "system_timer.h"
 

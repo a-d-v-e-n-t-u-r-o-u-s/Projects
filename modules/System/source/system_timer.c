@@ -13,6 +13,15 @@ uint8_t SYSTEM_timer_register(void)
 {
 }
 
+uint32_t SYSTEM_timer_get_tick(void)
+{
+    uint32_t tick=0;
+    disableInterrupts();
+    tick = system_tick;
+    enableInterrupts();
+    return tick;
+}
+
 uint8_t SYSTEM_timer_init(void)
 {
     CLK_PeripheralClockConfig(CLK_Peripheral_TIM4,ENABLE);
