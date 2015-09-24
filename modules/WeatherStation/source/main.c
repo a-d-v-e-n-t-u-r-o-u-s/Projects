@@ -13,11 +13,11 @@ static void delay(volatile uint16_t counter)
     }
 }
 
-static void drivers_init(void)
+static @inline void drivers_init(void)
 {
 }
 
-static void modules_init(void)
+static @inline void modules_init(void)
 {
     SYSTEM_kernel_init();
     SYSTEM_timer_init();
