@@ -1,6 +1,6 @@
 #include "stm8l15x.h"
 #include "stm8l15x_gpio.h"
-#include "system_kernel.h"
+#include "system.h"
 #include "system_timer.h"
 
 #define LED_GREEN_PORT              GPIOE
@@ -19,7 +19,7 @@ static @inline void drivers_init(void)
 
 static @inline void modules_init(void)
 {
-    SYSTEM_kernel_init();
+    SYSTEM_init();
     SYSTEM_timer_init();
 }
 

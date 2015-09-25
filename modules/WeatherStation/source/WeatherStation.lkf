@@ -14,7 +14,7 @@
 ../../build/3rdParty/STM8L15x_StdPeriph_Driver/stm8l15x_tim4.o
 ../../build/modules/WeatherStation/main.o
 ../../build/modules/System/system_timer.o
-../../build/modules/System/system_kernel.o
+../../build/modules/System/system.o
 
 #
 # float and integer library names depend on the model used
