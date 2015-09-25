@@ -1,7 +1,6 @@
 #include "stm8l15x.h"
 #include "stm8l15x_gpio.h"
 #include "system.h"
-#include "system_timer.h"
 
 #define LED_GREEN_PORT              GPIOE
 #define LED_GREEN_PIN               GPIO_Pin_7
@@ -20,7 +19,6 @@ static @inline void drivers_init(void)
 static @inline void modules_init(void)
 {
     SYSTEM_init();
-    SYSTEM_timer_init();
 }
 
 int main(void)
@@ -33,7 +31,6 @@ int main(void)
 
     while(1)
     {
-        GPIO_ToggleBits(LED_GREEN_PORT,LED_GREEN_PIN);
-        delay(50000);
+        SYSTEM_main();
     }
 }
