@@ -8,9 +8,6 @@
 static volatile uint32_t system_tick;
 static void (*timer_callback)(void);
 
-#define LED_BLUE_PORT               GPIOC
-#define LED_BLUE_PIN                GPIO_Pin_7
-
 @interrupt void SYSTEM_timer_tick(void)
 {
     system_tick++;
@@ -21,11 +18,6 @@ static void (*timer_callback)(void);
     }
 
     TIM4_ClearFlag(TIM4_FLAG_Update);
-
-    if((system_tick % 1000) == 0)
-    {
-        GPIO_ToggleBits(LED_BLUE_PORT,LED_BLUE_PIN);
-    }
 }
 
 int8_t SYSTEM_timer_register(void (*callback)(void))
@@ -62,6 +54,14 @@ uint32_t SYSTEM_timer_tick_difference(uint32_t prev,uint32_t next)
     }
 }
 
+void SYSTEM_timer_delay(uint8_t val)
+{
+    uint32_t tick = SYSTEM_timer_get_tick();
+    while(SYSTEM_timer_tick_difference(tick,SYSTEM_timer_get_tick()) <= val)
+    {
+    }
+}
+
 uint8_t SYSTEM_timer_init(void)
 {
     CLK_PeripheralClockConfig(CLK_Peripheral_TIM4,ENABLE);
@@ -72,6 +72,4 @@ uint8_t SYSTEM_timer_init(void)
     enableInterrupts();
     TIM4_Cmd(ENABLE);
 
-    GPIO_Init(LED_BLUE_PORT,LED_BLUE_PIN,GPIO_Mode_Out_PP_High_Fast);
-    GPIO_ToggleBits(LED_BLUE_PORT,LED_BLUE_PIN);
 }

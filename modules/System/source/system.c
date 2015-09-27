@@ -22,7 +22,8 @@ int8_t SYSTEM_register_task(SYSTEM_task_t task)
         return -1;
     }
 
-    tasks[task_counter+1].task = task;
+    tasks[task_counter].task = task;
+    task_counter++;
     return 0;
 }
 
