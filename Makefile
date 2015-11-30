@@ -47,10 +47,12 @@ PROJECT_DIR := $(CURDIR)
 BUILD_DIR := $(CURDIR)/build
 BIN_DIR := $(BUILD_DIR)/bin
 LIB_DIR := $(BUILD_DIR)/lib
+DEP_DIR := $(BUILD_DIR)/dep
 
 BUILD_DIR_FORMATED := $(subst /,$(DELIM),$(BUILD_DIR))
 BIN_DIR_FORMATED := $(subst /,$(DELIM),$(BIN_DIR))
 LIB_DIR_FORMATED := $(subst /,$(DELIM),$(LIB_DIR))
+DEP_DIR_FORMATED := $(subst /,$(DELIM),$(DEP_DIR))
 
 include config/compiler-$(TARGET)-$(COMPILER).mk
 include config/exports.mk
@@ -69,6 +71,7 @@ flash:
 $(BUILD_DIR):
 	-$(MKDIR) $(BIN_DIR_FORMATED)
 	-$(MKDIR) $(LIB_DIR_FORMATED)
+	-$(MKDIR) $(DEP_DIR_FORMATED)
 
 executable: $(OUTPUT)
 

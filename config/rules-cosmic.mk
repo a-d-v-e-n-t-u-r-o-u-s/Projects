@@ -12,9 +12,10 @@ vpath
 vpath %.c 		$(subst  ,:,$(SOURCE_DIR))
 vpath %.s 		$(subst  ,:,$(SOURCE_DIR))
 vpath %.o 		$(OBJECTS_DIR)
+vpath %.d 		$(DEP_DIR)
 
 .SUFFIXES:
-.SUFFIXES: .c .o .s
+.SUFFIXES: .c .o .s .d
 
 .PHONY: all
 
@@ -45,6 +46,7 @@ $(EXECUTABLE): $(OBJECTS)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $<
+	$(CC) $(CFLAGS) -sm $< > $(DEP_DIR_FORMATED)$(DELIM)$(basename $(notdir $(<))).d 2>&1
 
 %.o: %.s
 	$(CC) $(CFLAGS) $<
