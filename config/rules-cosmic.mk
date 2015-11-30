@@ -13,6 +13,7 @@ vpath %.c 		$(subst  ,:,$(SOURCE_DIR))
 vpath %.s 		$(subst  ,:,$(SOURCE_DIR))
 vpath %.o 		$(OBJECTS_DIR)
 vpath %.d 		$(DEP_DIR)
+vpath %.$(LIBEXT) 	$(LIB_DIR)
 
 .SUFFIXES:
 .SUFFIXES: .c .o .s .d
