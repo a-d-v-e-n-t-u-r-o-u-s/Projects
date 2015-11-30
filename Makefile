@@ -49,6 +49,7 @@ BIN_DIR := $(BUILD_DIR)/bin
 LIB_DIR := $(BUILD_DIR)/lib
 DEP_DIR := $(BUILD_DIR)/dep
 
+PROJECT_DIR_FORMATED := $(subst /,$(DELIM),$(PROJECT_DIR))
 BUILD_DIR_FORMATED := $(subst /,$(DELIM),$(BUILD_DIR))
 BIN_DIR_FORMATED := $(subst /,$(DELIM),$(BIN_DIR))
 LIB_DIR_FORMATED := $(subst /,$(DELIM),$(LIB_DIR))
