@@ -1,6 +1,7 @@
 RM_DIR := rmdir /Q /S
 RM := del /Q
 CP := copy
+MV := move
 MKDIR := mkdir
 FIND := find
 DELIM := \ 
