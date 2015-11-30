@@ -7,7 +7,7 @@ OBJECTS_DIR_RELATIVE := $(subst /,$(DELIM),$(patsubst %,../..%,$(subst $(PROJECT
 
 OBJECTS := $(addsuffix .o,$(basename $(SOURCE)))
 
-INCLUDE_DIR += ../../projects/$(PROJECT) $(patsubst %,../../%,$(GLOBAL_INCLUDE_DIR))
+INCLUDE_DIR += $(subst /,$(DELIM),../../projects/$(PROJECT)) $(subst /,$(DELIM),$(patsubst %,../../%,$(GLOBAL_INCLUDE_DIR)))
 
 vpath
 vpath %.c 		$(subst  ,:,$(SOURCE_DIR))
