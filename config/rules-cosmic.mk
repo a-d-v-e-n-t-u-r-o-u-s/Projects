@@ -7,6 +7,7 @@ OBJECTS_DIR_RELATIVE := $(subst /,$(DELIM),$(patsubst %,../..%,$(subst $(PROJECT
 DEP_DIR_RELATIVE := $(subst /,$(DELIM),$(patsubst %,../..%,$(subst $(PROJECT_DIR_FORMATED),,$(DEP_DIR_FORMATED))))
 LIB_DIR_RELATIVE := $(subst /,$(DELIM),$(patsubst %,../..%,$(subst $(PROJECT_DIR_FORMATED),,$(LIB_DIR_FORMATED))))
 BIN_DIR_RELATIVE := $(subst /,$(DELIM),$(patsubst %,../..%,$(subst $(PROJECT_DIR_FORMATED),,$(BIN_DIR_FORMATED))))
+TOOLS_DIR_RELATIVE := $(subst /,$(DELIM),$(patsubst %,../..%,$(subst $(PROJECT_DIR_FORMATED),,$(TOOLS_DIR_FORMATED))))
 
 OBJECTS := $(addsuffix .o,$(basename $(SOURCE)))
 
@@ -49,7 +50,11 @@ $(EXECUTABLE): $(OBJECTS)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $<
-	$(CC) $(CFLAGS) -sm $< > $(DEP_DIR_RELATIVE)$(DELIM)$(basename $(notdir $(<))).d 2>&1
+	$(CC) $(CFLAGS) -sm $< > $(DEP_DIR_RELATIVE)$(DELIM)$(basename $(notdir $(<))).dep 2>&1
+	$(TOOLS_DIR_RELATIVE)$(DELIM)$(SED) -i '/C:\\/d' $(DEP_DIR_RELATIVE)$(DELIM)$(basename $(notdir $(<))).dep
+	$(TOOLS_DIR_RELATIVE)$(DELIM)$(SED) -e s/$(subst \,\\,$(OBJECTS_DIR_RELATIVE))\\//g $(DEP_DIR_RELATIVE)$(DELIM)$(basename $(notdir $(<))).dep > $(DEP_DIR_RELATIVE)$(DELIM)$(basename $(notdir $(<))).d
 
 %.o: %.s
 	$(CC) $(CFLAGS) $<
+
+include $(DEP_DIR)/*.d
