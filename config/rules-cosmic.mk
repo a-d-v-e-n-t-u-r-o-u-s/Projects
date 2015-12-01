@@ -4,6 +4,9 @@ CURDIR_RELATIVE := $(subst $(PROJECT_DIR),,$(CURDIR))
 OBJECTS_DIR := $(BUILD_DIR)$(CURDIR_RELATIVE)
 OBJECTS_DIR := $(subst /,$(DELIM),$(OBJECTS_DIR))
 OBJECTS_DIR_RELATIVE := $(subst /,$(DELIM),$(patsubst %,../..%,$(subst $(PROJECT_DIR_FORMATED),,$(OBJECTS_DIR))))
+DEP_DIR_RELATIVE := $(subst /,$(DELIM),$(patsubst %,../..%,$(subst $(PROJECT_DIR_FORMATED),,$(DEP_DIR_FORMATED))))
+LIB_DIR_RELATIVE := $(subst /,$(DELIM),$(patsubst %,../..%,$(subst $(PROJECT_DIR_FORMATED),,$(LIB_DIR_FORMATED))))
+BIN_DIR_RELATIVE := $(subst /,$(DELIM),$(patsubst %,../..%,$(subst $(PROJECT_DIR_FORMATED),,$(BIN_DIR_FORMATED))))
 
 OBJECTS := $(addsuffix .o,$(basename $(SOURCE)))
 
@@ -13,11 +16,11 @@ vpath
 vpath %.c 		$(subst  ,:,$(SOURCE_DIR))
 vpath %.s 		$(subst  ,:,$(SOURCE_DIR))
 vpath %.o 		$(OBJECTS_DIR)
-vpath %.d 		$(DEP_DIR)
-vpath %.$(LIBEXT) 	$(LIB_DIR)
+vpath %.lib 		$(LIB_DIR_RELATIVE)
+vpath %.d 		$(DEP_DIR_RELATIVE)
 
 .SUFFIXES:
-.SUFFIXES: .c .o .s .d
+.SUFFIXES: .c .o .s .d .lib
 
 .PHONY: all
 
@@ -29,24 +32,24 @@ $(OBJECTS_DIR_RELATIVE):
 	@echo Creating object directory ...
 	$(MKDIR) $(OBJECTS_DIR_RELATIVE)
 
+#$(RM) $(OBJECTS_DIR_RELATIVE)$(DELIM)$@
+
 $(LIBRARY): $(OBJECTS)
-	$(RM) $(OBJECTS_DIR_RELATIVE)$(DELIM)$@
 	@echo Creating library $(@F) ...
 	cd $(OBJECTS_DIR_RELATIVE) && $(AR) $(ARFLAGS) -c $@ $(^F) && $(OBJDUMP) $(OBJDUMP_FLAGS) -o$@.sym $(^F)
-	$(MV) $(OBJECTS_DIR_RELATIVE)$(DELIM)$@ $(LIB_DIR_FORMATED) $(CMDQUIET)
+	$(MV) $(OBJECTS_DIR_RELATIVE)$(DELIM)$@ $(LIB_DIR_RELATIVE) $(CMDQUIET)
 
 $(EXECUTABLE): $(OBJECTS)
-	$(RM) $(OBJECTS_DIR_RELATIVE)$(DELIM)$@
-	@echo Creating executable $(@F) ... in $(CURDIR)
+	@echo Creating executable $(@F) ...
 	$(LD) -o $(OBJECTS_DIR_RELATIVE)$(DELIM)$(EXECUTABLE) -m $(OBJECTS_DIR_RELATIVE)$(DELIM)$(OUTPUT).map $(LINKER_SCRIPT) $(LDFLAGS)
-	$(CP) $(OBJECTS_DIR_RELATIVE)$(DELIM)$(EXECUTABLE) $(BIN_DIR_FORMATED) $(CMDQUIET)
-	$(CP) $(OBJECTS_DIR_RELATIVE)$(DELIM)$(OUTPUT).map $(BIN_DIR_FORMATED) $(CMDQUIET)
+	$(CP) $(OBJECTS_DIR_RELATIVE)$(DELIM)$(EXECUTABLE) $(BIN_DIR_RELATIVE) $(CMDQUIET)
+	$(CP) $(OBJECTS_DIR_RELATIVE)$(DELIM)$(OUTPUT).map $(BIN_DIR_RELATIVE) $(CMDQUIET)
 	$(FIND) "segment" $(OBJECTS_DIR_RELATIVE)$(DELIM)$(OUTPUT).map
-	$(SREC) -fi -o $(BIN_DIR_FORMATED)$(DELIM)$(OUTPUT).hex $(BIN_DIR_FORMATED)$(DELIM)$(EXECUTABLE)
+	$(SREC) -fi -o $(BIN_DIR_RELATIVE)$(DELIM)$(OUTPUT).hex $(BIN_DIR_RELATIVE)$(DELIM)$(EXECUTABLE)
 
 %.o: %.c
 	$(CC) $(CFLAGS) $<
-	$(CC) $(CFLAGS) -sm $< > $(DEP_DIR_FORMATED)$(DELIM)$(basename $(notdir $(<))).d 2>&1
+	$(CC) $(CFLAGS) -sm $< > $(DEP_DIR_RELATIVE)$(DELIM)$(basename $(notdir $(<))).d 2>&1
 
 %.o: %.s
 	$(CC) $(CFLAGS) $<
