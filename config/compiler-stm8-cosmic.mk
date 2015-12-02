@@ -13,6 +13,12 @@ CFLAGS += $(addprefix -d,$(CDEFS))
 CFLAGS += -co$(OBJECTS_DIR_RELATIVE)
 CFLAGS += -cl$(OBJECTS_DIR_RELATIVE)
 CFLAGS += -l
+#! \TODO check does it work ?
+CFLAGS += +proto
+#! \TODO check does it work ?
+CFLAGS += +split
+CFLAGS += +strict
+CFLAGS += +warn
 
 #ARFLAGS =
 #ARFLAGS +=

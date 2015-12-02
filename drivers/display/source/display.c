@@ -131,7 +131,7 @@ static uint8_t disp_read(void)
     GPIO_Init(DISP_PORT,DISP_DATA_PINS,GPIO_Mode_In_PU_No_IT);
     GPIO_SetBits(DISP_PORT,DISP_RW);
     GPIO_SetBits(DISP_PORT,DISP_E);
-    ret |= (disp_read_nibble() << 4);
+    ret |= (uint8_t)(disp_read_nibble() << 4);
     GPIO_ResetBits(DISP_PORT,DISP_E);
     GPIO_SetBits(DISP_PORT,DISP_E);
     ret |= (disp_read_nibble());
@@ -150,7 +150,7 @@ static void disp_write(uint8_t cmd)
     GPIO_Init(DISP_PORT,DISP_DATA_PINS,GPIO_Mode_Out_PP_High_Fast);
     GPIO_ResetBits(DISP_PORT,DISP_RW);
     GPIO_SetBits(DISP_PORT,DISP_E);
-    disp_send_nibble(cmd>>4);
+    disp_send_nibble((uint8_t)(cmd>>4));
     GPIO_ResetBits(DISP_PORT,DISP_E);
     GPIO_SetBits(DISP_PORT,DISP_E);
     disp_send_nibble(cmd);

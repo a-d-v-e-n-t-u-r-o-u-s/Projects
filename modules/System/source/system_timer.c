@@ -71,5 +71,5 @@ uint8_t SYSTEM_timer_init(void)
     TIM4_ITConfig(TIM4_IT_Update,ENABLE);
     enableInterrupts();
     TIM4_Cmd(ENABLE);
-
+    return 0;
 }
