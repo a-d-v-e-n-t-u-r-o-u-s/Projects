@@ -57,4 +57,4 @@ $(EXECUTABLE): $(OBJECTS)
 %.o: %.s
 	$(CC) $(CFLAGS) $<
 
-include $(DEP_DIR)/*.d
+-include $(DEP_DIR)/*.d
