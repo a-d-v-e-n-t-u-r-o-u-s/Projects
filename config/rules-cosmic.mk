@@ -51,8 +51,10 @@ $(EXECUTABLE): $(OBJECTS)
 %.o: %.c
 	$(CC) $(CFLAGS) $<
 	$(CC) $(CFLAGS) -sm $< > $(DEP_DIR_RELATIVE)$(DELIM)$(basename $(notdir $(<))).dep 2>&1
-	$(TOOLS_DIR_RELATIVE)$(DELIM)$(SED) -i '/C:\\/d' $(DEP_DIR_RELATIVE)$(DELIM)$(basename $(notdir $(<))).dep
-	$(TOOLS_DIR_RELATIVE)$(DELIM)$(SED) -e s/$(subst \,\\,$(OBJECTS_DIR_RELATIVE))\\//g $(DEP_DIR_RELATIVE)$(DELIM)$(basename $(notdir $(<))).dep > $(DEP_DIR_RELATIVE)$(DELIM)$(basename $(notdir $(<))).d
+	$(TOOLS_DIR_RELATIVE)$(DELIM)$(SED) /C:\\/d $(DEP_DIR_RELATIVE)$(DELIM)$(basename $(notdir $(<))).dep > $(DEP_DIR_RELATIVE)$(DELIM)$(basename $(notdir $(<))).tmp
+	$(TOOLS_DIR_RELATIVE)$(DELIM)$(SED) -e s/$(subst \,\\,$(OBJECTS_DIR_RELATIVE))\\//g $(DEP_DIR_RELATIVE)$(DELIM)$(basename $(notdir $(<))).tmp > $(DEP_DIR_RELATIVE)$(DELIM)$(basename $(notdir $(<))).d
+	$(RM) $(DEP_DIR_RELATIVE)$(DELIM)$(basename $(notdir $(<))).dep
+	$(RM) $(DEP_DIR_RELATIVE)$(DELIM)$(basename $(notdir $(<))).tmp
 
 %.o: %.s
 	$(CC) $(CFLAGS) $<
