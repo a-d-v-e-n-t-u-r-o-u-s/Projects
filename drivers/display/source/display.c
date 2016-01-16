@@ -50,7 +50,7 @@
 #define EM_DECREMENT            0x00
 #define EM_INCREMENT            0x02
 
-typedef enum disp_state
+typedef enum
 {
     DISP_INIT,
     DISP_POWER_UP,
