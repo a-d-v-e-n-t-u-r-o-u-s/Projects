@@ -28,7 +28,7 @@ int main(void)
     drivers_init();
     modules_init();
 
-    DISP_text("Hello world !!!");
+    DISP_send_text(0,0,"Hello world !!!");
 
     while(1)
     {

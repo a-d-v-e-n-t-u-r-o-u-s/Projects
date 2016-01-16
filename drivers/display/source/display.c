@@ -225,11 +225,37 @@ void DISP_command(DISP_command_t cmd)
     disp_send_cmd(tmp);
 }
 
-void DISP_text(const char *str)
+void DISP_send_text(uint8_t x, uint8_t y,const char *str)
 {
+    disp_cursor_set(x,y);
+
     while(*str)
     {
-        disp_send_data(*str++);
+        if(driver.current_x >= driver.columns)
+        {
+            driver.current_x = 0;
+            driver.current_y++;
+            driver.current_y %= driver.rows;
+
+            disp_cursor_set(x,y);
+        }
+
+        if('\n' == *str)
+        {
+            driver.current_y++;
+            driver.current_y %= driver.rows;
+
+            disp_cursor_set(x,y);
+        }
+        else if('\r' == *str)
+        {
+            disp_cursor_set(0,driver.current_y);
+        }
+        else
+        {
+            disp_send_data(*str++);
+            driver.current_x++;
+        }
     }
 }
 
