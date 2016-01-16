@@ -35,6 +35,7 @@
 #define CURSOR_BLINK            0x01
 
 #define CLEAR                   0x01
+#define SETCGRAMADDR            0x40
 #define SETDDRAMADDR            0x80
 
 #define DISPLAY_CURSOR_SHIFT    0x10
@@ -223,6 +224,22 @@ void DISP_command(DISP_command_t cmd)
     }
 
     disp_send_cmd(tmp);
+}
+
+void DISP_create_custom_char(uint8_t location,const uint8_t *data)
+{
+    uint8_t i = 0;
+    uint8_t cmd = SETCGRAMADDR;
+    location &= 0x07;
+    cmd |= (uint8_t)(location << 3);
+
+    disp_send_cmd(cmd);
+
+    for(i=0;i<8;i++)
+    {
+        disp_send_data(data[i]);
+    }
+
 }
 
 void DISP_send_text(uint8_t x, uint8_t y,const char *str)
