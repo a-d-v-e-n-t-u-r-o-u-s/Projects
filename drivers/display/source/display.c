@@ -1,6 +1,7 @@
 #include "display.h"
 #include "system_timer.h"
 #include "stm8l15x_gpio.h"
+#include "common.h"
 
 #define DISP_POWER_UP_TIME      40
 #define DISP_PORT               GPIOB
@@ -34,6 +35,7 @@
 #define CURSOR_BLINK            0x01
 
 #define CLEAR                   0x01
+#define SETDDRAMADDR            0x80
 
 #define DISPLAY_CURSOR_SHIFT    0x10
 #define SHIFT_CURSOR            0x00
@@ -178,6 +180,30 @@ static void disp_send_data(uint8_t data)
 {
     GPIO_SetBits(DISP_PORT,DISP_RS);
     disp_write(data);
+}
+
+static void disp_cursor_set(uint8_t column,uint8_t row)
+{
+    uint8_t row_offset[] = {0x00,0x40,0x14,0x54};
+    uint8_t cmd = SETDDRAMADDR;
+
+    if(column >= driver.columns)
+    {
+        column = 0;
+    }
+
+    if(row >= driver.rows ||
+            row >= ARRAY_SIZE(row_offset))
+    {
+        row = 0;
+    }
+
+    driver.current_x = column;
+    driver.current_y = row;
+
+    cmd |= (uint8_t)(column + row_offset[row]);
+
+    disp_send_cmd(cmd);
 }
 
 
