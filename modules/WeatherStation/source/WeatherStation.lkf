@@ -12,6 +12,7 @@
 ../../build/3rdParty/STM8L15x_StdPeriph_Driver/stm8l15x_gpio.o
 ../../build/3rdParty/STM8L15x_StdPeriph_Driver/stm8l15x_clk.o
 ../../build/3rdParty/STM8L15x_StdPeriph_Driver/stm8l15x_tim4.o
+../../build/drivers/common/common.o
 ../../build/drivers/display/display.o
 ../../build/drivers/pressure/pressure.o
 ../../build/drivers/rtc/rtc.o
