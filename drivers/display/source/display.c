@@ -242,6 +242,12 @@ void DISP_create_custom_char(uint8_t location,const uint8_t *data)
 
 }
 
+void DISP_send_custom_char(uint8_t x, uint8_t y, uint8_t location)
+{
+    disp_cursor_set(x,y);
+    disp_send_data(location);
+}
+
 void DISP_send_text(uint8_t x, uint8_t y,const char *str)
 {
     disp_cursor_set(x,y);
