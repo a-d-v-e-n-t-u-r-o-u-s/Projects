@@ -57,6 +57,16 @@ typedef enum disp_state
     DISP_END
 } disp_state_t;
 
+typedef struct
+{
+    uint8_t columns;
+    uint8_t rows;
+    uint8_t current_x;
+    uint8_t current_y;
+} disp_driver_t;
+
+static disp_driver_t driver;
+
 static disp_state_t state;
 
 static uint8_t disp_read_nibble(void)
@@ -197,9 +207,13 @@ void DISP_text(const char *str)
     }
 }
 
-void DISP_configure(void)
+void DISP_configure(uint8_t columns,uint8_t rows)
 {
     uint8_t i = 0;
+
+    driver.columns = columns;
+    driver.rows = rows;
+
     GPIO_Init(DISP_PORT,DISP_PINS_ALL,GPIO_Mode_Out_PP_High_Fast);
     SYSTEM_timer_delay(40);
     GPIO_ResetBits(DISP_PORT,DISP_RS);

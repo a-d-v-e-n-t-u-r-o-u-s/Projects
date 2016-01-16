@@ -11,7 +11,7 @@
 
 static @inline void drivers_init(void)
 {
-    DISP_configure();
+    DISP_configure(16,2);
 }
 
 static @inline void modules_init(void)
