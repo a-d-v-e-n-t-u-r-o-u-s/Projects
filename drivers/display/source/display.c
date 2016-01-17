@@ -20,19 +20,8 @@
 #define DISP_PINS_ALL           DISP_CTRL_PINS|DISP_DATA_PINS
 
 #define FUNCTION_SET            0x20
-#define MODE_4_BIT              0x00
-#define FONT5x7                 0x00
-#define FONT5x10                0x04
-#define ONE_LINE                0x00
-#define TWO_LINE                0x08
 
 #define DISPLAY_ONOFF           0x08
-#define DISPLAY_OFF             0x00
-#define DISPLAY_ON              0x04
-#define CURSOR_OFF              0x00
-#define CURSOR_ON               0x02
-#define CURSOR_NOBLINK          0x00
-#define CURSOR_BLINK            0x01
 
 #define CLEAR                   0x01
 #define SETCGRAMADDR            0x40
@@ -45,32 +34,15 @@
 #define SHIFT_RIGHT             0x04
 
 #define ENTRY_MODE              0x04
-#define EM_SHIFT_CURSOR         0x00
-#define EM_SHIFT_DISPLAY        0x01
-#define EM_DECREMENT            0x00
-#define EM_INCREMENT            0x02
-
-typedef enum
-{
-    DISP_INIT,
-    DISP_POWER_UP,
-    DISP_INIT_CMDS1,
-    DISP_INIT_CMDS2,
-    DISP_INIT_CMDS3,
-    DISP_END
-} disp_state_t;
 
 typedef struct
 {
-    uint8_t columns;
-    uint8_t rows;
+    DISP_config_t config;
     uint8_t current_x;
     uint8_t current_y;
 } disp_driver_t;
 
 static disp_driver_t driver;
-
-static disp_state_t state;
 
 static uint8_t disp_read_nibble(void)
 {
@@ -183,17 +155,33 @@ static void disp_send_data(uint8_t data)
     disp_write(data);
 }
 
+static @inline void disp_display_control_cmd(uint8_t cmd)
+{
+    disp_send_cmd((uint8_t)(DISPLAY_ONOFF|cmd));
+}
+
+static @inline void disp_display_function_cmd(uint8_t cmd)
+{
+    disp_send_cmd((uint8_t)(FUNCTION_SET|cmd));
+}
+
+static @inline void disp_display_mode_cmd(uint8_t cmd)
+{
+    disp_send_cmd((uint8_t)(ENTRY_MODE|cmd));
+}
+
+
 static void disp_cursor_set(uint8_t column,uint8_t row)
 {
     uint8_t row_offset[] = {0x00,0x40,0x14,0x54};
     uint8_t cmd = SETDDRAMADDR;
 
-    if(column >= driver.columns)
+    if(column >= driver.config.cols)
     {
         column = 0;
     }
 
-    if(row >= driver.rows ||
+    if(row >= driver.config.rows ||
             row >= ARRAY_SIZE(row_offset))
     {
         row = 0;
@@ -254,11 +242,11 @@ void DISP_send_text(uint8_t x, uint8_t y,const char *str)
 
     while(*str)
     {
-        if(driver.current_x >= driver.columns)
+        if(driver.current_x >= driver.config.cols)
         {
             driver.current_x = 0;
             driver.current_y++;
-            driver.current_y %= driver.rows;
+            driver.current_y %= driver.config.rows;
 
             disp_cursor_set(x,y);
         }
@@ -266,7 +254,7 @@ void DISP_send_text(uint8_t x, uint8_t y,const char *str)
         if('\n' == *str)
         {
             driver.current_y++;
-            driver.current_y %= driver.rows;
+            driver.current_y %= driver.config.rows;
 
             disp_cursor_set(x,y);
         }
@@ -282,12 +270,12 @@ void DISP_send_text(uint8_t x, uint8_t y,const char *str)
     }
 }
 
-void DISP_configure(uint8_t columns,uint8_t rows)
+void DISP_configure(const DISP_config_t *config)
 {
     uint8_t i = 0;
 
-    driver.columns = columns;
-    driver.rows = rows;
+    /*! TODO add validation of config */
+    driver.config = *config;
 
     GPIO_Init(DISP_PORT,DISP_PINS_ALL,GPIO_Mode_Out_PP_High_Fast);
     SYSTEM_timer_delay(40);
@@ -309,11 +297,11 @@ void DISP_configure(uint8_t columns,uint8_t rows)
 
     SYSTEM_timer_delay(1);
 
-    disp_send_cmd(FUNCTION_SET|FONT5x7|TWO_LINE|MODE_4_BIT);
+    disp_display_function_cmd(driver.config.function);
     disp_send_cmd(DISPLAY_ONOFF|DISPLAY_OFF);
     disp_send_cmd(0x01);
-    disp_send_cmd(ENTRY_MODE|EM_SHIFT_CURSOR|EM_INCREMENT);
-    disp_send_cmd(DISPLAY_ONOFF|DISPLAY_ON|CURSOR_OFF|CURSOR_NOBLINK);
+    disp_display_mode_cmd(driver.config.mode);
+    disp_display_control_cmd(driver.config.control);
 
     DISP_command(DISP_CLEAR);
     DISP_command(DISP_HOME);
