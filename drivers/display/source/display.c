@@ -23,15 +23,15 @@
 #define HOME                    0x02
 #define ENTRY_MODE              0x04
 #define DISPLAY_ONOFF           0x08
+#define CURSOR_SHIFT            0x10
 #define FUNCTION_SET            0x20
 #define SETCGRAMADDR            0x40
 #define SETDDRAMADDR            0x80
 
-#define DISPLAY_CURSOR_SHIFT    0x10
-#define SHIFT_CURSOR            0x00
-#define SHIFT_DISPLAY           0x08
-#define SHIFT_LEFT              0x00
-#define SHIFT_RIGHT             0x04
+#define CURSOR_MOVE             0x00
+#define DISPLAY_MOVE            0x08
+#define MOVE_LEFT               0x00
+#define MOVE_RIGHT              0x04
 
 
 typedef struct
@@ -169,6 +169,11 @@ static @inline void disp_display_mode_cmd(uint8_t cmd)
     disp_send_cmd((uint8_t)(ENTRY_MODE|cmd));
 }
 
+static @inline void disp_cursor_shift_cmd(uint8_t cmd)
+{
+    disp_send_cmd((uint8_t)(CURSOR_SHIFT|DISPLAY_MOVE|cmd));
+}
+
 
 static void disp_cursor_set(uint8_t column,uint8_t row)
 {
@@ -238,6 +243,16 @@ void DISP_cursor_off(void)
 {
     driver.config.control &= (uint8_t)(~CURSOR_ON);
     disp_display_control_cmd(driver.config.control);
+}
+
+void DISP_scroll_left(void)
+{
+    disp_cursor_shift_cmd(MOVE_LEFT);
+}
+
+void DISP_scroll_right(void)
+{
+    disp_cursor_shift_cmd(MOVE_RIGHT);
 }
 
 void DISP_create_custom_char(uint8_t location,const uint8_t *data)
@@ -324,8 +339,6 @@ void DISP_configure(const DISP_config_t *config)
     SYSTEM_timer_delay(1);
 
     disp_display_function_cmd(driver.config.function);
-    disp_send_cmd(DISPLAY_ONOFF|DISPLAY_OFF);
-    disp_send_cmd(0x01);
     disp_display_mode_cmd(driver.config.mode);
     disp_display_control_cmd(driver.config.control);
 

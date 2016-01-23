@@ -48,6 +48,8 @@ void DISP_blink_on(void);
 void DISP_blink_off(void);
 void DISP_cursor_on(void);
 void DISP_cursor_off(void);
+void DISP_scroll_left(void);
+void DISP_scroll_right(void);
 void DISP_create_custom_char(uint8_t location,const uint8_t *data);
 void DISP_send_custom_char(uint8_t x, uint8_t y, uint8_t location);
 void DISP_send_text(uint8_t x, uint8_t y,const char *str);
