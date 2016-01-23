@@ -47,6 +47,8 @@ static uint8_t disp_read_nibble(void)
 {
     uint8_t ret = 0;
 
+    GPIO_SetBits(DISP_PORT,DISP_E);
+
     if(GPIO_ReadInputDataBit(DISP_PORT,DISP_D4))
     {
         ret |= (1<<0);
@@ -67,11 +69,15 @@ static uint8_t disp_read_nibble(void)
         ret |= (1<<3);
     }
 
+    GPIO_ResetBits(DISP_PORT,DISP_E);
+
     return ret;
 }
 
 static void disp_send_nibble(uint8_t cmd)
 {
+    GPIO_SetBits(DISP_PORT,DISP_E);
+
     if(cmd&0x01)
     {
         GPIO_SetBits(DISP_PORT,DISP_D4);
@@ -107,6 +113,8 @@ static void disp_send_nibble(uint8_t cmd)
     {
         GPIO_ResetBits(DISP_PORT,DISP_D7);
     }
+
+    GPIO_ResetBits(DISP_PORT,DISP_E);
 }
 
 static uint8_t disp_read(void)
@@ -114,12 +122,8 @@ static uint8_t disp_read(void)
     uint8_t ret=0;
     GPIO_Init(DISP_PORT,DISP_DATA_PINS,GPIO_Mode_In_PU_No_IT);
     GPIO_SetBits(DISP_PORT,DISP_RW);
-    GPIO_SetBits(DISP_PORT,DISP_E);
     ret |= (uint8_t)(disp_read_nibble() << 4);
-    GPIO_ResetBits(DISP_PORT,DISP_E);
-    GPIO_SetBits(DISP_PORT,DISP_E);
     ret |= (disp_read_nibble());
-    GPIO_ResetBits(DISP_PORT,DISP_E);
     return ret;
 }
 
@@ -133,12 +137,8 @@ static void disp_write(uint8_t cmd)
 {
     GPIO_Init(DISP_PORT,DISP_DATA_PINS,GPIO_Mode_Out_PP_High_Fast);
     GPIO_ResetBits(DISP_PORT,DISP_RW);
-    GPIO_SetBits(DISP_PORT,DISP_E);
     disp_send_nibble((uint8_t)(cmd>>4));
-    GPIO_ResetBits(DISP_PORT,DISP_E);
-    GPIO_SetBits(DISP_PORT,DISP_E);
     disp_send_nibble(cmd);
-    GPIO_ResetBits(DISP_PORT,DISP_E);
     while(disp_read_cmd() & 0x80);
 }
 
@@ -326,15 +326,11 @@ void DISP_configure(const DISP_config_t *config)
 
     for(i=0;i<3;i++)
     {
-        GPIO_SetBits(DISP_PORT,DISP_E);
         disp_send_nibble(0x03);
-        GPIO_ResetBits(DISP_PORT,DISP_E);
         SYSTEM_timer_delay(5);
     }
 
-    GPIO_SetBits(DISP_PORT,DISP_E);
     disp_send_nibble(0x02);
-    GPIO_ResetBits(DISP_PORT,DISP_E);
 
     SYSTEM_timer_delay(1);
 
