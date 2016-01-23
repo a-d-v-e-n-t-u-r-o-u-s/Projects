@@ -226,6 +226,18 @@ void DISP_display_off(void)
     disp_display_control_cmd(driver.config.control);
 }
 
+void DISP_blink_on(void)
+{
+    driver.config.control |= (uint8_t) CURSOR_BLINK;
+    disp_display_control_cmd(driver.config.control);
+}
+
+void DISP_blink_off(void)
+{
+    driver.config.control &= (uint8_t)(~CURSOR_BLINK);
+    disp_display_control_cmd(driver.config.control);
+}
+
 void DISP_create_custom_char(uint8_t location,const uint8_t *data)
 {
     uint8_t i = 0;
