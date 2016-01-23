@@ -1,3 +1,5 @@
 /bin
 /build
+/documentation
+cscope.out
 *.swp
