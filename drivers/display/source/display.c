@@ -19,11 +19,11 @@
 #define DISP_CTRL_PINS          DISP_RS|DISP_RW|DISP_E
 #define DISP_PINS_ALL           DISP_CTRL_PINS|DISP_DATA_PINS
 
-#define FUNCTION_SET            0x20
-
-#define DISPLAY_ONOFF           0x08
-
 #define CLEAR                   0x01
+#define HOME                    0x02
+#define ENTRY_MODE              0x04
+#define DISPLAY_ONOFF           0x08
+#define FUNCTION_SET            0x20
 #define SETCGRAMADDR            0x40
 #define SETDDRAMADDR            0x80
 
@@ -33,7 +33,6 @@
 #define SHIFT_LEFT              0x00
 #define SHIFT_RIGHT             0x04
 
-#define ENTRY_MODE              0x04
 
 typedef struct
 {
@@ -195,23 +194,14 @@ static void disp_cursor_set(uint8_t column,uint8_t row)
     disp_send_cmd(cmd);
 }
 
-
-/*! \TODO 1ms delay might be needed here */
-void DISP_command(DISP_command_t cmd)
+void DISP_clear(void)
 {
-    uint8_t tmp = 0;
+    disp_send_cmd(CLEAR);
+}
 
-    switch(cmd)
-    {
-        case DISP_HOME:
-            tmp = 0x02;
-            break;
-        case DISP_CLEAR:
-            tmp = 0x01;
-            break;
-    }
-
-    disp_send_cmd(tmp);
+void DISP_home(void)
+{
+    disp_send_cmd(HOME);
 }
 
 void DISP_display_on(void)
@@ -339,6 +329,6 @@ void DISP_configure(const DISP_config_t *config)
     disp_display_mode_cmd(driver.config.mode);
     disp_display_control_cmd(driver.config.control);
 
-    DISP_command(DISP_CLEAR);
-    DISP_command(DISP_HOME);
+    DISP_clear();
+    DISP_home();
 }

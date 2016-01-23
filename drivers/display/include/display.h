@@ -5,12 +5,6 @@
 
 typedef enum
 {
-    DISP_HOME,
-    DISP_CLEAR
-} DISP_command_t;
-
-typedef enum
-{
     DISP_MODE_4_BIT = 0x00,
     DISP_FONTS5x7 = 0x00,
     DISP_ONE_LINE = 0x00,
@@ -46,7 +40,8 @@ typedef struct
     uint8_t rows;
 } DISP_config_t;
 
-void DISP_command(DISP_command_t cmd);
+void DISP_clear(void);
+void DISP_home(void);
 void DISP_display_on(void);
 void DISP_display_off(void);
 void DISP_blink_on(void);
