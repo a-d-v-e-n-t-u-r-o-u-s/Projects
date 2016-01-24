@@ -25,7 +25,6 @@
 #include "stm8l15x_gpio.h"
 #include "common.h"
 
-#define DISP_POWER_UP_TIME      40
 #define DISP_PORT               GPIOB
 
 #define DISP_D4                 GPIO_Pin_3
