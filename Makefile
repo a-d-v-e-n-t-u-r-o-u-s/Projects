@@ -37,7 +37,7 @@ DRIVERS_EXPORTS :=$(patsubst %,$(DRIVERS_DIR)/%/exports.mk,$(USED_DRIVERS))
 
 include projects/$(PROJECT)/modules.mk
 
-MODULES_EXPORTS :=$(patsubst %,$(MODULES_DIR)/%/exports.mk,$(USED_MODULES))
+MODULES_EXPORTS :=$(patsubst %,$(MODULES_DIR)/%/exports.mk,$(USED_MODULES) $(MAIN_MODULE))
 
 include $(3RDPARTYS_EXPORTS) $(DRIVERS_EXPORTS) $(MODULES_EXPORTS)
 
