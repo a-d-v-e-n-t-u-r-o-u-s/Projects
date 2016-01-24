@@ -49,31 +49,21 @@ typedef struct
 } disp_driver_t;
 
 static disp_driver_t driver;
+static const uint8_t pins[4] = {DISP_D4,DISP_D5,DISP_D6,DISP_D7};
 
 static uint8_t disp_read_nibble(void)
 {
     uint8_t ret = 0;
+    uint8_t i = 0;
 
     GPIO_SetBits(DISP_PORT,DISP_E);
 
-    if(GPIO_ReadInputDataBit(DISP_PORT,DISP_D4))
+    for(i=0;i<ARRAY_SIZE(pins);i++)
     {
-        ret |= (1<<0);
-    }
-
-    if(GPIO_ReadInputDataBit(DISP_PORT,DISP_D5))
-    {
-        ret |= (1<<1);
-    }
-
-    if(GPIO_ReadInputDataBit(DISP_PORT,DISP_D6))
-    {
-        ret |= (1<<2);
-    }
-
-    if(GPIO_ReadInputDataBit(DISP_PORT,DISP_D7))
-    {
-        ret |= (1<<3);
+        if(GPIO_ReadInputDataBit(DISP_PORT,pins[i]))
+        {
+            ret |= (uint8_t) (1<<i);
+        }
     }
 
     GPIO_ResetBits(DISP_PORT,DISP_E);
@@ -83,42 +73,17 @@ static uint8_t disp_read_nibble(void)
 
 static void disp_send_nibble(uint8_t cmd)
 {
+    uint8_t i = 0;
+
     GPIO_SetBits(DISP_PORT,DISP_E);
+    GPIO_ResetBits(DISP_PORT,DISP_DATA_PINS);
 
-    if(cmd&0x01)
+    for(i=0;i<ARRAY_SIZE(pins);i++)
     {
-        GPIO_SetBits(DISP_PORT,DISP_D4);
-    }
-    else
-    {
-        GPIO_ResetBits(DISP_PORT,DISP_D4);
-    }
-
-    if(cmd&0x02)
-    {
-        GPIO_SetBits(DISP_PORT,DISP_D5);
-    }
-    else
-    {
-        GPIO_ResetBits(DISP_PORT,DISP_D5);
-    }
-
-    if(cmd&0x04)
-    {
-        GPIO_SetBits(DISP_PORT,DISP_D6);
-    }
-    else
-    {
-        GPIO_ResetBits(DISP_PORT,DISP_D6);
-    }
-
-    if(cmd&0x08)
-    {
-        GPIO_SetBits(DISP_PORT,DISP_D7);
-    }
-    else
-    {
-        GPIO_ResetBits(DISP_PORT,DISP_D7);
+        if(cmd & (1 << i))
+        {
+            GPIO_SetBits(DISP_PORT,pins[i]);
+        }
     }
 
     GPIO_ResetBits(DISP_PORT,DISP_E);
@@ -130,7 +95,7 @@ static uint8_t disp_read(void)
     GPIO_Init(DISP_PORT,DISP_DATA_PINS,GPIO_Mode_In_PU_No_IT);
     GPIO_SetBits(DISP_PORT,DISP_RW);
     ret |= (uint8_t)(disp_read_nibble() << 4);
-    ret |= (disp_read_nibble());
+    ret |= disp_read_nibble();
     return ret;
 }
 
