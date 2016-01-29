@@ -21,8 +21,32 @@
  *
  */
 #include "pwm.h"
+#include "stm8l15x_clk.h"
+#include "stm8l15x_gpio.h"
+#include "stm8l15x_tim3.h"
 
+
+#define DISPLAY_BACKLIGHT_PORT      GPIOD
+#define DISPLAY_BACKLIGHT_PIN       GPIO_Pin_0
 
 void PWM_configure(void)
 {
+    CLK_PeripheralClockConfig(CLK_Peripheral_TIM3, ENABLE);
+
+    GPIO_Init(DISPLAY_BACKLIGHT_PORT,DISPLAY_BACKLIGHT_PIN,GPIO_Mode_Out_PP_High_Fast);
+
+    TIM3_DeInit();
+    TIM3_TimeBaseInit(TIM3_Prescaler_1,TIM3_CounterMode_Down,0x1);
+
+    TIM3_OC2Init(TIM3_OCMode_PWM2,
+                  TIM3_OutputState_Enable,
+                  (uint16_t)500,
+                  TIM3_OCPolarity_Low,
+                  TIM3_OCIdleState_Set);
+
+    TIM3_OC2PreloadConfig(ENABLE);
+    TIM3_ARRPreloadConfig(ENABLE);
+
+    TIM3_CtrlPWMOutputs(ENABLE);
+    TIM3_Cmd(ENABLE);
 }
