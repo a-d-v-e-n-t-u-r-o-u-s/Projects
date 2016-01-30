@@ -5,6 +5,10 @@
 
 #define SYSTEM_MAX_TASKS    5
 
+/*!
+ * \todo HSE clock on pin might be necessary
+ */
+
 typedef struct
 {
     SYSTEM_task_t task;
@@ -12,6 +16,11 @@ typedef struct
 
 static task_data_t tasks[SYSTEM_MAX_TASKS];
 static uint8_t task_counter;
+
+@interrupt void SYSTEM_clock_switch(void)
+{
+    CLK_ClearITPendingBit(CLK_IT_SWIF);
+}
 
 int8_t SYSTEM_register_task(SYSTEM_task_t task)
 {
@@ -42,6 +51,10 @@ void SYSTEM_main(void)
 
 void SYSTEM_init(void)
 {
+    CLK_DeInit();
+
+    CLK_SYSCLKSourceSwitchCmd(ENABLE);
+    CLK_ITConfig(CLK_IT_SWIF,ENABLE);
     CLK_SYSCLKSourceConfig(CLK_SYSCLKSource_HSE);
     CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_1);
     CLK_PeripheralClockConfig(CLK_Peripheral_BOOTROM,DISABLE);

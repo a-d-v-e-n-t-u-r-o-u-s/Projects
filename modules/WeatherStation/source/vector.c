@@ -11,6 +11,8 @@
 extern void _stext();		/* startup routine */
 
 extern void SYSTEM_timer_tick(void);
+extern void RTC_timer_tick(void);
+extern void SYSTEM_clock_switch(void);
 
 #pragma section const {vector}
 
@@ -34,7 +36,7 @@ void (* const @vector _vectab[32])() = {
 	NULL,			/* TIMER 2 CAP */
 	NULL,			/* TIMER 3 OVF */
 	NULL,			/* TIMER 3 CAP */
-	NULL,			/* USART TX    */
+	SYSTEM_clock_switch,			/* USART TX    */
 	NULL,			/* USART RX    */
 	NULL,			/* I2C         */
 	NULL,			/* LINUART TX  */
