@@ -30,12 +30,44 @@
  * \brief Driver for PWM
  */
 
+#include "stm8l15x.h"
+
 /*@{*/
+
+struct PWM_handle_t;
+
+typedef enum
+{
+    PWM_TIMER2_GROUP,
+    PWM_TIMER3_GROUP
+} PWM_group_t;
+
+typedef enum
+{
+    PWM_PRESCALER1,
+    PWM_PRESCALER2,
+    PWM_PRESCALER4,
+    PWM_PRESCALER8,
+    PWM_PRESCALER16,
+    PWM_PRESCALER32,
+    PWM_PRESCALER64,
+    PWM_PRESCALER128
+} PWM_prescaler_t;
+
+typedef struct
+{
+    PWM_prescaler_t prescaler;
+    PWM_group_t group;
+    uint16_t counter;
+    uint16_t *channel_duty_cycle1;
+    uint16_t *channel_duty_cycle2;
+} PWM_config_t;
 
 /*!
  * \brief Configuration function for pwm driver
  */
-void PWM_configure(void);
+int8_t PWM_configure(struct PWM_handle_t *handle,
+        const PWM_config_t *config,uint8_t is_attached);
 
 /*@}*/
 #endif // PWM_H

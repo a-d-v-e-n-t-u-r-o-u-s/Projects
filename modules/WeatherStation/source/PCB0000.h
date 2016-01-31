@@ -102,5 +102,15 @@
  */
 #define DISP_E_PIN              GPIO_Pin_6
 
+#define PWM_TIMER2_CHANNEL1_PORT    GPIOB
+#define PWM_TIMER2_CHANNEL1_PIN     GPIO_Pin_0
+#define PWM_TIMER2_CHANNEL2_PORT    GPIOB
+#define PWM_TIMER2_CHANNEL2_PIN     GPIO_Pin_2
+
+#define PWM_TIMER3_CHANNEL1_PORT    GPIOB
+#define PWM_TIMER3_CHANNEL1_PIN     GPIO_Pin_1
+#define PWM_TIMER3_CHANNEL2_PORT    GPIOD
+#define PWM_TIMER3_CHANNEL2_PIN     GPIO_Pin_0
+
 /*@}*/
 #endif /* end of PCB0000_H */
