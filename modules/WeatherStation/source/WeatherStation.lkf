@@ -12,6 +12,7 @@
 ../../build/3rdParty/STM8L15x_StdPeriph_Driver/stm8l15x_gpio.o
 ../../build/3rdParty/STM8L15x_StdPeriph_Driver/stm8l15x_clk.o
 ../../build/3rdParty/STM8L15x_StdPeriph_Driver/stm8l15x_rtc.o
+../../build/3rdParty/STM8L15x_StdPeriph_Driver/stm8l15x_tim2.o
 ../../build/3rdParty/STM8L15x_StdPeriph_Driver/stm8l15x_tim3.o
 ../../build/3rdParty/STM8L15x_StdPeriph_Driver/stm8l15x_tim4.o
 ../../build/drivers/common/common.o
