@@ -48,25 +48,37 @@ typedef struct
     uint8_t current_y;
 } disp_driver_t;
 
+typedef struct
+{
+    GPIO_TypeDef *port;
+    GPIO_Pin_TypeDef pin;
+} disp_hardware_t;
+
 static disp_driver_t driver;
-static const uint8_t pins[4] = {DISP_D4,DISP_D5,DISP_D6,DISP_D7};
+static disp_hardware_t hardware[4] =
+{
+    {DISP_D4_PORT,DISP_D4_PIN},
+    {DISP_D5_PORT,DISP_D5_PIN},
+    {DISP_D6_PORT,DISP_D6_PIN},
+    {DISP_D7_PORT,DISP_D7_PIN}
+};
 
 static uint8_t disp_read_nibble(void)
 {
     uint8_t ret = 0;
     uint8_t i = 0;
 
-    GPIO_SetBits(DISP_PORT,DISP_E);
+    GPIO_SetBits(DISP_E_PORT,DISP_E_PIN);
 
-    for(i=0;i<ARRAY_SIZE(pins);i++)
+    for(i=0;i<ARRAY_SIZE(hardware);i++)
     {
-        if(GPIO_ReadInputDataBit(DISP_PORT,pins[i]))
+        if(GPIO_ReadInputDataBit(hardware[i].port,hardware[i].pin))
         {
             ret |= (uint8_t) (1<<i);
         }
     }
 
-    GPIO_ResetBits(DISP_PORT,DISP_E);
+    GPIO_ResetBits(DISP_E_PORT,DISP_E_PIN);
 
     return ret;
 }
@@ -75,25 +87,34 @@ static void disp_send_nibble(uint8_t cmd)
 {
     uint8_t i = 0;
 
-    GPIO_SetBits(DISP_PORT,DISP_E);
-    GPIO_ResetBits(DISP_PORT,DISP_DATA_PINS);
+    GPIO_SetBits(DISP_E_PORT,DISP_E_PIN);
 
-    for(i=0;i<ARRAY_SIZE(pins);i++)
+    GPIO_ResetBits(DISP_D4_PORT,DISP_D4_PIN);
+    GPIO_ResetBits(DISP_D5_PORT,DISP_D5_PIN);
+    GPIO_ResetBits(DISP_D6_PORT,DISP_D6_PIN);
+    GPIO_ResetBits(DISP_D7_PORT,DISP_D7_PIN);
+
+    for(i=0;i<ARRAY_SIZE(hardware);i++)
     {
         if(cmd & (1 << i))
         {
-            GPIO_SetBits(DISP_PORT,pins[i]);
+            GPIO_SetBits(hardware[i].port,hardware[i].pin);
         }
     }
 
-    GPIO_ResetBits(DISP_PORT,DISP_E);
+    GPIO_ResetBits(DISP_E_PORT,DISP_E_PIN);
 }
 
 static uint8_t disp_read(void)
 {
     uint8_t ret=0;
-    GPIO_Init(DISP_PORT,DISP_DATA_PINS,GPIO_Mode_In_PU_No_IT);
-    GPIO_SetBits(DISP_PORT,DISP_RW);
+
+    GPIO_Init(DISP_D4_PORT,DISP_D4_PIN,GPIO_Mode_In_PU_No_IT);
+    GPIO_Init(DISP_D5_PORT,DISP_D5_PIN,GPIO_Mode_In_PU_No_IT);
+    GPIO_Init(DISP_D6_PORT,DISP_D6_PIN,GPIO_Mode_In_PU_No_IT);
+    GPIO_Init(DISP_D7_PORT,DISP_D7_PIN,GPIO_Mode_In_PU_No_IT);
+
+    GPIO_SetBits(DISP_RW_PORT,DISP_RW_PIN);
     ret |= (uint8_t)(disp_read_nibble() << 4);
     ret |= disp_read_nibble();
     return ret;
@@ -101,14 +122,17 @@ static uint8_t disp_read(void)
 
 static uint8_t disp_read_cmd(void)
 {
-    GPIO_ResetBits(DISP_PORT,DISP_RS);
+    GPIO_ResetBits(DISP_RS_PORT,DISP_RS_PIN);
     return disp_read();
 }
 
 static void disp_write(uint8_t cmd)
 {
-    GPIO_Init(DISP_PORT,DISP_DATA_PINS,GPIO_Mode_Out_PP_High_Fast);
-    GPIO_ResetBits(DISP_PORT,DISP_RW);
+    GPIO_Init(DISP_D4_PORT,DISP_D4_PIN,GPIO_Mode_Out_PP_High_Fast);
+    GPIO_Init(DISP_D5_PORT,DISP_D5_PIN,GPIO_Mode_Out_PP_High_Fast);
+    GPIO_Init(DISP_D6_PORT,DISP_D6_PIN,GPIO_Mode_Out_PP_High_Fast);
+    GPIO_Init(DISP_D7_PORT,DISP_D7_PIN,GPIO_Mode_Out_PP_High_Fast);
+    GPIO_ResetBits(DISP_RW_PORT,DISP_RW_PIN);
     disp_send_nibble((uint8_t)(cmd>>4));
     disp_send_nibble(cmd);
     while(disp_read_cmd() & 0x80);
@@ -116,13 +140,13 @@ static void disp_write(uint8_t cmd)
 
 static void disp_send_cmd(uint8_t cmd)
 {
-    GPIO_ResetBits(DISP_PORT,DISP_RS);
+    GPIO_ResetBits(DISP_RS_PORT,DISP_RS_PIN);
     disp_write(cmd);
 }
 
 static void disp_send_data(uint8_t data)
 {
-    GPIO_SetBits(DISP_PORT,DISP_RS);
+    GPIO_SetBits(DISP_RS_PORT,DISP_RS_PIN);
     disp_write(data);
 }
 
@@ -290,11 +314,18 @@ void DISP_configure(const DISP_config_t *config)
     /*! TODO add validation of config */
     driver.config = *config;
 
-    GPIO_Init(DISP_PORT,DISP_PINS_ALL,GPIO_Mode_Out_PP_High_Fast);
+    GPIO_Init(DISP_RS_PORT,DISP_RS_PIN,GPIO_Mode_Out_PP_High_Fast);
+    GPIO_Init(DISP_RW_PORT,DISP_RW_PIN,GPIO_Mode_Out_PP_High_Fast);
+    GPIO_Init(DISP_E_PORT,DISP_E_PIN,GPIO_Mode_Out_PP_High_Fast);
+    GPIO_Init(DISP_D4_PORT,DISP_D4_PIN,GPIO_Mode_Out_PP_High_Fast);
+    GPIO_Init(DISP_D5_PORT,DISP_D5_PIN,GPIO_Mode_Out_PP_High_Fast);
+    GPIO_Init(DISP_D6_PORT,DISP_D6_PIN,GPIO_Mode_Out_PP_High_Fast);
+    GPIO_Init(DISP_D7_PORT,DISP_D7_PIN,GPIO_Mode_Out_PP_High_Fast);
+
     SYSTEM_timer_delay(40);
-    GPIO_ResetBits(DISP_PORT,DISP_RS);
-    GPIO_ResetBits(DISP_PORT,DISP_RW);
-    GPIO_ResetBits(DISP_PORT,DISP_E);
+    GPIO_ResetBits(DISP_RS_PORT,DISP_RS_PIN);
+    GPIO_ResetBits(DISP_RW_PORT,DISP_RW_PIN);
+    GPIO_ResetBits(DISP_E_PORT,DISP_E_PIN);
 
     for(i=0;i<3;i++)
     {
