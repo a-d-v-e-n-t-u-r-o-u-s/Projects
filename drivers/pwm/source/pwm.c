@@ -30,12 +30,6 @@
 
 #define MAX_CHANNELS        4
 
-typedef enum
-{
-    PWM_CHANNEL1,
-    PWM_CHANNEL2
-} PWM_channel_t;
-
 typedef struct
 {
     GPIO_TypeDef *port;
@@ -192,13 +186,17 @@ static @inline TIM3_Prescaler_TypeDef get_timer3_prescaler(PWM_prescaler_t presc
     return TIM3_Prescaler_1;
 }
 
-static @inline void configure_timer2_channel_1(const PWM_config_t *config)
+/*!
+ * \todo check why changing parameter from const PWM_config_t *config
+ * to uint16_t duty_cycle causes growing of .text section
+ */
+static @inline void configure_timer2_channel_1(uint16_t duty_cycle)
 {
     GPIO_Init(PWM_TIMER2_CHANNEL1_PORT,PWM_TIMER2_CHANNEL1_PIN,GPIO_Mode_Out_PP_High_Fast);
 
     TIM2_OC1Init(TIM2_OCMode_PWM2,
         TIM2_OutputState_Enable,
-        *(config->channel_duty_cycle1),
+        duty_cycle,
         TIM2_OCPolarity_Low,
         TIM2_OCIdleState_Set);
     TIM2_OC1PreloadConfig(ENABLE);
@@ -207,13 +205,17 @@ static @inline void configure_timer2_channel_1(const PWM_config_t *config)
     TIM2_Cmd(ENABLE);
 }
 
-static @inline void configure_timer2_channel_2(const PWM_config_t *config)
+/*!
+ * \todo check why changing parameter from const PWM_config_t *config
+ * to uint16_t duty_cycle causes growing of .text section
+ */
+static @inline void configure_timer2_channel_2(uint16_t duty_cycle)
 {
     GPIO_Init(PWM_TIMER2_CHANNEL2_PORT,PWM_TIMER2_CHANNEL2_PIN,GPIO_Mode_Out_PP_High_Fast);
 
     TIM2_OC2Init(TIM2_OCMode_PWM2,
         TIM2_OutputState_Enable,
-        *(config->channel_duty_cycle2),
+        duty_cycle,
         TIM2_OCPolarity_Low,
         TIM2_OCIdleState_Set);
     TIM2_OC2PreloadConfig(ENABLE);
@@ -232,22 +234,26 @@ static @inline void configure_timer2_group(const PWM_config_t *config)
 
     if(0 == is_channel_duty_cycle(config->channel_duty_cycle1))
     {
-        configure_timer2_channel_1(config);
+        configure_timer2_channel_1(*(config->channel_duty_cycle1));
     }
 
     if(0 == is_channel_duty_cycle(config->channel_duty_cycle2))
     {
-        configure_timer2_channel_2(config);
+        configure_timer2_channel_2(*(config->channel_duty_cycle2));
     }
 }
 
-static @inline void configure_timer3_channel_1(const PWM_config_t *config)
+/*!
+ * \todo check why changing parameter from const PWM_config_t *config
+ * to uint16_t duty_cycle causes growing of .text section
+ */
+static @inline void configure_timer3_channel_1(uint16_t duty_cycle)
 {
     GPIO_Init(PWM_TIMER3_CHANNEL1_PORT,PWM_TIMER3_CHANNEL1_PIN,GPIO_Mode_Out_PP_High_Fast);
 
     TIM3_OC1Init(TIM3_OCMode_PWM2,
                 TIM3_OutputState_Enable,
-                *(config->channel_duty_cycle1),
+                duty_cycle,
                 TIM3_OCPolarity_Low,
                 TIM3_OCIdleState_Set);
     TIM3_OC1PreloadConfig(ENABLE);
@@ -256,13 +262,17 @@ static @inline void configure_timer3_channel_1(const PWM_config_t *config)
     TIM3_Cmd(ENABLE);
 }
 
-static @inline void configure_timer3_channel_2(const PWM_config_t *config)
+/*!
+ * \todo check why changing parameter from const PWM_config_t *config
+ * to uint16_t duty_cycle causes growing of .text section
+ */
+static @inline void configure_timer3_channel_2(uint16_t duty_cycle)
 {
     GPIO_Init(PWM_TIMER3_CHANNEL2_PORT,PWM_TIMER3_CHANNEL2_PIN,GPIO_Mode_Out_PP_High_Fast);
 
     TIM3_OC2Init(TIM3_OCMode_PWM2,
                 TIM3_OutputState_Enable,
-                *(config->channel_duty_cycle2),
+                duty_cycle,
                 TIM3_OCPolarity_Low,
                 TIM3_OCIdleState_Set);
     TIM3_OC2PreloadConfig(ENABLE);
@@ -281,12 +291,12 @@ static @inline void configure_timer3_group(const PWM_config_t *config)
 
     if(0 == is_channel_duty_cycle(config->channel_duty_cycle1))
     {
-        configure_timer3_channel_1(config);
+        configure_timer3_channel_1(*(config->channel_duty_cycle1));
     }
 
     if(0 == is_channel_duty_cycle(config->channel_duty_cycle2))
     {
-        configure_timer3_channel_2(config);
+        configure_timer3_channel_2(*(config->channel_duty_cycle2));
     }
 }
 
