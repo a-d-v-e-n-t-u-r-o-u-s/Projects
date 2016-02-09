@@ -35,72 +35,72 @@
 /*!
  * \brief Defines DB4 port for display
  */
-#define DISP_D4_PORT            GPIOB
+#define DISP_D4_PORT            GPIOA
 
 /*!
  * \brief Defines DB4 pin for display
  */
-#define DISP_D4_PIN             GPIO_Pin_3
+#define DISP_D4_PIN             GPIO_Pin_4
 
 /*!
  * \brief Defines DB5 port for display
  */
-#define DISP_D5_PORT            GPIOB
+#define DISP_D5_PORT            GPIOA
 
 /*!
  * \brief Defines DB5 pin for display
  */
-#define DISP_D5_PIN             GPIO_Pin_4
+#define DISP_D5_PIN             GPIO_Pin_5
 
 /*!
  * \brief Defines DB6 port for display
  */
-#define DISP_D6_PORT            GPIOB
+#define DISP_D6_PORT            GPIOA
 
 /*!
  * \brief Defines DB6 pin for display
  */
-#define DISP_D6_PIN             GPIO_Pin_5
+#define DISP_D6_PIN             GPIO_Pin_6
 
 /*!
  * \brief Defines DB7 port for display
  */
-#define DISP_D7_PORT            GPIOB
+#define DISP_D7_PORT            GPIOA
 
 /*!
  * \brief Defines DB7 pin for display
  */
-#define DISP_D7_PIN             GPIO_Pin_6
+#define DISP_D7_PIN             GPIO_Pin_7
 
 /*!
  * \brief Defines Register select port for display
  */
-#define DISP_RS_PORT            GPIOB
+#define DISP_RS_PORT            GPIOD
 
 /*!
  * \brief Defines Register select pin for display
  */
-#define DISP_RS_PIN             GPIO_Pin_0
+#define DISP_RS_PIN             GPIO_Pin_4
 
 /*!
  * \brief Defines data read/write port for display
  */
-#define DISP_RW_PORT            GPIOB
+#define DISP_RW_PORT            GPIOD
 
 /*!
  * \brief Defines data read/write pin for display
  */
-#define DISP_RW_PIN             GPIO_Pin_1
+#define DISP_RW_PIN             GPIO_Pin_5
 
 /*!
  * \brief Defines enable signal port for display
  */
-#define DISP_E_PORT             GPIOB
+#define DISP_E_PORT             GPIOD
 
 /*!
  * \brief Defines enable signal pin for display
  */
-#define DISP_E_PIN              GPIO_Pin_2
+#define DISP_E_PIN              GPIO_Pin_6
 
 /*@}*/
 #endif /* end of PCB0000_H */
