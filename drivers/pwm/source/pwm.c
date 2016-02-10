@@ -29,7 +29,6 @@
 #include "stm8l15x_tim3.h"
 
 #define MAX_HANDLES         2
-#define MAX_CHANNELS        4
 
 typedef struct
 {
@@ -41,9 +40,13 @@ typedef struct PWM_handle_t
 {
     uint8_t is_configured;
     uint8_t is_attached;
-    PWM_config_t *config;
+    PWM_config_t config;
 } PWM_handle_t;
 
+static uint16_t timer2_channel1_duty_cycle;
+static uint16_t timer2_channel2_duty_cycle;
+static uint16_t timer3_channel1_duty_cycle;
+static uint16_t timer3_channel2_duty_cycle;
 static PWM_handle_t handles[MAX_HANDLES];
 
 static @inline int8_t is_handle_valid(PWM_handle_t *handle)
@@ -225,7 +228,7 @@ static @inline void configure_timer2_channel_2(uint16_t duty_cycle)
     TIM2_Cmd(ENABLE);
 }
 
-static @inline void configure_timer2_group(const PWM_config_t *config)
+static @inline PWM_handle_t* configure_timer2_group(const PWM_config_t *config)
 {
     CLK_PeripheralClockConfig(CLK_Peripheral_TIM2, ENABLE);
     TIM2_DeInit();
@@ -236,12 +239,24 @@ static @inline void configure_timer2_group(const PWM_config_t *config)
     if(0 == is_channel_duty_cycle(config->channel_duty_cycle1))
     {
         configure_timer2_channel_1(*(config->channel_duty_cycle1));
+        timer2_channel1_duty_cycle = *(config->channel_duty_cycle1);
+        handles[0].config.channel_duty_cycle1 = &timer2_channel1_duty_cycle;
     }
 
     if(0 == is_channel_duty_cycle(config->channel_duty_cycle2))
     {
         configure_timer2_channel_2(*(config->channel_duty_cycle2));
+        timer2_channel2_duty_cycle = *(config->channel_duty_cycle2);
+        handles[0].config.channel_duty_cycle2 = &timer2_channel2_duty_cycle;
     }
+
+    handles[0].config.prescaler = config->prescaler;
+    handles[0].config.group = config->group;
+    handles[0].config.counter = config->counter;
+    handles[0].is_configured = 1U;
+    handles[0].is_attached = 1U;
+
+    return &handles[0];
 }
 
 /*!
@@ -283,7 +298,7 @@ static @inline void configure_timer3_channel_2(uint16_t duty_cycle)
     TIM3_Cmd(ENABLE);
 }
 
-static @inline void configure_timer3_group(const PWM_config_t *config)
+static @inline PWM_handle_t* configure_timer3_group(const PWM_config_t *config)
 {
     CLK_PeripheralClockConfig(CLK_Peripheral_TIM3, ENABLE);
     TIM3_DeInit();
@@ -293,12 +308,24 @@ static @inline void configure_timer3_group(const PWM_config_t *config)
     if(0 == is_channel_duty_cycle(config->channel_duty_cycle1))
     {
         configure_timer3_channel_1(*(config->channel_duty_cycle1));
+        timer3_channel1_duty_cycle = *(config->channel_duty_cycle1);
+        handles[1].config.channel_duty_cycle1 = &timer3_channel1_duty_cycle;
     }
 
     if(0 == is_channel_duty_cycle(config->channel_duty_cycle2))
     {
         configure_timer3_channel_2(*(config->channel_duty_cycle2));
+        timer3_channel2_duty_cycle = *(config->channel_duty_cycle2);
+        handles[1].config.channel_duty_cycle2 = &timer3_channel2_duty_cycle;
     }
+
+    handles[1].config.prescaler = config->prescaler;
+    handles[1].config.group = config->group;
+    handles[1].config.counter = config->counter;
+    handles[1].is_configured = 1U;
+    handles[1].is_attached = 1U;
+
+    return &handles[1];
 }
 
 int8_t PWM_configure(struct PWM_handle_t *handle,
@@ -318,11 +345,11 @@ int8_t PWM_configure(struct PWM_handle_t *handle,
 
     if(PWM_TIMER2_GROUP == config->group)
     {
-        configure_timer2_group(config);
+        handle = configure_timer2_group(config);
     }
     else
     {
-        configure_timer3_group(config);
+        handle = configure_timer3_group(config);
     }
 
     return 0;
