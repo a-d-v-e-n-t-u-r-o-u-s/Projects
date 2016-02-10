@@ -28,6 +28,7 @@
 #include "stm8l15x_tim2.h"
 #include "stm8l15x_tim3.h"
 
+#define MAX_HANDLES         2
 #define MAX_CHANNELS        4
 
 typedef struct
@@ -43,7 +44,7 @@ typedef struct PWM_handle_t
     PWM_config_t *config;
 } PWM_handle_t;
 
-static PWM_handle_t channels[MAX_CHANNELS];
+static PWM_handle_t handles[MAX_HANDLES];
 
 static @inline int8_t is_handle_valid(PWM_handle_t *handle)
 {
