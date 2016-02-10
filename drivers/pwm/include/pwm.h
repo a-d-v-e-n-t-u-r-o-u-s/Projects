@@ -63,6 +63,8 @@ typedef struct
     uint16_t *channel_duty_cycle2;
 } PWM_config_t;
 
+int8_t PWM_attach(struct PWM_handle_t *handle);
+int8_t PWM_detach(struct PWM_handle_t *handle);
 /*!
  * \brief Configuration function for pwm driver
  */

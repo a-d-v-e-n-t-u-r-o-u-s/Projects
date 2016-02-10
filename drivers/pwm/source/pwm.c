@@ -61,6 +61,30 @@ static @inline int8_t is_handle_valid(PWM_handle_t *handle)
     }
 }
 
+static @inline int8_t is_configured(PWM_handle_t *handle)
+{
+    if(0 == handle->is_configured)
+    {
+        return -1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+static @inline int8_t is_attached(PWM_handle_t *handle)
+{
+    if(0 == handle->is_attached)
+    {
+        return -1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 static @inline int8_t is_config_null(const PWM_config_t *config)
 {
     if(NULL == config)
@@ -194,7 +218,7 @@ static @inline TIM3_Prescaler_TypeDef get_timer3_prescaler(PWM_prescaler_t presc
  * \todo check why changing parameter from const PWM_config_t *config
  * to uint16_t duty_cycle causes growing of .text section
  */
-static @inline void configure_timer2_channel_1(uint16_t duty_cycle)
+static @inline void attach_timer2_channel_1(uint16_t duty_cycle)
 {
     GPIO_Init(PWM_TIMER2_CHANNEL1_PORT,PWM_TIMER2_CHANNEL1_PIN,GPIO_Mode_Out_PP_High_Fast);
 
@@ -204,16 +228,19 @@ static @inline void configure_timer2_channel_1(uint16_t duty_cycle)
         TIM2_OCPolarity_Low,
         TIM2_OCIdleState_Set);
     TIM2_OC1PreloadConfig(ENABLE);
-    TIM2_ARRPreloadConfig(ENABLE);
-    TIM2_CtrlPWMOutputs(ENABLE);
-    TIM2_Cmd(ENABLE);
+}
+
+static @inline void detach_timer2_channel_1(void)
+{
+    TIM2_OC1PreloadConfig(DISABLE);
+    GPIO_Init(PWM_TIMER2_CHANNEL1_PORT,PWM_TIMER2_CHANNEL1_PIN,GPIO_Mode_In_PU_No_IT);
 }
 
 /*!
  * \todo check why changing parameter from const PWM_config_t *config
  * to uint16_t duty_cycle causes growing of .text section
  */
-static @inline void configure_timer2_channel_2(uint16_t duty_cycle)
+static @inline void attach_timer2_channel_2(uint16_t duty_cycle)
 {
     GPIO_Init(PWM_TIMER2_CHANNEL2_PORT,PWM_TIMER2_CHANNEL2_PIN,GPIO_Mode_Out_PP_High_Fast);
 
@@ -223,12 +250,15 @@ static @inline void configure_timer2_channel_2(uint16_t duty_cycle)
         TIM2_OCPolarity_Low,
         TIM2_OCIdleState_Set);
     TIM2_OC2PreloadConfig(ENABLE);
-    TIM2_ARRPreloadConfig(ENABLE);
-    TIM2_CtrlPWMOutputs(ENABLE);
-    TIM2_Cmd(ENABLE);
 }
 
-static @inline PWM_handle_t* configure_timer2_group(const PWM_config_t *config)
+static @inline void detach_timer2_channel_2(void)
+{
+    TIM2_OC2PreloadConfig(DISABLE);
+    GPIO_Init(PWM_TIMER2_CHANNEL2_PORT,PWM_TIMER2_CHANNEL2_PIN,GPIO_Mode_In_PU_No_IT);
+}
+
+static @inline void attach_timer2_group(const PWM_config_t *config)
 {
     CLK_PeripheralClockConfig(CLK_Peripheral_TIM2, ENABLE);
     TIM2_DeInit();
@@ -238,32 +268,44 @@ static @inline PWM_handle_t* configure_timer2_group(const PWM_config_t *config)
 
     if(0 == is_channel_duty_cycle(config->channel_duty_cycle1))
     {
-        configure_timer2_channel_1(*(config->channel_duty_cycle1));
-        timer2_channel1_duty_cycle = *(config->channel_duty_cycle1);
-        handles[0].config.channel_duty_cycle1 = &timer2_channel1_duty_cycle;
+        attach_timer2_channel_1(*(config->channel_duty_cycle1));
     }
 
     if(0 == is_channel_duty_cycle(config->channel_duty_cycle2))
     {
-        configure_timer2_channel_2(*(config->channel_duty_cycle2));
-        timer2_channel2_duty_cycle = *(config->channel_duty_cycle2);
-        handles[0].config.channel_duty_cycle2 = &timer2_channel2_duty_cycle;
+        attach_timer2_channel_2(*(config->channel_duty_cycle2));
     }
 
-    handles[0].config.prescaler = config->prescaler;
-    handles[0].config.group = config->group;
-    handles[0].config.counter = config->counter;
-    handles[0].is_configured = 1U;
-    handles[0].is_attached = 1U;
+    TIM2_ARRPreloadConfig(ENABLE);
+    TIM2_CtrlPWMOutputs(ENABLE);
+    TIM2_Cmd(ENABLE);
+}
 
-    return &handles[0];
+static @inline void detach_timer2_group(const PWM_config_t *config)
+{
+    TIM2_Cmd(DISABLE);
+    TIM2_CtrlPWMOutputs(DISABLE);
+    TIM2_ARRPreloadConfig(DISABLE);
+
+    if(0 == is_channel_duty_cycle(config->channel_duty_cycle1))
+    {
+        detach_timer2_channel_1();
+    }
+
+    if(0 == is_channel_duty_cycle(config->channel_duty_cycle2))
+    {
+        detach_timer2_channel_2();
+    }
+
+    TIM2_DeInit();
+    CLK_PeripheralClockConfig(CLK_Peripheral_TIM2, DISABLE);
 }
 
 /*!
  * \todo check why changing parameter from const PWM_config_t *config
  * to uint16_t duty_cycle causes growing of .text section
  */
-static @inline void configure_timer3_channel_1(uint16_t duty_cycle)
+static @inline void attach_timer3_channel_1(uint16_t duty_cycle)
 {
     GPIO_Init(PWM_TIMER3_CHANNEL1_PORT,PWM_TIMER3_CHANNEL1_PIN,GPIO_Mode_Out_PP_High_Fast);
 
@@ -273,16 +315,19 @@ static @inline void configure_timer3_channel_1(uint16_t duty_cycle)
                 TIM3_OCPolarity_Low,
                 TIM3_OCIdleState_Set);
     TIM3_OC1PreloadConfig(ENABLE);
-    TIM3_ARRPreloadConfig(ENABLE);
-    TIM3_CtrlPWMOutputs(ENABLE);
-    TIM3_Cmd(ENABLE);
+}
+
+static @inline void detach_timer3_channel_1(void)
+{
+    TIM3_OC1PreloadConfig(DISABLE);
+    GPIO_Init(PWM_TIMER3_CHANNEL1_PORT,PWM_TIMER3_CHANNEL1_PIN,GPIO_Mode_In_PU_No_IT);
 }
 
 /*!
  * \todo check why changing parameter from const PWM_config_t *config
  * to uint16_t duty_cycle causes growing of .text section
  */
-static @inline void configure_timer3_channel_2(uint16_t duty_cycle)
+static @inline void attach_timer3_channel_2(uint16_t duty_cycle)
 {
     GPIO_Init(PWM_TIMER3_CHANNEL2_PORT,PWM_TIMER3_CHANNEL2_PIN,GPIO_Mode_Out_PP_High_Fast);
 
@@ -292,13 +337,15 @@ static @inline void configure_timer3_channel_2(uint16_t duty_cycle)
                 TIM3_OCPolarity_Low,
                 TIM3_OCIdleState_Set);
     TIM3_OC2PreloadConfig(ENABLE);
-
-    TIM3_ARRPreloadConfig(ENABLE);
-    TIM3_CtrlPWMOutputs(ENABLE);
-    TIM3_Cmd(ENABLE);
 }
 
-static @inline PWM_handle_t* configure_timer3_group(const PWM_config_t *config)
+static @inline void detach_timer3_channel_2(void)
+{
+    TIM3_OC2PreloadConfig(DISABLE);
+    GPIO_Init(PWM_TIMER3_CHANNEL2_PORT,PWM_TIMER3_CHANNEL2_PIN,GPIO_Mode_In_PU_No_IT);
+}
+
+static @inline void attach_timer3_group(const PWM_config_t *config)
 {
     CLK_PeripheralClockConfig(CLK_Peripheral_TIM3, ENABLE);
     TIM3_DeInit();
@@ -307,30 +354,157 @@ static @inline PWM_handle_t* configure_timer3_group(const PWM_config_t *config)
 
     if(0 == is_channel_duty_cycle(config->channel_duty_cycle1))
     {
-        configure_timer3_channel_1(*(config->channel_duty_cycle1));
-        timer3_channel1_duty_cycle = *(config->channel_duty_cycle1);
-        handles[1].config.channel_duty_cycle1 = &timer3_channel1_duty_cycle;
+        attach_timer3_channel_1(*(config->channel_duty_cycle1));
     }
 
     if(0 == is_channel_duty_cycle(config->channel_duty_cycle2))
     {
-        configure_timer3_channel_2(*(config->channel_duty_cycle2));
-        timer3_channel2_duty_cycle = *(config->channel_duty_cycle2);
-        handles[1].config.channel_duty_cycle2 = &timer3_channel2_duty_cycle;
+        attach_timer3_channel_2(*(config->channel_duty_cycle2));
     }
 
-    handles[1].config.prescaler = config->prescaler;
-    handles[1].config.group = config->group;
-    handles[1].config.counter = config->counter;
-    handles[1].is_configured = 1U;
-    handles[1].is_attached = 1U;
+    TIM3_ARRPreloadConfig(ENABLE);
+    TIM3_CtrlPWMOutputs(ENABLE);
+    TIM3_Cmd(ENABLE);
+}
 
-    return &handles[1];
+static @inline void detach_timer3_group(const PWM_config_t *config)
+{
+    TIM3_Cmd(DISABLE);
+    TIM3_CtrlPWMOutputs(DISABLE);
+    TIM3_ARRPreloadConfig(DISABLE);
+
+    if(0 == is_channel_duty_cycle(config->channel_duty_cycle1))
+    {
+        detach_timer3_channel_1();
+    }
+
+    if(0 == is_channel_duty_cycle(config->channel_duty_cycle2))
+    {
+        detach_timer3_channel_2();
+    }
+
+    TIM3_DeInit();
+    CLK_PeripheralClockConfig(CLK_Peripheral_TIM3, DISABLE);
+}
+
+static @inline PWM_handle_t* acquire_handle(const PWM_config_t *config)
+{
+    PWM_handle_t *handle = NULL;
+
+    if(PWM_TIMER2_GROUP == config->group)
+    {
+        handle = &handles[0];
+
+        if(0 == is_channel_duty_cycle(config->channel_duty_cycle1))
+        {
+            timer2_channel1_duty_cycle = *(config->channel_duty_cycle1);
+            handle->config.channel_duty_cycle1 = &timer2_channel1_duty_cycle;
+        }
+
+        if(0 == is_channel_duty_cycle(config->channel_duty_cycle2))
+        {
+            timer2_channel2_duty_cycle = *(config->channel_duty_cycle2);
+            handle->config.channel_duty_cycle2 = &timer2_channel2_duty_cycle;
+        }
+    }
+    else
+    {
+        handle = &handles[1];
+
+        if(0 == is_channel_duty_cycle(config->channel_duty_cycle1))
+        {
+            timer3_channel1_duty_cycle = *(config->channel_duty_cycle1);
+            handle->config.channel_duty_cycle1 = &timer3_channel1_duty_cycle;
+        }
+
+        if(0 == is_channel_duty_cycle(config->channel_duty_cycle2))
+        {
+            timer3_channel2_duty_cycle = *(config->channel_duty_cycle2);
+            handle->config.channel_duty_cycle2 = &timer3_channel2_duty_cycle;
+        }
+    }
+
+    handle->config.prescaler = config->prescaler;
+    handle->config.group = config->group;
+    handle->config.counter = config->counter;
+
+    return handle;
+}
+
+static void pwm_internal_attach(PWM_handle_t *handle)
+{
+    if(PWM_TIMER2_GROUP == handle->config.group)
+    {
+        attach_timer2_group(&handle->config);
+    }
+    else
+    {
+        attach_timer3_group(&handle->config);
+    }
+
+    handle->is_attached = 1U;
+}
+
+static void pwm_internal_detach(PWM_handle_t *handle)
+{
+    if(PWM_TIMER2_GROUP == handle->config.group)
+    {
+        detach_timer2_group(&handle->config);
+    }
+    else
+    {
+        detach_timer3_group(&handle->config);
+    }
+
+    handle->is_attached = 0U;
+}
+
+int8_t PWM_attach(struct PWM_handle_t *handle)
+{
+    if(0 != is_handle_valid(handle))
+    {
+        return -1;
+    }
+    else if(0 != is_configured(handle))
+    {
+        return -2;
+    }
+    else if(0 != is_attached(handle))
+    {
+        return -3;
+    }
+    else
+    {
+        pwm_internal_attach(handle);
+        return 0;
+    }
+}
+
+int8_t PWM_detach(struct PWM_handle_t *handle)
+{
+    if(0 != is_handle_valid(handle))
+    {
+        return -1;
+    }
+    else if(0 != is_configured(handle))
+    {
+        return -2;
+    }
+    else if(0 != is_attached(handle))
+    {
+        return -3;
+    }
+    else
+    {
+        pwm_internal_detach(handle);
+        return 0;
+    }
 }
 
 int8_t PWM_configure(struct PWM_handle_t *handle,
         const PWM_config_t *config,uint8_t is_attached)
 {
+    PWM_handle_t *tmp = NULL;
     PWM_hardware_config_t hardware = {0};
 
     if(0 != is_config_null(config))
@@ -343,14 +517,19 @@ int8_t PWM_configure(struct PWM_handle_t *handle,
         return -2;
     }
 
-    if(PWM_TIMER2_GROUP == config->group)
+    tmp = acquire_handle(config);
+
+    if(0 != is_attached)
     {
-        handle = configure_timer2_group(config);
+        pwm_internal_attach(tmp);
     }
     else
     {
-        handle = configure_timer3_group(config);
+        pwm_internal_detach(tmp);
     }
+
+    tmp->is_configured = 1U;
+    handle = tmp;
 
     return 0;
 }
