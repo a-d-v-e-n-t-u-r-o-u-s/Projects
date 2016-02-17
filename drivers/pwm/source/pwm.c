@@ -233,7 +233,7 @@ static @inline void attach_timer2_channel_1(uint16_t duty_cycle)
 static @inline void detach_timer2_channel_1(void)
 {
     TIM2_OC1PreloadConfig(DISABLE);
-    GPIO_Init(PWM_TIMER2_CHANNEL1_PORT,PWM_TIMER2_CHANNEL1_PIN,GPIO_Mode_In_PU_No_IT);
+    GPIO_Init(PWM_TIMER2_CHANNEL1_PORT,PWM_TIMER2_CHANNEL1_PIN,GPIO_Mode_In_FL_No_IT);
 }
 
 /*!
@@ -255,7 +255,7 @@ static @inline void attach_timer2_channel_2(uint16_t duty_cycle)
 static @inline void detach_timer2_channel_2(void)
 {
     TIM2_OC2PreloadConfig(DISABLE);
-    GPIO_Init(PWM_TIMER2_CHANNEL2_PORT,PWM_TIMER2_CHANNEL2_PIN,GPIO_Mode_In_PU_No_IT);
+    GPIO_Init(PWM_TIMER2_CHANNEL2_PORT,PWM_TIMER2_CHANNEL2_PIN,GPIO_Mode_In_FL_No_IT);
 }
 
 static @inline void attach_timer2_group(const PWM_config_t *config)
@@ -320,7 +320,7 @@ static @inline void attach_timer3_channel_1(uint16_t duty_cycle)
 static @inline void detach_timer3_channel_1(void)
 {
     TIM3_OC1PreloadConfig(DISABLE);
-    GPIO_Init(PWM_TIMER3_CHANNEL1_PORT,PWM_TIMER3_CHANNEL1_PIN,GPIO_Mode_In_PU_No_IT);
+    GPIO_Init(PWM_TIMER3_CHANNEL1_PORT,PWM_TIMER3_CHANNEL1_PIN,GPIO_Mode_In_FL_No_IT);
 }
 
 /*!
@@ -342,7 +342,7 @@ static @inline void attach_timer3_channel_2(uint16_t duty_cycle)
 static @inline void detach_timer3_channel_2(void)
 {
     TIM3_OC2PreloadConfig(DISABLE);
-    GPIO_Init(PWM_TIMER3_CHANNEL2_PORT,PWM_TIMER3_CHANNEL2_PIN,GPIO_Mode_In_PU_No_IT);
+    GPIO_Init(PWM_TIMER3_CHANNEL2_PORT,PWM_TIMER3_CHANNEL2_PIN,GPIO_Mode_In_FL_No_IT);
 }
 
 static @inline void attach_timer3_group(const PWM_config_t *config)
