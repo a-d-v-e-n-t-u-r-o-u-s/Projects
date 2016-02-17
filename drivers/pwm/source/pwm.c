@@ -469,7 +469,7 @@ int8_t PWM_attach(struct PWM_handle_t *handle)
     {
         return -2;
     }
-    else if(0 != is_attached(handle))
+    else if(0 == is_attached(handle))
     {
         return -3;
     }
