@@ -501,7 +501,7 @@ int8_t PWM_detach(struct PWM_handle_t *handle)
     }
 }
 
-int8_t PWM_configure(struct PWM_handle_t *handle,
+int8_t PWM_configure(struct PWM_handle_t **handle,
         const PWM_config_t *config,uint8_t is_attached)
 {
     PWM_handle_t *tmp = NULL;
@@ -529,7 +529,8 @@ int8_t PWM_configure(struct PWM_handle_t *handle,
     }
 
     tmp->is_configured = 1U;
-    handle = tmp;
+
+    *handle = tmp;
 
     return 0;
 }
