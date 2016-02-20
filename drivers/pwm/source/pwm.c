@@ -670,6 +670,74 @@ static void pwm_internal_detach(PWM_handle_t *handle)
     handle->is_attached = 0U;
 }
 
+int8_t PWM_set_duty_cycle_channel_1(struct PWM_handle_t *handle,uint16_t duty_cycle)
+{
+    if(0 == is_handle_null(handle))
+    {
+        return -1;
+    }
+    else if(0 != is_configured(handle))
+    {
+        return -2;
+    }
+    else if(0 == is_uint16_t_ptr_null(handle->config.channel_duty_cycle1))
+    {
+        return -3;
+    }
+    else
+    {
+        *(handle->config.channel_duty_cycle1) = duty_cycle;
+
+        if(0 == is_attached(handle))
+        {
+            if(PWM_TIMER2_GROUP == handle->config.group)
+            {
+                TIM2_SetCompare1(duty_cycle);
+            }
+            else
+            {
+                TIM3_SetCompare1(duty_cycle);
+            }
+        }
+
+        return 0;
+    }
+}
+
+int8_t PWM_set_duty_cycle_channel_2(struct PWM_handle_t *handle,uint16_t duty_cycle)
+{
+    if(0 == is_handle_null(handle))
+    {
+        return -1;
+    }
+    else if(0 != is_configured(handle))
+    {
+        return -2;
+    }
+    else if(0 == is_uint16_t_ptr_null(handle->config.channel_duty_cycle2))
+    {
+        return -3;
+    }
+    else
+    {
+        *(handle->config.channel_duty_cycle2) = duty_cycle;
+
+        if(0 == is_attached(handle))
+        {
+            if(PWM_TIMER2_GROUP == handle->config.group)
+            {
+                TIM2_SetCompare2(duty_cycle);
+            }
+            else
+            {
+                TIM3_SetCompare2(duty_cycle);
+            }
+        }
+
+        return 0;
+    }
+}
+
 /* possible space for size optimization */
 int8_t PWM_get_duty_cycle_channel_1(uint16_t *duty_cycle,struct PWM_handle_t *handle)
 {
