@@ -102,7 +102,7 @@ static uint16_t timer3_channel2_duty_cycle;
 static PWM_handle_t handles[MAX_HANDLES];
 
 /*!
- * \brief Checks is handle NULL
+ * \brief Checks is pointer to handle NULL
  *
  * \param handle handle to be check
  *
@@ -722,14 +722,19 @@ int8_t PWM_configure(struct PWM_handle_t **handle,
     PWM_handle_t *tmp = NULL;
     PWM_hardware_config_t hardware = {0};
 
-    if(0 != is_config_null(config))
+    if(0 == is_ptr_to_handle_ptr_null(handle))
     {
         return -1;
     }
 
-    if(0 != is_config_valid(config))
+    if(0 != is_config_null(config))
     {
         return -2;
+    }
+
+    if(0 != is_config_valid(config))
+    {
+        return -3;
     }
 
     tmp = acquire_handle(config);

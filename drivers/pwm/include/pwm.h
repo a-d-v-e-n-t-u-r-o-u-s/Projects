@@ -112,8 +112,9 @@ int8_t PWM_detach(struct PWM_handle_t *handle);
  * \param is_attached shall driver be attached
  *
  * \retval 0 success
- * \retval -1 configuration data is NULL
- * \retval -2 configuration data is invalid
+ * \retval -1 handle is NULL
+ * \retval -2 configuration data is NULL
+ * \retval -3 configuration data is invalid
  */
 int8_t PWM_configure(struct PWM_handle_t **handle,
         const PWM_config_t *config,uint8_t is_attached);
