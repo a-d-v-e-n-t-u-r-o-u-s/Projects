@@ -122,6 +122,26 @@ static @inline int8_t is_handle_valid(PWM_handle_t *handle)
 }
 
 /*!
+ * \brief Checks is pointer to handle pointer NULL,
+ *
+ * \param handle pointer to handle pointer to be checked
+ *
+ * \retval 0 handle is NULL
+ * \retval -1 handle isn't NULL
+ */
+static @inline int8_t is_ptr_to_handle_ptr_null(PWM_handle_t **handle)
+{
+    if(NULL != handle)
+    {
+        return -1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+/*!
  * \brief Checks is driver identified by handle configured
  *
  * \param handle driver handle as input for checking
