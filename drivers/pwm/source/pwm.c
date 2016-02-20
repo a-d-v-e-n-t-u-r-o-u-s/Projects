@@ -228,10 +228,8 @@ static @inline int8_t is_uint16_t_ptr_null(const uint16_t *ptr)
  *
  * \retval 0 configuration structure is valid
  * \retval -1 configuration structures for both channels are NULL
- * \retval -2 duty cycle value for channel No.1 is greater than counter
- * \retval -3 duty cycle value for channel No.2 is greater than counter
- * \retval -4 unsupported timer group has been passed
- * \retval -5 unsupported prescaler value has been passed
+ * \retval -2 unsupported timer group has been passed
+ * \retval -3 unsupported prescaler value has been passed
  */
 static @inline int8_t is_config_valid(const PWM_config_t *config)
 {
@@ -241,28 +239,10 @@ static @inline int8_t is_config_valid(const PWM_config_t *config)
         return -1;
     }
 
-    /* \todo check if it's needed */
-    if(0 != (config->channel_duty_cycle1))
-    {
-        if(*(config->channel_duty_cycle1) > config->counter)
-        {
-            return -2;
-        }
-    }
-
-    /* \todo check if it's needed */
-    if(0 != (config->channel_duty_cycle2))
-    {
-        if(*(config->channel_duty_cycle2) > config->counter)
-        {
-            return -3;
-        }
-    }
-
     if(PWM_TIMER2_GROUP != config->group &&
             PWM_TIMER3_GROUP != config->group)
     {
-        return -4;
+        return -2;
     }
 
     switch(config->prescaler)
@@ -285,7 +265,7 @@ static @inline int8_t is_config_valid(const PWM_config_t *config)
             return 0;
     }
 
-    return -5;
+    return -3;
 }
 
 /*!
