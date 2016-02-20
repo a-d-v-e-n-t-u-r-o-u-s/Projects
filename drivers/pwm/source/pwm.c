@@ -453,11 +453,19 @@ static @inline void detach_timer2_group(const PWM_config_t *config)
     TIM2_CtrlPWMOutputs(DISABLE);
     TIM2_ARRPreloadConfig(DISABLE);
 
+    /*
+     * checking for NULL cannot be omitted, because can cause reconfiguring
+     * GPIO used by other modules
+     */
     if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle1))
     {
         detach_timer2_channel_1();
     }
 
+    /*
+     * checking for NULL cannot be omitted, because can cause reconfiguring
+     * GPIO used by other modules
+     */
     if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle2))
     {
         detach_timer2_channel_2();
@@ -567,11 +575,19 @@ static @inline void detach_timer3_group(const PWM_config_t *config)
     TIM3_CtrlPWMOutputs(DISABLE);
     TIM3_ARRPreloadConfig(DISABLE);
 
+    /*
+     * checking for NULL cannot be omitted, because can cause reconfiguring
+     * GPIO used by other modules
+     */
     if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle1))
     {
         detach_timer3_channel_1();
     }
 
+    /*
+     * checking for NULL cannot be omitted, because can cause reconfiguring
+     * GPIO used by other modules
+     */
     if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle2))
     {
         detach_timer3_channel_2();
