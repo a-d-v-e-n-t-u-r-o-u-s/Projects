@@ -688,15 +688,15 @@ int8_t PWM_set_counter(struct PWM_handle_t *handle,uint16_t counter,PWM_prescale
         {
             if(PWM_TIMER2_GROUP == handle->config.group)
             {
-                TIM2_DeInit();
-                TIM2_TimeBaseInit(get_timer2_prescaler(prescaler),
-                        TIM2_CounterMode_Down,counter);
+                TIM2_SetAutoreload(counter);
+                TIM2_PrescalerConfig(get_timer2_prescaler(prescaler),
+                        TIM2_PSCReloadMode_Immediate);
             }
             else
             {
-                TIM3_DeInit();
-                TIM3_TimeBaseInit(get_timer3_prescaler(prescaler),
-                        TIM3_CounterMode_Down,counter);
+                TIM3_SetAutoreload(counter);
+                TIM3_PrescalerConfig(get_timer3_prescaler(prescaler),
+                        TIM3_PSCReloadMode_Immediate);
             }
         }
 
