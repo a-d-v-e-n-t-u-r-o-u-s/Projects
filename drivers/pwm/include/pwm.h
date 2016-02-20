@@ -44,8 +44,8 @@ struct PWM_handle_t;
  */
 typedef enum
 {
-    PWM_TIMER2_GROUP, /*!< PWM group for timer No.2 */
-    PWM_TIMER3_GROUP /*!< PWM group for timer No.3 */
+    PWM_TIMER2_GROUP,   /*!< PWM group for timer No.2 */
+    PWM_TIMER3_GROUP    /*!< PWM group for timer No.3 */
 } PWM_group_t;
 
 /*!
@@ -53,14 +53,14 @@ typedef enum
  */
 typedef enum
 {
-    PWM_PRESCALER1, /*!< devides PWM clock by 1 */
-    PWM_PRESCALER2, /*!< devides PWM clock by 2 */
-    PWM_PRESCALER4, /*!< devides PWM clock by 4 */
-    PWM_PRESCALER8, /*!< devides PWM clock by 8 */
-    PWM_PRESCALER16, /*!< devides PWM clock by 16 */
-    PWM_PRESCALER32, /*!< devides PWM clock by 32 */
-    PWM_PRESCALER64, /*!< devides PWM clock by 64 */
-    PWM_PRESCALER128 /*!< devides PWM clock by 128 */
+    PWM_PRESCALER1,     /*!< devides PWM clock by 1 */
+    PWM_PRESCALER2,     /*!< devides PWM clock by 2 */
+    PWM_PRESCALER4,     /*!< devides PWM clock by 4 */
+    PWM_PRESCALER8,     /*!< devides PWM clock by 8 */
+    PWM_PRESCALER16,    /*!< devides PWM clock by 16 */
+    PWM_PRESCALER32,    /*!< devides PWM clock by 32 */
+    PWM_PRESCALER64,    /*!< devides PWM clock by 64 */
+    PWM_PRESCALER128    /*!< devides PWM clock by 128 */
 } PWM_prescaler_t;
 
 /*!
