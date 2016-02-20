@@ -202,16 +202,16 @@ static @inline int8_t is_config_null(const PWM_config_t *config)
 }
 
 /*!
- * \brief Checks is configuration of duty cycle NULL
+ * \brief Checks is pointer to uint16_t is NULL
  *
- * \param duty_cycle configuration structure to be checked
+ * \param ptr pointer to be checked
  *
- * \retval 0 structure is NULL
- * \retval -1 structure isn't NULL
+ * \retval 0 pointer is NULL
+ * \retval -1 pointer isn't NULL
  */
-static @inline int8_t is_channel_duty_cycle_null(const uint16_t *duty_cycle)
+static @inline int8_t is_uint16_t_ptr_null(const uint16_t *ptr)
 {
-    if(NULL != duty_cycle)
+    if(NULL != ptr)
     {
         return -1;
     }
@@ -235,14 +235,14 @@ static @inline int8_t is_channel_duty_cycle_null(const uint16_t *duty_cycle)
  */
 static @inline int8_t is_config_valid(const PWM_config_t *config)
 {
-    if(0 == is_channel_duty_cycle_null(config->channel_duty_cycle1) &&
-        0 == is_channel_duty_cycle_null(config->channel_duty_cycle2))
+    if(0 == is_uint16_t_ptr_null(config->channel_duty_cycle1) &&
+        0 == is_uint16_t_ptr_null(config->channel_duty_cycle2))
     {
         return -1;
     }
 
     /* \todo check if it's needed */
-    if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle1))
+    if(0 != (config->channel_duty_cycle1))
     {
         if(*(config->channel_duty_cycle1) > config->counter)
         {
@@ -251,7 +251,7 @@ static @inline int8_t is_config_valid(const PWM_config_t *config)
     }
 
     /* \todo check if it's needed */
-    if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle2))
+    if(0 != (config->channel_duty_cycle2))
     {
         if(*(config->channel_duty_cycle2) > config->counter)
         {
@@ -427,12 +427,12 @@ static @inline void attach_timer2_group(const PWM_config_t *config)
     TIM2_TimeBaseInit(get_timer2_prescaler(config->prescaler),
             TIM2_CounterMode_Down,config->counter);
 
-    if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle1))
+    if(0 != is_uint16_t_ptr_null(config->channel_duty_cycle1))
     {
         attach_timer2_channel_1(*(config->channel_duty_cycle1));
     }
 
-    if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle2))
+    if(0 != is_uint16_t_ptr_null(config->channel_duty_cycle2))
     {
         attach_timer2_channel_2(*(config->channel_duty_cycle2));
     }
@@ -457,7 +457,7 @@ static @inline void detach_timer2_group(const PWM_config_t *config)
      * checking for NULL cannot be omitted, because can cause reconfiguring
      * GPIO used by other modules
      */
-    if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle1))
+    if(0 != is_uint16_t_ptr_null(config->channel_duty_cycle1))
     {
         detach_timer2_channel_1();
     }
@@ -466,7 +466,7 @@ static @inline void detach_timer2_group(const PWM_config_t *config)
      * checking for NULL cannot be omitted, because can cause reconfiguring
      * GPIO used by other modules
      */
-    if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle2))
+    if(0 != is_uint16_t_ptr_null(config->channel_duty_cycle2))
     {
         detach_timer2_channel_2();
     }
@@ -549,12 +549,12 @@ static @inline void attach_timer3_group(const PWM_config_t *config)
     TIM3_TimeBaseInit(get_timer3_prescaler(config->prescaler),
             TIM3_CounterMode_Down,config->counter);
 
-    if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle1))
+    if(0 != is_uint16_t_ptr_null(config->channel_duty_cycle1))
     {
         attach_timer3_channel_1(*(config->channel_duty_cycle1));
     }
 
-    if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle2))
+    if(0 != is_uint16_t_ptr_null(config->channel_duty_cycle2))
     {
         attach_timer3_channel_2(*(config->channel_duty_cycle2));
     }
@@ -579,7 +579,7 @@ static @inline void detach_timer3_group(const PWM_config_t *config)
      * checking for NULL cannot be omitted, because can cause reconfiguring
      * GPIO used by other modules
      */
-    if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle1))
+    if(0 != is_uint16_t_ptr_null(config->channel_duty_cycle1))
     {
         detach_timer3_channel_1();
     }
@@ -588,7 +588,7 @@ static @inline void detach_timer3_group(const PWM_config_t *config)
      * checking for NULL cannot be omitted, because can cause reconfiguring
      * GPIO used by other modules
      */
-    if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle2))
+    if(0 != is_uint16_t_ptr_null(config->channel_duty_cycle2))
     {
         detach_timer3_channel_2();
     }
@@ -614,13 +614,13 @@ static @inline PWM_handle_t* acquire_handle(const PWM_config_t *config)
     {
         handle = &handles[0];
 
-        if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle1))
+        if(0 != is_uint16_t_ptr_null(config->channel_duty_cycle1))
         {
             timer2_channel1_duty_cycle = *(config->channel_duty_cycle1);
             handle->config.channel_duty_cycle1 = &timer2_channel1_duty_cycle;
         }
 
-        if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle2))
+        if(0 != is_uint16_t_ptr_null(config->channel_duty_cycle2))
         {
             timer2_channel2_duty_cycle = *(config->channel_duty_cycle2);
             handle->config.channel_duty_cycle2 = &timer2_channel2_duty_cycle;
@@ -630,13 +630,13 @@ static @inline PWM_handle_t* acquire_handle(const PWM_config_t *config)
     {
         handle = &handles[1];
 
-        if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle1))
+        if(0 != is_uint16_t_ptr_null(config->channel_duty_cycle1))
         {
             timer3_channel1_duty_cycle = *(config->channel_duty_cycle1);
             handle->config.channel_duty_cycle1 = &timer3_channel1_duty_cycle;
         }
 
-        if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle2))
+        if(0 != is_uint16_t_ptr_null(config->channel_duty_cycle2))
         {
             timer3_channel2_duty_cycle = *(config->channel_duty_cycle2);
             handle->config.channel_duty_cycle2 = &timer3_channel2_duty_cycle;
