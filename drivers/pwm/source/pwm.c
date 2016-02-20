@@ -241,7 +241,7 @@ static @inline int8_t is_config_valid(const PWM_config_t *config)
         return -1;
     }
 
-    /* not test if needed */
+    /* \todo check if it's needed */
     if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle1))
     {
         if(*(config->channel_duty_cycle1) > config->counter)
@@ -250,7 +250,7 @@ static @inline int8_t is_config_valid(const PWM_config_t *config)
         }
     }
 
-    /* not test if needed */
+    /* \todo check if it's needed */
     if(0 != is_channel_duty_cycle_null(config->channel_duty_cycle2))
     {
         if(*(config->channel_duty_cycle2) > config->counter)
