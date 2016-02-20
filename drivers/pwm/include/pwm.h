@@ -78,6 +78,33 @@ typedef struct
                                     \note it shall be set to NULL if not configured */
 } PWM_config_t;
 
+
+/*!
+ * \brief Gets PWM driver duty cycle for channel no.1
+ *
+ * \param duty_cycle destination variable of read duty cycle value
+ * \param handle handle to driver from which value shall be retrived
+ *
+ * \retval 0    success
+ * \retval -1   handle is NULL
+ * \retval -2   driver isn't configured
+ * \retval -3   channel hasn't been configured
+ */
+int8_t PWM_get_duty_cycle_channel_1(uint16_t *duty_cycle,struct PWM_handle_t *handle);
+
+/*!
+ * \brief Gets PWM driver duty cycle for channel no.2
+ *
+ * \param duty_cycle destination variable of read duty cycle value
+ * \param handle handle to driver from which value shall be retrived
+ *
+ * \retval 0    success
+ * \retval -1   handle is NULL
+ * \retval -2   driver isn't configured
+ * \retval -3   channel hasn't been configured
+ */
+int8_t PWM_get_duty_cycle_channel_2(uint16_t *duty_cycle,struct PWM_handle_t *handle);
+
 /*!
  * \brief Sets PWM driver counter
  *

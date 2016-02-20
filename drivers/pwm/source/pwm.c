@@ -670,6 +670,50 @@ static void pwm_internal_detach(PWM_handle_t *handle)
     handle->is_attached = 0U;
 }
 
+/* possible space for size optimization */
+int8_t PWM_get_duty_cycle_channel_1(uint16_t *duty_cycle,struct PWM_handle_t *handle)
+{
+    if(0 == is_handle_null(handle))
+    {
+        return -1;
+    }
+    else if(0 != is_configured(handle))
+    {
+        return -2;
+    }
+    else if(0 == is_uint16_t_ptr_null(handle->config.channel_duty_cycle1))
+    {
+        return -3;
+    }
+    else
+    {
+        *duty_cycle = *(handle->config.channel_duty_cycle1);
+        return 0;
+    }
+}
+
+/* possible space for size optimization */
+int8_t PWM_get_duty_cycle_channel_2(uint16_t *duty_cycle,struct PWM_handle_t *handle)
+{
+    if(0 == is_handle_null(handle))
+    {
+        return -1;
+    }
+    else if(0 != is_configured(handle))
+    {
+        return -2;
+    }
+    else if(0 == is_uint16_t_ptr_null(handle->config.channel_duty_cycle2))
+    {
+        return -3;
+    }
+    else
+    {
+        *duty_cycle = *(handle->config.channel_duty_cycle2);
+        return 0;
+    }
+}
+
 int8_t PWM_set_counter(struct PWM_handle_t *handle,uint16_t counter,PWM_prescaler_t prescaler)
 {
     if(0 == is_handle_null(handle))
