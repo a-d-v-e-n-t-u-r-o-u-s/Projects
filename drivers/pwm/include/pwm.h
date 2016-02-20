@@ -79,6 +79,33 @@ typedef struct
 } PWM_config_t;
 
 /*!
+ * \brief Sets PWM driver counter
+ *
+ * \param handle handle to driver to which counter will be set
+ * \param counter value to which counter will be counting
+ * \param prescaler value of prescaler for couter
+ *
+ * \retval 0    success
+ * \retval -1   handle is NULL
+ * \retval -2   driver isn't configured
+ */
+int8_t PWM_set_counter(struct PWM_handle_t *handle,uint16_t counter,PWM_prescaler_t prescaler);
+
+/*!
+ * \brief Gets PWM driver counter
+ *
+ * \param counter destination variable of read counter value
+ * \param handle handle to driver from which value shall be retrived
+ *
+ * \retval 0    success
+ * \retval -1   handle is NULL
+ * \retval -2   driver isn't configured
+ * \retval -3   destination counter is NULL
+ * \retval -4   destination prescaler is NULL
+ */
+int8_t PWM_get_counter(uint16_t *counter,PWM_prescaler_t *prescaler,struct PWM_handle_t *handle);
+
+/*!
  * \brief Attaches PWM driver by enabling PWM clocks, gpios and outputs
  *
  * \param handle handle to driver which shall be attached

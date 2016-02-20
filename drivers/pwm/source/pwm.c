@@ -690,6 +690,66 @@ static void pwm_internal_detach(PWM_handle_t *handle)
     handle->is_attached = 0U;
 }
 
+int8_t PWM_set_counter(struct PWM_handle_t *handle,uint16_t counter,PWM_prescaler_t prescaler)
+{
+    if(0 == is_handle_null(handle))
+    {
+        return -1;
+    }
+    else if(0 != is_configured(handle))
+    {
+        return -2;
+    }
+    else
+    {
+        handle->config.counter = counter;
+
+        if(0 == is_attached(handle))
+        {
+            if(PWM_TIMER2_GROUP == handle->config.group)
+            {
+                TIM2_DeInit();
+                TIM2_TimeBaseInit(get_timer2_prescaler(prescaler),
+                        TIM2_CounterMode_Down,counter);
+            }
+            else
+            {
+                TIM3_DeInit();
+                TIM3_TimeBaseInit(get_timer3_prescaler(prescaler),
+                        TIM3_CounterMode_Down,counter);
+            }
+        }
+
+        return 0;
+    }
+}
+
+int8_t PWM_get_counter(uint16_t *counter,PWM_prescaler_t *prescaler,struct PWM_handle_t *handle)
+{
+    if(0 == is_handle_null(handle))
+    {
+        return -1;
+    }
+    else if(0 != is_configured(handle))
+    {
+        return -2;
+    }
+    else if(0 == is_uint16_t_ptr_null(counter))
+    {
+        return -3;
+    }
+    else if(NULL == prescaler)
+    {
+        return -4;
+    }
+    else
+    {
+        *counter = handle->config.counter;
+        *prescaler = handle->config.prescaler;
+        return 0;
+    }
+}
+
 int8_t PWM_attach(struct PWM_handle_t *handle)
 {
     if(0 == is_handle_null(handle))
