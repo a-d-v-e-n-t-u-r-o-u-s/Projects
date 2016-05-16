@@ -1,0 +1,11 @@
+---
+:cmock:
+  :attributes:
+    - __funky
+    - __intrinsic
+  :enforce_strict_ordering:
+  :plugins: [ignore, callback]
+  :when_ptr: :smart
+  :mock_prefix: mock
+  :mock_path: source
+  :unity_helper: "../../framework/unityhelper/include/UnityHelper.h"

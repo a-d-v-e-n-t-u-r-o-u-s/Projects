@@ -21,6 +21,7 @@
  *
  */
 #include "pwm.h"
+#include "../source/pwm_internals.h"
 #include "common.h"
 #include "hardware.h"
 #include "stm8l15x_clk.h"
@@ -41,16 +42,6 @@ typedef struct
     GPIO_TypeDef *port;     /*!< GPIO port for PWM */
     GPIO_Pin_TypeDef pin;   /*!< GPIO pin for PWM */
 } PWM_hardware_config_t;
-
-/*!
- * \brief Handle structure containing all information about driver
- */
-typedef struct PWM_handle_t
-{
-    uint8_t is_configured;  /*!< indicates is driver configured */
-    uint8_t is_attached;    /*!< indicates is driver attached */
-    PWM_config_t config;    /*!< holds driver's configuration data */
-} PWM_handle_t;
 
 /*!
  * \brief Holds duty cycle for timer No.2 and channel No.1

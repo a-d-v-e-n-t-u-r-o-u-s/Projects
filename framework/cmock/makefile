@@ -1,9 +1,8 @@
-SOURCE += common.c
+SOURCE += cmock.c
 
 SOURCE_DIR := source
 INLCUDE_DIR := include
 
-LIBRARY := common
+LIBRARY := cmock
 
-include mockgen.mk
 include rules-$(COMPILER).mk

@@ -1,7 +1,4 @@
-SOURCE += common.c
-
-SOURCE_DIR := source
-INLCUDE_DIR := include
+MOCKED_DIR := drivers/common/include
 
 LIBRARY := common
 

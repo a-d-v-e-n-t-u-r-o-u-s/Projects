@@ -1,9 +1,8 @@
-SOURCE += common.c
+SOURCE += UnityHelper.c
 
 SOURCE_DIR := source
 INLCUDE_DIR := include
 
-LIBRARY := common
+LIBRARY := unityhelper
 
-include mockgen.mk
 include rules-$(COMPILER).mk

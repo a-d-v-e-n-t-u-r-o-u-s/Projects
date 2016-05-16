@@ -1,9 +1,8 @@
-SOURCE += common.c
+SOURCE += unity_fixture.c
 
 SOURCE_DIR := source
 INLCUDE_DIR := include
 
-LIBRARY := common
+LIBRARY := unityfixture
 
-include mockgen.mk
 include rules-$(COMPILER).mk
