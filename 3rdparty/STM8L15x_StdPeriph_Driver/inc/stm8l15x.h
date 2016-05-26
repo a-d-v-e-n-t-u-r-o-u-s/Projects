@@ -91,7 +91,7 @@
 #elif defined(__ICCSTM8__)
  #define _IAR_
 #else
- #error "Unsupported Compiler!"          /* Compiler defines not found */
+//#error "Unsupported Compiler!"          /* Compiler defines not found */
 #endif
 
 #if !defined  USE_STDPERIPH_DRIVER
@@ -221,14 +221,18 @@ defined (STM8L05X_LD_VL) || defined (STM8L05X_MD_VL) || defined (STM8AL31_L_MD)
 #define     __IO    volatile         /*!< defines 'read / write' permissions  */
 
 /*!< Signed integer types  */
-typedef   signed char     int8_t;
-typedef   signed short    int16_t;
-typedef   signed long     int32_t;
+/*
+ *typedef   signed char     int8_t;
+ *typedef   signed short    int16_t;
+ *typedef   signed long     int32_t;
+ */
 
 /*!< Unsigned integer types  */
-typedef unsigned char     uint8_t;
-typedef unsigned short    uint16_t;
-typedef unsigned long     uint32_t;
+/*
+ *typedef unsigned char     uint8_t;
+ *typedef unsigned short    uint16_t;
+ *typedef unsigned long     uint32_t;
+ */
 
 /*!< STM8Lx Standard Peripheral Library old types (maintained for legacy purpose) */
 
@@ -2922,7 +2926,7 @@ AES_TypeDef;
  #define wfi() {_asm("wfi\n");} /*!<Wait For Interrupt */
  #define wfe() {_asm("wfe\n");} /*!<Wait for event */
  #define halt() {_asm("halt\n");} /*!<Halt */
-#else /*_IAR*/
+#elif defined(_IAR_)
  #include <intrinsics.h>
  #define enableInterrupts()    __enable_interrupt()   /* enable interrupts */
  #define disableInterrupts()   __disable_interrupt()  /* disable interrupts */
@@ -2933,6 +2937,7 @@ AES_TypeDef;
  #define wfi()                 __wait_for_interrupt() /* Wait For Interrupt */
  #define wfe()                 __wait_for_event();    /* Wait for event */
  #define halt()                __halt()               /* Halt */
+#else
 #endif /* _RAISONANCE_ */
 
 /*============================== Interrupt vector Handling ========================*/
