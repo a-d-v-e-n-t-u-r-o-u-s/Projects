@@ -1,6 +1,9 @@
 /bin
 /build
+/mocks
+/.test*
 /documentation
 cscope.out
+tags
 *.swp
 *.swo
