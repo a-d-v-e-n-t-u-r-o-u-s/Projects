@@ -90,6 +90,8 @@
  #define _RAISONANCE_
 #elif defined(__ICCSTM8__)
  #define _IAR_
+#elif defined(SDCC)
+ #define _SDCC_
 #else
  #error "Unsupported Compiler!"          /* Compiler defines not found */
 #endif
@@ -149,6 +151,12 @@
    /*!< Used with memory Models for code higher than 64K */
   #define MEMCPY fmemcpy
  #endif /* STM8L15X_MD or STM8L15X_MDP or STM8L05X_MD_VL or STM8AL31_L_MD*/ 
+#elif defined(_SDCC_)
+ #define FAR __far
+ #define NEAR
+ #define TINY __tiny
+ #define EEPROM __eeprom
+ #define CONST const
 #else /*_IAR_*/
  #define FAR  __far
  #define NEAR __near
@@ -220,6 +228,9 @@ defined (STM8L05X_LD_VL) || defined (STM8L05X_MD_VL) || defined (STM8AL31_L_MD)
 #define     __O     volatile         /*!< defines 'write only' permissions    */
 #define     __IO    volatile         /*!< defines 'read / write' permissions  */
 
+#if defined(_SDCC_)
+#include <stdint.h>
+#else
 /*!< Signed integer types  */
 typedef   signed char     int8_t;
 typedef   signed short    int16_t;
@@ -229,6 +240,7 @@ typedef   signed long     int32_t;
 typedef unsigned char     uint8_t;
 typedef unsigned short    uint16_t;
 typedef unsigned long     uint32_t;
+#endif
 
 /*!< STM8Lx Standard Peripheral Library old types (maintained for legacy purpose) */
 
@@ -2922,6 +2934,16 @@ AES_TypeDef;
  #define wfi() {_asm("wfi\n");} /*!<Wait For Interrupt */
  #define wfe() {_asm("wfe\n");} /*!<Wait for event */
  #define halt() {_asm("halt\n");} /*!<Halt */
+#elif defined(_SDCC_)
+ #define enableInterrupts() {__asm__("rim\n");} /*!<enable interrupts */
+ #define disableInterrupts() {__asm__("sim\n");} /*!<disable interrupts */
+ #define rim() {__asm__("rim\n");} /*!<enable interrupts */
+ #define sim() {__asm__("sim\n");} /*!<disable interrupts */
+ #define nop() {__asm__("nop\n");} /*!<No Operation */
+ #define trap() {__asm__("trap\n");} /*!<Trap (soft IT) */
+ #define wfi() {__asm__("wfi\n");} /*!<Wait For Interrupt */
+ #define wfe() {__asm__("wfe\n");} /*!<Wait for event */
+ #define halt() {__asm__("halt\n");} /*!<Halt */
 #else /*_IAR*/
  #include <intrinsics.h>
  #define enableInterrupts()    __enable_interrupt()   /* enable interrupts */
@@ -2946,6 +2968,11 @@ AES_TypeDef;
  #define INTERRUPT_HANDLER(a,b) void a(void) interrupt b
  #define INTERRUPT_HANDLER_TRAP(a) void a(void) trap
 #endif /* _RAISONANCE_ */
+
+#ifdef _SDCC_
+ #define INTERRUPT_HANDLER(a,b) void a(void) __interrupt b
+ #define INTERRUPT_HANDLER_TRAP(a) void a(void) __trap
+#endif /* _SDCC_ */
 
 #ifdef _IAR_
  #define STRINGVECTOR(x) #x
