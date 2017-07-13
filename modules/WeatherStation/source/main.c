@@ -11,7 +11,16 @@
 
 static @inline void drivers_init(void)
 {
-    DISP_configure(16,2);
+    DISP_config_t config =
+    {
+        .function = (uint8_t) (DISP_MODE_4_BIT|DISP_FONTS5x7|DISP_TWO_LINE),
+        .control = (uint8_t)( DISPLAY_ON| CURSOR_ON | CURSOR_BLINK),
+        .mode = (uint8_t)( EM_SHIFT_DISPLAY | EM_INCREMENT),
+        .cols = 16,
+        .rows = 2
+    };
+
+    DISP_configure(&config);
 }
 
 static @inline void modules_init(void)
