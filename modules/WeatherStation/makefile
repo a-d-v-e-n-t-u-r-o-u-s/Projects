@@ -10,7 +10,9 @@ INCLUDE_DIR := include
 LINKER_SCRIPT := source/$(PROJECT).lkf
 LIBRARY := WeatherStation
 
-TARGET_LINK_LIBRARIES := StdPeriphDriver
+TARGET_LINK_LIBRARIES := System
+TARGET_LINK_LIBRARIES += StdPeriphDriver
+TARGET_LINK_LIBRARIES += display
 
 ifeq ($(COMPILER),cosmic)
 EXTENSION_EXE := sm8
