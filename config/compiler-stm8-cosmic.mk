@@ -5,6 +5,9 @@ SREC = chex
 LOADER = STVP_CmdLine
 OBJDUMP = cobj
 
+LIBPREFIX := lib
+LIBEXT := .lib
+
 CDEFS = STM8L15X_MD
 
 CFLAGS = +mods0

@@ -29,8 +29,8 @@ $(OBJECTS): $(OBJECTS_DIR)
 $(LIBRARY): $(OBJECTS)
 	-$(RM_DIR) $(subst /,$(DELIM),$(OBJECTS_DIR))$(DELIM)$(subst /,$(DELIM),$@)
 	@echo Creating library $(@F) ...
-	cd $(OBJECTS_DIR) && $(AR) $(ARFLAGS) -rc $@.lib $(^F)
-	cp $(OBJECTS_DIR)/$@.lib $(LIB_DIR)
+	cd $(OBJECTS_DIR) && $(AR) $(ARFLAGS) -rc $@ $(^F)
+	cp $(OBJECTS_DIR)/$@ $(LIB_DIR)
 
 $(EXECUTABLE): $(OBJECTS)
 	-$(RM_DIR) $(subst /,$(DELIM),$(OBJECTS_DIR))$(DELIM)$(subst /,$(DELIM),$@)

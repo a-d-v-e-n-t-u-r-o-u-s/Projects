@@ -3,6 +3,8 @@ LD = sdcc
 AR = sdar
 LOADER = stm8flash
 
+LIBPREFIX := lib
+LIBEXT := .lib
 
 CFLAGS = -c
 CFLAGS += -mstm8

@@ -9,5 +9,3 @@ DELIM := \
 DELIM := $(strip $(DELIM))
 CMDQUIET := >nul 2>nul & verify>nul
 
-LIBPREFIX := lib
-LIBEXT := .lib
