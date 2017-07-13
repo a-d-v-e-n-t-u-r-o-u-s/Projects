@@ -312,7 +312,11 @@ void DISP_configure(const DISP_config_t *config)
     uint8_t i = 0;
 
     /*! TODO add validation of config */
-    driver.config = *config;
+    driver.config.function = config->function;
+    driver.config.control = config->control;
+    driver.config.mode = config->mode;
+    driver.config.cols = config->cols;
+    driver.config.rows = config->rows;
 
     GPIO_Init(DISP_RS_PORT,DISP_RS_PIN,GPIO_Mode_Out_PP_High_Fast);
     GPIO_Init(DISP_RW_PORT,DISP_RW_PIN,GPIO_Mode_Out_PP_High_Fast);
