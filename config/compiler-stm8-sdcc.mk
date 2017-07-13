@@ -7,6 +7,7 @@ LIBPREFIX := lib
 LIBEXT := .lib
 
 CFLAGS = -c
+CFLAGS += -DSDCC
 CFLAGS += -mstm8
 CFLAGS += --std-c99
 CFLAGS += $(addprefix -I,$(INCLUDE_DIR))

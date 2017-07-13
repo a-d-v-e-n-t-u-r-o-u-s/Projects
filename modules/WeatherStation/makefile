@@ -12,7 +12,11 @@ LIBRARY := WeatherStation
 
 TARGET_LINK_LIBRARIES := StdPeriphDriver
 
+ifeq ($(COMPILER),cosmic)
 EXTENSION_EXE := sm8
+else
+EXTENSION_EXE := ihx
+endif
 EXECUTABLE := $(OUTPUT).$(EXTENSION_EXE)
 
 include rules-$(COMPILER).mk
