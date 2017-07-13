@@ -109,7 +109,7 @@ static PWM_handle_t handles[MAX_HANDLES];
  * \retval 0 handle is NULL
  * \retval -1 handle isn't NULL
  */
-static @inline int8_t is_handle_null(PWM_handle_t *handle)
+static INLINE_SPECIFIER int8_t is_handle_null(PWM_handle_t *handle)
 {
     if(NULL != handle)
     {
@@ -129,7 +129,7 @@ static @inline int8_t is_handle_null(PWM_handle_t *handle)
  * \retval 0 handle is NULL
  * \retval -1 handle isn't NULL
  */
-static @inline int8_t is_ptr_to_handle_ptr_null(PWM_handle_t **handle)
+static INLINE_SPECIFIER int8_t is_ptr_to_handle_ptr_null(PWM_handle_t **handle)
 {
     if(NULL != handle)
     {
@@ -149,7 +149,7 @@ static @inline int8_t is_ptr_to_handle_ptr_null(PWM_handle_t **handle)
  * \retval 0 driver with handle is configured
  * \retval -1 driver with handle isn't configured
  */
-static @inline int8_t is_configured(PWM_handle_t *handle)
+static INLINE_SPECIFIER int8_t is_configured(PWM_handle_t *handle)
 {
     if(0 == handle->is_configured)
     {
@@ -169,7 +169,7 @@ static @inline int8_t is_configured(PWM_handle_t *handle)
  * \retval 0 driver with handle is attached
  * \retval -1 driver with handle isn't attached
  */
-static @inline int8_t is_attached(PWM_handle_t *handle)
+static INLINE_SPECIFIER int8_t is_attached(PWM_handle_t *handle)
 {
     if(0 == handle->is_attached)
     {
@@ -189,7 +189,7 @@ static @inline int8_t is_attached(PWM_handle_t *handle)
  * \retval 0 configuration structure is NULL
  * \retval -1 configuration structure isn't NULL
  */
-static @inline int8_t is_config_null(const PWM_config_t *config)
+static INLINE_SPECIFIER int8_t is_config_null(const PWM_config_t *config)
 {
     if(NULL != config)
     {
@@ -209,7 +209,7 @@ static @inline int8_t is_config_null(const PWM_config_t *config)
  * \retval 0 pointer is NULL
  * \retval -1 pointer isn't NULL
  */
-static @inline int8_t is_uint16_t_ptr_null(const uint16_t *ptr)
+static INLINE_SPECIFIER int8_t is_uint16_t_ptr_null(const uint16_t *ptr)
 {
     if(NULL != ptr)
     {
@@ -231,7 +231,7 @@ static @inline int8_t is_uint16_t_ptr_null(const uint16_t *ptr)
  * \retval -2 unsupported timer group has been passed
  * \retval -3 unsupported prescaler value has been passed
  */
-static @inline int8_t is_config_valid(const PWM_config_t *config)
+static INLINE_SPECIFIER int8_t is_config_valid(const PWM_config_t *config)
 {
     if(0 == is_uint16_t_ptr_null(config->channel_duty_cycle1) &&
         0 == is_uint16_t_ptr_null(config->channel_duty_cycle2))
@@ -275,7 +275,7 @@ static @inline int8_t is_config_valid(const PWM_config_t *config)
  *
  * \return output prescaler value from enum TIM2_Prescaler_TypeDef
  */
-static @inline TIM2_Prescaler_TypeDef get_timer2_prescaler(PWM_prescaler_t prescaler)
+static INLINE_SPECIFIER TIM2_Prescaler_TypeDef get_timer2_prescaler(PWM_prescaler_t prescaler)
 {
     switch(prescaler)
     {
@@ -307,7 +307,7 @@ static @inline TIM2_Prescaler_TypeDef get_timer2_prescaler(PWM_prescaler_t presc
  *
  * \return output prescaler value from enum TIM3_Prescaler_TypeDef
  */
-static @inline TIM3_Prescaler_TypeDef get_timer3_prescaler(PWM_prescaler_t prescaler)
+static INLINE_SPECIFIER TIM3_Prescaler_TypeDef get_timer3_prescaler(PWM_prescaler_t prescaler)
 {
     switch(prescaler)
     {
@@ -341,7 +341,7 @@ static @inline TIM3_Prescaler_TypeDef get_timer3_prescaler(PWM_prescaler_t presc
  * \todo check why changing parameter from const PWM_config_t *config
  * to uint16_t duty_cycle causes growing of .text section
  */
-static @inline void attach_timer2_channel_1(uint16_t duty_cycle)
+static INLINE_SPECIFIER void attach_timer2_channel_1(uint16_t duty_cycle)
 {
     GPIO_Init(PWM_TIMER2_CHANNEL1_PORT,PWM_TIMER2_CHANNEL1_PIN,GPIO_Mode_Out_PP_High_Fast);
 
@@ -357,7 +357,7 @@ static @inline void attach_timer2_channel_1(uint16_t duty_cycle)
  * \brief Sets timer No.2 and channel No.1 specific values
  * in order to detach
  */
-static @inline void detach_timer2_channel_1(void)
+static INLINE_SPECIFIER void detach_timer2_channel_1(void)
 {
     TIM2_OC1PreloadConfig(DISABLE);
     GPIO_Init(PWM_TIMER2_CHANNEL1_PORT,PWM_TIMER2_CHANNEL1_PIN,GPIO_Mode_In_FL_No_IT);
@@ -372,7 +372,7 @@ static @inline void detach_timer2_channel_1(void)
  * \todo check why changing parameter from const PWM_config_t *config
  * to uint16_t duty_cycle causes growing of .text section
  */
-static @inline void attach_timer2_channel_2(uint16_t duty_cycle)
+static INLINE_SPECIFIER void attach_timer2_channel_2(uint16_t duty_cycle)
 {
     GPIO_Init(PWM_TIMER2_CHANNEL2_PORT,PWM_TIMER2_CHANNEL2_PIN,GPIO_Mode_Out_PP_High_Fast);
 
@@ -388,7 +388,7 @@ static @inline void attach_timer2_channel_2(uint16_t duty_cycle)
  * \brief Sets timer No.2 and channel No.2 specific values
  * in order to detach
  */
-static @inline void detach_timer2_channel_2(void)
+static INLINE_SPECIFIER void detach_timer2_channel_2(void)
 {
     TIM2_OC2PreloadConfig(DISABLE);
     GPIO_Init(PWM_TIMER2_CHANNEL2_PORT,PWM_TIMER2_CHANNEL2_PIN,GPIO_Mode_In_FL_No_IT);
@@ -399,14 +399,13 @@ static @inline void detach_timer2_channel_2(void)
  *
  * \param config configuration structure with parameters
  */
-static @inline void attach_timer2_group(const PWM_config_t *config)
+static INLINE_SPECIFIER void attach_timer2_group(const PWM_config_t *config)
 {
     CLK_PeripheralClockConfig(CLK_Peripheral_TIM2, ENABLE);
     TIM2_DeInit();
 
     TIM2_TimeBaseInit(get_timer2_prescaler(config->prescaler),
             TIM2_CounterMode_Down,config->counter);
-
     if(0 != is_uint16_t_ptr_null(config->channel_duty_cycle1))
     {
         attach_timer2_channel_1(*(config->channel_duty_cycle1));
@@ -427,7 +426,7 @@ static @inline void attach_timer2_group(const PWM_config_t *config)
  *
  * \param config configuration structure with parameters
  */
-static @inline void detach_timer2_group(const PWM_config_t *config)
+static INLINE_SPECIFIER void detach_timer2_group(const PWM_config_t *config)
 {
     TIM2_Cmd(DISABLE);
     TIM2_CtrlPWMOutputs(DISABLE);
@@ -464,7 +463,7 @@ static @inline void detach_timer2_group(const PWM_config_t *config)
  * \todo check why changing parameter from const PWM_config_t *config
  * to uint16_t duty_cycle causes growing of .text section
  */
-static @inline void attach_timer3_channel_1(uint16_t duty_cycle)
+static INLINE_SPECIFIER void attach_timer3_channel_1(uint16_t duty_cycle)
 {
     GPIO_Init(PWM_TIMER3_CHANNEL1_PORT,PWM_TIMER3_CHANNEL1_PIN,GPIO_Mode_Out_PP_High_Fast);
 
@@ -480,7 +479,7 @@ static @inline void attach_timer3_channel_1(uint16_t duty_cycle)
  * \brief Sets timer No.3 and channel No.1 specific values
  * in order to detach
  */
-static @inline void detach_timer3_channel_1(void)
+static INLINE_SPECIFIER void detach_timer3_channel_1(void)
 {
     TIM3_OC1PreloadConfig(DISABLE);
     GPIO_Init(PWM_TIMER3_CHANNEL1_PORT,PWM_TIMER3_CHANNEL1_PIN,GPIO_Mode_In_FL_No_IT);
@@ -495,7 +494,7 @@ static @inline void detach_timer3_channel_1(void)
  * \todo check why changing parameter from const PWM_config_t *config
  * to uint16_t duty_cycle causes growing of .text section
  */
-static @inline void attach_timer3_channel_2(uint16_t duty_cycle)
+static INLINE_SPECIFIER void attach_timer3_channel_2(uint16_t duty_cycle)
 {
     GPIO_Init(PWM_TIMER3_CHANNEL2_PORT,PWM_TIMER3_CHANNEL2_PIN,GPIO_Mode_Out_PP_High_Fast);
 
@@ -511,7 +510,7 @@ static @inline void attach_timer3_channel_2(uint16_t duty_cycle)
  * \brief Sets timer No.3 and channel No.2 specific values
  * in order to detach
  */
-static @inline void detach_timer3_channel_2(void)
+static INLINE_SPECIFIER void detach_timer3_channel_2(void)
 {
     TIM3_OC2PreloadConfig(DISABLE);
     GPIO_Init(PWM_TIMER3_CHANNEL2_PORT,PWM_TIMER3_CHANNEL2_PIN,GPIO_Mode_In_FL_No_IT);
@@ -522,7 +521,7 @@ static @inline void detach_timer3_channel_2(void)
  *
  * \param config configuration structure with parameters
  */
-static @inline void attach_timer3_group(const PWM_config_t *config)
+static INLINE_SPECIFIER void attach_timer3_group(const PWM_config_t *config)
 {
     CLK_PeripheralClockConfig(CLK_Peripheral_TIM3, ENABLE);
     TIM3_DeInit();
@@ -549,7 +548,7 @@ static @inline void attach_timer3_group(const PWM_config_t *config)
  *
  * \param config configuration structure with parameters
  */
-static @inline void detach_timer3_group(const PWM_config_t *config)
+static INLINE_SPECIFIER void detach_timer3_group(const PWM_config_t *config)
 {
     TIM3_Cmd(DISABLE);
     TIM3_CtrlPWMOutputs(DISABLE);
@@ -586,7 +585,7 @@ static @inline void detach_timer3_group(const PWM_config_t *config)
  *
  * \return pointer to driver handle
  */
-static @inline PWM_handle_t* acquire_handle(const PWM_config_t *config)
+static INLINE_SPECIFIER PWM_handle_t* acquire_handle(const PWM_config_t *config)
 {
     PWM_handle_t *handle = NULL;
 
