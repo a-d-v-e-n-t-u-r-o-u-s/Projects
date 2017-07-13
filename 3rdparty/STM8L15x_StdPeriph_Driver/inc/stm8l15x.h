@@ -2957,6 +2957,24 @@ AES_TypeDef;
  #define halt()                __halt()               /* Halt */
 #endif /* _RAISONANCE_ */
 
+
+/*============================== Inline functions ========================*/
+
+#ifdef _COSMIC_
+ #define INLINE_SPECIFIER @inline
+#endif /* _COSMIC_ */
+
+#ifdef _RAISONANCE_
+ #define INLINE_SPECIFIER
+#endif /* _RAISONANCE_ */
+
+#ifdef _SDCC_
+ #define INLINE_SPECIFIER inline
+#endif /* _SDCC_ */
+
+#ifdef _IAR_
+ #define INLINE_SPECIFIER
+#endif /* _IAR_ */
 /*============================== Interrupt vector Handling ========================*/
 
 #ifdef _COSMIC_
