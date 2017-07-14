@@ -8,7 +8,7 @@
 static volatile uint32_t system_tick;
 static void (*timer_callback)(void);
 
-INTERRUPT_HANDLER(SYSTEM_timer_tick, 1)
+INTERRUPT_HANDLER(SYSTEM_timer_tick, 25)
 {
     system_tick++;
 

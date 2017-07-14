@@ -9,6 +9,9 @@
 #define LED_BLUE_PORT               GPIOC
 #define LED_BLUE_PIN                GPIO_Pin_7
 
+INTERRUPT_HANDLER(SYSTEM_clock_switch, 17);
+INTERRUPT_HANDLER(SYSTEM_timer_tick, 25);
+
 static @inline void drivers_init(void)
 {
     DISP_config_t config =

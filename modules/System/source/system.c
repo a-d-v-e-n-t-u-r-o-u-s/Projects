@@ -17,7 +17,7 @@ typedef struct
 static task_data_t tasks[SYSTEM_MAX_TASKS];
 static uint8_t task_counter;
 
-INTERRUPT_HANDLER(SYSTEM_clock_switch, 0)
+INTERRUPT_HANDLER(SYSTEM_clock_switch, 17)
 {
     CLK_ClearITPendingBit(CLK_IT_SWIF);
 }
