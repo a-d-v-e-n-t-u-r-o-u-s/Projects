@@ -6,11 +6,14 @@ LOADER = stm8flash
 LIBPREFIX := lib
 LIBEXT := .lib
 
+CDEFS = STM8L15X_MD
+
 CFLAGS = -c
 CFLAGS += -DSDCC
 CFLAGS += -mstm8
 CFLAGS += --std-c99
 CFLAGS += $(addprefix -I,$(INCLUDE_DIR))
+CFLAGS += $(addprefix -D,$(CDEFS))
 CFLAGS += -o $(OBJECTS_DIR)/$(@F)
 
 LDFLAGS = -mstm8
