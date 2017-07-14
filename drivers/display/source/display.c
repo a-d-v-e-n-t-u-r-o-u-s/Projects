@@ -150,22 +150,22 @@ static void disp_send_data(uint8_t data)
     disp_write(data);
 }
 
-static @inline void disp_display_control_cmd(uint8_t cmd)
+static INLINE_SPECIFIER void disp_display_control_cmd(uint8_t cmd)
 {
     disp_send_cmd((uint8_t)(DISPLAY_ONOFF|cmd));
 }
 
-static @inline void disp_display_function_cmd(uint8_t cmd)
+static INLINE_SPECIFIER void disp_display_function_cmd(uint8_t cmd)
 {
     disp_send_cmd((uint8_t)(FUNCTION_SET|cmd));
 }
 
-static @inline void disp_display_mode_cmd(uint8_t cmd)
+static INLINE_SPECIFIER void disp_display_mode_cmd(uint8_t cmd)
 {
     disp_send_cmd((uint8_t)(ENTRY_MODE|cmd));
 }
 
-static @inline void disp_cursor_shift_cmd(uint8_t cmd)
+static INLINE_SPECIFIER void disp_cursor_shift_cmd(uint8_t cmd)
 {
     disp_send_cmd((uint8_t)(CURSOR_SHIFT|DISPLAY_MOVE|cmd));
 }
