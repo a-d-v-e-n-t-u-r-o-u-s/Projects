@@ -18,7 +18,7 @@ static INLINE_SPECIFIER void drivers_init(void)
     {
         .function = (uint8_t) (DISP_MODE_4_BIT|DISP_FONTS5x7|DISP_TWO_LINE),
         .control = (uint8_t)( DISPLAY_ON| CURSOR_ON | CURSOR_BLINK),
-        .mode = (uint8_t)( EM_SHIFT_DISPLAY | EM_INCREMENT),
+        .mode = (uint8_t)( EM_SHIFT_CURSOR | EM_INCREMENT),
         .cols = 16,
         .rows = 2
     };
