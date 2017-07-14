@@ -5,5 +5,5 @@ PROJECT := WeatherStation
 TARGET := stm8
 
 # compiler types
-#COMPILER := sdcc
-COMPILER := cosmic
+COMPILER := sdcc
+#COMPILER := cosmic
