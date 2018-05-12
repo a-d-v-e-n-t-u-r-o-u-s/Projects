@@ -23,7 +23,76 @@
 #include "debug.h"
 #include "common.h"
 #include "hardware.h"
+#include "fifo.h"
 
-void DEBUG_configure(void)
+static uint8_t fifo_buffer[128];
+static FIFO_t fifo;
+
+INTERRUPT_HANDLER(DEBUG_usart2_tx, 19)
 {
+    uint8_t data;
+
+    USART_ClearFlag(USART2, USART_IT_TC);
+
+    if(FIFO_dequeue(&fifo, &data) == 0)
+    {
+        USART_SendData8(USART2, data);
+    }
+    else
+    {
+        USART_Cmd(USART2, DISABLE);
+    }
+}
+
+int8_t DEBUG_write(const uint8_t *data, uint8_t length)
+{
+    uint8_t len = FIFO_get_free(&fifo);
+    uint8_t tmp = 0;
+
+    if(len < length)
+    {
+        return -1;
+    }
+
+    for(uint8_t i = 0; i < length; i++)
+    {
+        if(FIFO_enqueue(&fifo, &data[i]) != 0)
+        {
+            return -1;
+        }
+    }
+
+    disableInterrupts();
+    tmp = (USART2->CR1 & USART_CR1_USARTD);
+    enableInterrupts();
+
+    if(tmp != 0)
+    {
+        USART_Cmd(USART2, ENABLE);
+    }
+
+    return 0;
+}
+
+void DEBUG_configure(const DEBUG_config_t *config)
+{
+    const FIFO_config_t fifo_config =
+    {
+        .elements_no = 128,
+        .elements_size = 1,
+        .buffer = &fifo_buffer[0],
+    };
+
+    FIFO_configure(&fifo, &fifo_config);
+
+    disableInterrupts();
+    USART_DeInit(config->unit);
+    CLK_PeripheralClockConfig(config->clk, ENABLE);
+
+    USART_Init(config->unit, config->baudrate, config->word_length,
+            config->stop_bits, config->parity, config->mode);
+    USART_ClearFlag(USART2, USART_IT_TC);
+    USART_ITConfig(config->unit, USART_IT_TC, ENABLE);
+    enableInterrupts();
+    USART_Cmd(USART2, DISABLE);
 }

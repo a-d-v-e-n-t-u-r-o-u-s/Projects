@@ -33,7 +33,23 @@
 
 /*@{*/
 
-void DEBUG_configure(void);
+#include "stm8l15x_usart.h"
+
+typedef struct
+{
+    USART_TypeDef *unit;
+    CLK_Peripheral_TypeDef clk;
+    GPIO_TypeDef* pullup_port;
+    uint8_t pullup_pin;
+    uint32_t baudrate;
+    USART_WordLength_TypeDef word_length;
+    USART_StopBits_TypeDef stop_bits;
+    USART_Parity_TypeDef parity;
+    USART_Mode_TypeDef mode;
+} DEBUG_config_t;
+
+int8_t DEBUG_write(const uint8_t *data, uint8_t length);
+void DEBUG_configure(const DEBUG_config_t *config);
 
 /*@}*/
 #endif

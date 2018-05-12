@@ -23,7 +23,7 @@ SOURCE += stm8l15x_tim2.c
 SOURCE += stm8l15x_tim3.c
 SOURCE += stm8l15x_tim4.c
 #SOURCE += stm8l15x_tim5.c
-#SOURCE += stm8l15x_usart.c
+SOURCE += stm8l15x_usart.c
 #SOURCE += stm8l15x_wfe.c
 #SOURCE += stm8l15x_wwdg.c
 
