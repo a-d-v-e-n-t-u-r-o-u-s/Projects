@@ -46,6 +46,13 @@ INTERRUPT_HANDLER(DEBUG_usart2_tx, 19)
     }
 }
 
+int putchar(int c)
+{
+    uint8_t tmp = c;
+    DEBUG_write(&tmp, 1);
+    return c;
+}
+
 int8_t DEBUG_write(const uint8_t *data, uint8_t length)
 {
     FIFO_elements_no_t len = FIFO_get_free(&fifo);

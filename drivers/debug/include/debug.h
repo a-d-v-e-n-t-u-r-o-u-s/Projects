@@ -48,6 +48,7 @@ typedef struct
     USART_Mode_TypeDef mode;
 } DEBUG_config_t;
 
+int putchar(int c);
 int8_t DEBUG_write(const uint8_t *data, uint8_t length);
 void DEBUG_configure(const DEBUG_config_t *config);
 
