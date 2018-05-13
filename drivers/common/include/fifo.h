@@ -35,24 +35,28 @@
 
 #include <stdint.h>
 
+#define FIFO_ELEMENTS_MAX UINT16_MAX
+
+typedef uint16_t FIFO_elements_no_t;
+
 typedef struct
 {
-    uint8_t elements_no;
+    FIFO_elements_no_t elements_no;
     uint8_t elements_size;
     uint8_t *buffer;
 } FIFO_config_t;
 
 typedef struct
 {
-    uint8_t head;
-    uint8_t tail;
+    FIFO_elements_no_t head;
+    FIFO_elements_no_t tail;
     FIFO_config_t config;
 } FIFO_t;
 
 int8_t FIFO_enqueue(FIFO_t *fifo, const void *data);
 int8_t FIFO_dequeue(FIFO_t *fifo, const void *data);
-uint8_t FIFO_get_free(FIFO_t *fifo);
-uint8_t FIFO_get_occupied(FIFO_t *fifo);
+FIFO_elements_no_t FIFO_get_free(FIFO_t *fifo);
+FIFO_elements_no_t FIFO_get_occupied(FIFO_t *fifo);
 void FIFO_configure(FIFO_t *fifo, const FIFO_config_t *config);
 
 /*@}*/

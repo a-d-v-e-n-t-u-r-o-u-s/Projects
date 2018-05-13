@@ -25,7 +25,9 @@
 #include "hardware.h"
 #include "fifo.h"
 
-static uint8_t fifo_buffer[128];
+#define FIFO_SIZE           1024
+
+static uint8_t fifo_buffer[FIFO_SIZE];
 static FIFO_t fifo;
 
 INTERRUPT_HANDLER(DEBUG_usart2_tx, 19)
@@ -46,7 +48,7 @@ INTERRUPT_HANDLER(DEBUG_usart2_tx, 19)
 
 int8_t DEBUG_write(const uint8_t *data, uint8_t length)
 {
-    uint8_t len = FIFO_get_free(&fifo);
+    FIFO_elements_no_t len = FIFO_get_free(&fifo);
     uint8_t tmp = 0;
 
     if(len < length)
@@ -78,7 +80,7 @@ void DEBUG_configure(const DEBUG_config_t *config)
 {
     const FIFO_config_t fifo_config =
     {
-        .elements_no = 128,
+        .elements_no = sizeof(fifo_buffer)/sizeof(fifo_buffer[0]),
         .elements_size = 1,
         .buffer = &fifo_buffer[0],
     };

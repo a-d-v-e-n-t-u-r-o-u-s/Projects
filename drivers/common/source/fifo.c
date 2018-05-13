@@ -39,7 +39,7 @@ static INLINE_SPECIFIER int8_t is_fifo_full(FIFO_t *fifo)
 
 int8_t FIFO_enqueue(FIFO_t *fifo, const void *data)
 {
-    uint8_t offset = 0U;
+    FIFO_elements_no_t offset = 0U;
 
     if(is_fifo_full(fifo) == 0)
     {
@@ -66,7 +66,7 @@ static INLINE_SPECIFIER int8_t is_fifo_empty(FIFO_t *fifo)
 
 int8_t FIFO_dequeue(FIFO_t *fifo, void *data)
 {
-    uint8_t offset = 0U;
+    FIFO_elements_no_t offset = 0U;
 
     if(is_fifo_empty(fifo) == 0)
     {
@@ -79,10 +79,10 @@ int8_t FIFO_dequeue(FIFO_t *fifo, void *data)
     return 0;
 }
 
-uint8_t FIFO_get_occupied(FIFO_t *fifo)
+FIFO_elements_no_t FIFO_get_occupied(FIFO_t *fifo)
 {
-    uint8_t head = fifo->head;
-    uint8_t tail = fifo->tail;
+    FIFO_elements_no_t head = fifo->head;
+    FIFO_elements_no_t tail = fifo->tail;
 
     if(head >= tail)
     {
@@ -90,11 +90,11 @@ uint8_t FIFO_get_occupied(FIFO_t *fifo)
     }
     else
     {
-        return ((UINT8_MAX - tail) + head + 1);
+        return ((FIFO_ELEMENTS_MAX - tail) + head + 1);
     }
 }
 
-uint8_t FIFO_get_free(FIFO_t *fifo)
+FIFO_elements_no_t FIFO_get_free(FIFO_t *fifo)
 {
     return fifo->config.elements_no - FIFO_get_occupied(fifo);
 }
