@@ -60,7 +60,7 @@ TOOLS_DIR_FORMATED := $(subst /,$(DELIM),$(TOOLS_DIR))
 include config/compiler-$(TARGET)-$(COMPILER).mk
 include config/exports.mk
 
-MAKEFLAGS:= -I$(CURDIR) -I$(CURDIR)/config -I$(CURDIR)/projects/$(PROJECT) -R -s
+MAKEFLAGS:= -I$(CURDIR) -I$(CURDIR)/config -I$(CURDIR)/projects/$(PROJECT) -R
 
 
 .PHONY: all flash clean $(3RDPARTY_DIR) $(DRIVERS_DIR) $(MODULES_DIR)
