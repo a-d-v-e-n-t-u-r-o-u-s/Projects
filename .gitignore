@@ -1,7 +1,9 @@
 /bin
+/docs
 /build*
 /.test*
 /documentation
 cscope.out
+config-user.mk
 *.swp
 *.swo
