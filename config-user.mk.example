@@ -1,5 +1,6 @@
 # project choosen
-PROJECT := WeatherStation
+#PROJECT := WeatherStation
+PROJECT := RemoteControl
 
 # target types
 TARGET := stm8
