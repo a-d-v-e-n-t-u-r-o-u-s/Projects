@@ -40,4 +40,4 @@ $(EXECUTABLE): $(OBJECTS)
 
 %.rel: %.c
 	@echo $(<F)
-	$(CC) $(CFLAGS) $(subst /,$(DELIM),$(CURDIR))$(DELIM)$(subst /,$(DELIM),$<)
+	$(Q2)$(CC) $(CFLAGS) $(subst /,$(DELIM),$(CURDIR))$(DELIM)$(subst /,$(DELIM),$<)
