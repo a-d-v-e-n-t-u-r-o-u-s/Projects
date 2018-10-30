@@ -66,7 +66,15 @@ uint8_t SYSTEM_timer_init(void)
 {
     CLK_PeripheralClockConfig(CLK_Peripheral_TIM4,ENABLE);
 
-    TIM4_TimeBaseInit(TIM4_Prescaler_128,124);
+#if 0
+    /*!
+     * \todo Prescaler set for the RemoteControl project,
+     * for WeatherStation should be changed as follows
+     */
+    TIM4_TimeBaseInit(TIM4_Prescaler_128, 124);
+#else
+    TIM4_TimeBaseInit(TIM4_Prescaler_64, 124);
+#endif
     TIM4_ClearFlag(TIM4_FLAG_Update);
     TIM4_ITConfig(TIM4_IT_Update,ENABLE);
     enableInterrupts();

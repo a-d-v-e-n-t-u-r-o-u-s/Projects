@@ -55,8 +55,17 @@ void SYSTEM_init(void)
 
     CLK_SYSCLKSourceSwitchCmd(ENABLE);
     CLK_ITConfig(CLK_IT_SWIF,ENABLE);
+#if 0
+    /*!
+     * \todo HSI clock set for the RemoteControl project,
+     * for WeatherStation should be change to HSE
+     */
     CLK_SYSCLKSourceConfig(CLK_SYSCLKSource_HSE);
     CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_1);
+#else
+    CLK_SYSCLKSourceConfig(CLK_SYSCLKSource_HSI);
+    CLK_SYSCLKDivConfig(CLK_SYSCLKDiv_2);
+#endif
     CLK_PeripheralClockConfig(CLK_Peripheral_BOOTROM,DISABLE);
 
     SYSTEM_timer_init();
