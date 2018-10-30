@@ -23,7 +23,8 @@
 
 #include "fifo.h"
 #include <string.h>
-#include "stm8l15x.h"
+//#include "stm8l15x.h"
+#include "common.h"
 
 static INLINE_SPECIFIER int8_t is_fifo_full(FIFO_t *fifo)
 {

@@ -1,10 +1,10 @@
 /*!
  * \file
- * \brief COMMON constants, macros, functions header file
+ * \brief Hardware configuration file
  * \author Dawid Babula
  * \email dbabula@adventurous.pl
  *
- * \par Copyright (C) Dawid Babula, 2016
+ * \par Copyright (C) Dawid Babula, 2018
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,37 +20,22 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef COMMON_H
-#define COMMON_H
+#include <stdint.h>
 
-/*!
- *
- * \addtogroup common
- * \ingroup drivers
- * \brief Common constants, macros and functions
- */
+static inline void drivers_init(void)
+{
+}
 
-/*@{*/
+static inline void modules_init(void)
+{
+}
 
-#ifndef INLINE_SPECIFIER
-#define INLINE_SPECIFIER inline
-#endif
-/*!
- * \brief Macro gets amount of elements from array
- */
-#define ARRAY_SIZE(x) sizeof(x)/sizeof(x[0])
+int main(void)
+{
+    drivers_init();
+    modules_init();
 
-/*!
- * \brief Definition of NULL macro for pointer comparision
- */
-#ifndef NULL
-#define NULL  (void*)0
-#endif
-
-/*!
- * \brief Dummy function prototype to silence compiler warning
- */
-void COMMON_dummy(void);
-
-/*@}*/
-#endif // COMMON_H
+    while(1)
+    {
+    }
+}

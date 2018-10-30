@@ -1,10 +1,10 @@
 /*!
  * \file
- * \brief COMMON constants, macros, functions header file
+ * \brief Hardware configuration file
  * \author Dawid Babula
  * \email dbabula@adventurous.pl
  *
- * \par Copyright (C) Dawid Babula, 2016
+ * \par Copyright (C) Dawid Babula, 2018
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,37 +20,31 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef HARDWARE_H
+#define HARDWARE_H
 
 /*!
  *
- * \addtogroup common
- * \ingroup drivers
- * \brief Common constants, macros and functions
+ * \defgroup MiniThermometer
+ * \addtogroup hardware
+ * \ingroup MiniThermometer
+ * \brief Configures which PCB pin assignment shall be used
  */
 
 /*@{*/
 
-#ifndef INLINE_SPECIFIER
-#define INLINE_SPECIFIER inline
-#endif
 /*!
- * \brief Macro gets amount of elements from array
+ * \brief Define PCB0000 as this with proper pin assignment
+ *
+ * \todo move this definition outside hardware.h file, it shall be passed from makefile
  */
-#define ARRAY_SIZE(x) sizeof(x)/sizeof(x[0])
+#define PCB0000 1
 
-/*!
- * \brief Definition of NULL macro for pointer comparision
- */
-#ifndef NULL
-#define NULL  (void*)0
+#if PCB0000
+    #include "../source/PCB0000.h"
+#else
+    #error "Choose version of PCB to which project shall apply"
 #endif
-
-/*!
- * \brief Dummy function prototype to silence compiler warning
- */
-void COMMON_dummy(void);
 
 /*@}*/
-#endif // COMMON_H
+#endif /* end of HARDWARE_H */

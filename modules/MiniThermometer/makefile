@@ -1,0 +1,18 @@
+SOURCE += main.c
+
+SOURCE_DIR := source
+INCLUDE_DIR := include
+
+#LINKER_SCRIPT := source/$(PROJECT).lkf
+LIBRARY := MiniThermometer
+
+#TARGET_LINK_LIBRARIES := System
+#TARGET_LINK_LIBRARIES += common
+#TARGET_LINK_LIBRARIES += display
+#TARGET_LINK_LIBRARIES += StdPeriphDriver
+#TARGET_LINK_LIBRARIES += debug
+
+EXTENSION_EXE := hex
+EXECUTABLE := $(OUTPUT).$(EXTENSION_EXE)
+
+include rules-$(COMPILER).mk
