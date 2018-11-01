@@ -65,7 +65,7 @@ static INLINE_SPECIFIER int8_t is_fifo_empty(FIFO_t *fifo)
     }
 }
 
-int8_t FIFO_dequeue(FIFO_t *fifo, void *data)
+int8_t FIFO_dequeue(FIFO_t *fifo, const void *data)
 {
     FIFO_elements_no_t offset = 0U;
 
