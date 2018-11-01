@@ -22,6 +22,11 @@
  */
 #include <stdint.h>
 
+#define F_CPU 8000000UL
+
+#include <avr/io.h>
+#include <util/delay.h>
+
 static inline void drivers_init(void)
 {
 }
@@ -35,7 +40,11 @@ int main(void)
     drivers_init();
     modules_init();
 
+    DDRD |= (1 << PD6);
+
     while(1)
     {
+        PORTD ^= (1 << PB6);
+        _delay_ms(1000);
     }
 }
