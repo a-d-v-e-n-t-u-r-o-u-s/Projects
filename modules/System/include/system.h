@@ -31,4 +31,4 @@ int8_t SYSTEM_register_task(SYSTEM_task_t task);
 void SYSTEM_main(void);
 void SYSTEM_init(void);
 
-#endif // SYSTEM_KERNEL_H
+#endif // SYSTEM_H
