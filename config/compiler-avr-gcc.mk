@@ -10,7 +10,8 @@ LIBEXT := .lib
 
 CFLAGS = -c
 CFLAGS += -Wall
-CFLAGS += -mmcu=avr4
+CFLAGS += -mmcu=atmega8
+CFLAGS += -Os
 #CFLAGS += --std-c99
 CFLAGS += $(addprefix -I,$(INCLUDE_DIR))
 CFLAGS += $(addprefix -D,$(CDEFS))
