@@ -54,7 +54,7 @@ typedef struct
 } FIFO_t;
 
 int8_t FIFO_enqueue(FIFO_t *fifo, const void *data);
-int8_t FIFO_dequeue(FIFO_t *fifo, const void *data);
+int8_t FIFO_dequeue(FIFO_t *fifo, void *data);
 FIFO_elements_no_t FIFO_get_free(FIFO_t *fifo);
 FIFO_elements_no_t FIFO_get_occupied(FIFO_t *fifo);
 void FIFO_configure(FIFO_t *fifo, const FIFO_config_t *config);
