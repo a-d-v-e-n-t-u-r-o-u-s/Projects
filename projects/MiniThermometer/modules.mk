@@ -1,3 +1,3 @@
-USED_MODULES +=
+USED_MODULES += System
 
 MAIN_MODULE = MiniThermometer
