@@ -26,6 +26,8 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
+#include "system.h"
+#include "system_timer.h"
 
 static inline void drivers_init(void)
 {
@@ -35,12 +37,25 @@ static inline void modules_init(void)
 {
 }
 
+static void callback(void)
+{
+    static uint32_t tick;
+    uint32_t new_tick = SYSTEM_timer_get_tick();
+    if(SYSTEM_timer_tick_difference(tick, new_tick) > 100)
+    {
+         PORTD ^= (1 << PB6);
+    }
+}
+
 int main(void)
 {
     drivers_init();
     modules_init();
 
     DDRD |= (1 << PD6);
+
+    SYSTEM_init();
+    SYSTEM_timer_register(callback);
 
     while(1)
     {
