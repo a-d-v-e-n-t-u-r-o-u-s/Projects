@@ -1,10 +1,10 @@
 CC = avr-gcc
-LD = avr-gcc
+LD = avr-ld
 AR = avr-ar
 LOADER = avrdude
 
 LIBPREFIX := lib
-LIBEXT := .lib
+LIBEXT := .a
 
 #CDEFS =
 

@@ -36,7 +36,7 @@ $(EXECUTABLE): $(OBJECTS)
 	-$(RM_DIR) $(subst /,$(DELIM),$(OBJECTS_DIR))$(DELIM)$(subst /,$(DELIM),$@)
 	@echo Creating executable $(@F) ... in $(CURDIR)
 	$(LD) $(LDFLAGS) $(patsubst %,$(OBJECTS_DIR)/%,$(OBJECTS)) -L$(LIB_DIR) \
-	$(addprefix lib, $(addsuffix .lib, $(TARGET_LINK_LIBRARIES))) -o $(BIN_DIR)/$(EXECUTABLE)
+	-l$(TARGET_LINK_LIBRARIES) -o $(BIN_DIR)/$(EXECUTABLE)
 
 %.o: %.c
 	@echo $(<F)
