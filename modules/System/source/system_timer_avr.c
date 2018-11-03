@@ -22,9 +22,21 @@
  */
 #include "system_common.h"
 #include "system_timer.h"
+#include <avr/io.h>
+#include <avr/interrupt.h>
 
 static volatile uint32_t system_tick;
 static void (*timer_callback)(void);
+
+ISR(TIMER1_OVF_vect)
+{
+    system_tick++;
+
+    if(timer_callback != NULL)
+    {
+        timer_callback();
+    }
+}
 
 int8_t SYSTEM_timer_register(void (*callback)(void))
 {
@@ -41,7 +53,11 @@ int8_t SYSTEM_timer_register(void (*callback)(void))
 
 uint32_t SYSTEM_timer_get_tick(void)
 {
-    return 0;
+    uint32_t tick=0;
+    cli();
+    tick = system_tick;
+    sei();
+    return tick;
 }
 
 uint32_t SYSTEM_timer_tick_difference(uint32_t prev,uint32_t next)
@@ -63,5 +79,8 @@ void SYSTEM_timer_delay(uint8_t val)
 
 uint8_t SYSTEM_timer_init(void)
 {
+    TIMSK |= (1<<TOIE1);
+    TCCR1B |= (1<<CS12)|(1<<CS11)|(1<<CS10);
+    sei();
     return 0;
 }
