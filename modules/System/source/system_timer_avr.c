@@ -80,7 +80,8 @@ void SYSTEM_timer_delay(uint8_t val)
 uint8_t SYSTEM_timer_init(void)
 {
     TIMSK |= (1<<TOIE1);
-    TCCR1B |= (1<<CS12)|(1<<CS11)|(1<<CS10);
+    TCCR1B |= (1<<CS10);
     sei();
+
     return 0;
 }

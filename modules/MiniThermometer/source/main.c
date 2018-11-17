@@ -39,11 +39,13 @@ static void callback(void)
 {
     static uint32_t tick;
     uint32_t new_tick = SYSTEM_timer_get_tick();
-    if(SYSTEM_timer_tick_difference(tick, new_tick) > 100)
+    if(SYSTEM_timer_tick_difference(tick, new_tick) > 10)
     {
-         PORTD ^= (1 << PB6);
+        PORTD ^= (1 << PD6);
+        tick = new_tick;
     }
 }
+
 
 int main(void)
 {
@@ -57,7 +59,5 @@ int main(void)
 
     while(1)
     {
-        PORTD ^= (1 << PB6);
-        _delay_ms(1000);
     }
 }
