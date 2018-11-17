@@ -28,7 +28,7 @@
 static volatile uint32_t system_tick;
 static void (*timer_callback)(void);
 
-ISR(TIMER1_OVF_vect)
+ISR(TIMER1_COMPB_vect)
 {
     system_tick++;
 
@@ -79,8 +79,9 @@ void SYSTEM_timer_delay(uint8_t val)
 
 uint8_t SYSTEM_timer_init(void)
 {
-    TIMSK |= (1<<TOIE1);
-    TCCR1B |= (1<<CS10);
+    OCR1A = 7999U;
+    TCCR1B |= (1<<WGM12)|(1<<CS10);
+    TIMSK |= (1<<OCF1B);
     sei();
 
     return 0;
