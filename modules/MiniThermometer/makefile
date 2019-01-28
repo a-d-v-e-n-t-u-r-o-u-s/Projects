@@ -7,6 +7,7 @@ INCLUDE_DIR := include
 LIBRARY := MiniThermometer
 
 TARGET_LINK_LIBRARIES := System
+TARGET_LINK_LIBRARIES += usart
 #TARGET_LINK_LIBRARIES += common
 #TARGET_LINK_LIBRARIES += display
 #TARGET_LINK_LIBRARIES += StdPeriphDriver
