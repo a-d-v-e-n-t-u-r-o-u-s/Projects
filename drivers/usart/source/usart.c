@@ -22,3 +22,16 @@
  */
 
 #include "usart.h"
+#include <stddef.h>
+
+int8_t USART_configure(const USART_config_t *config)
+{
+    if(config == NULL)
+    {
+        return -1;
+    }
+    else
+    {
+        return 0;
+    }
+}

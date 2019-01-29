@@ -24,4 +24,38 @@
 #ifndef USART_H
 #define USART_H
 
+#include <stdint.h>
+
+typedef enum
+{
+    USART_NO_PARITY,
+    USART_EVEN_PARITY,
+    USART_ODD_PARITY,
+} USART_parity_t;
+
+typedef enum
+{
+    USART_1_STOP_BITS,
+    USART_2_STOP_BITS
+} USART_stop_bits_t;
+
+typedef enum
+{
+    USART_5_DATA_BITS,
+    USART_6_DATA_BITS,
+    USART_7_DATA_BITS,
+    USART_8_DATA_BITS,
+    USART_9_DATA_BITS
+} USART_data_bits_t;
+
+typedef struct
+{
+    uint32_t baudrate;
+    USART_parity_t parity;
+    USART_stop_bits_t stop_bits;
+    USART_data_bits_t data_bits;
+} USART_config_t;
+
+int8_t USART_configure(const USART_config_t *config);
+
 #endif
