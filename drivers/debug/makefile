@@ -1,4 +1,4 @@
-SOURCE += debug.c
+SOURCE += debug_$(TARGET).c
 
 SOURCE_DIR := source
 INLCUDE_DIR := include
