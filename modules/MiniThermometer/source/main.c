@@ -26,6 +26,7 @@
 #include <util/delay.h>
 #include "system.h"
 #include "usart.h"
+#include "debug.h"
 #include "system_timer.h"
 
 static inline void drivers_init(void)
@@ -39,6 +40,8 @@ static inline void drivers_init(void)
     };
 
     (void) USART_configure(&config);
+
+    DEBUG_configure(NULL);
 }
 
 static inline void modules_init(void)
@@ -56,6 +59,8 @@ static void callback(void)
     }
 }
 
+static const uint8_t line[] = "********************************\n";
+static const uint8_t logo[] = "******* Mini Thermometer *******\n";
 
 int main(void)
 {
@@ -66,6 +71,10 @@ int main(void)
 
     SYSTEM_init();
     SYSTEM_timer_register(callback);
+
+    DEBUG_write(line, sizeof(line));
+    DEBUG_write(logo, sizeof(logo));
+    DEBUG_write(line, sizeof(line));
 
     while(1)
     {
