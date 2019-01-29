@@ -33,6 +33,8 @@
 
 /*@{*/
 
+/*! \todo unify this with STM8 later */
+#if 0
 #include "stm8l15x_usart.h"
 
 typedef struct
@@ -49,6 +51,15 @@ typedef struct
 } DEBUG_config_t;
 
 int putchar(int c);
+#else
+#include <stdint.h>
+
+typedef struct
+{
+    uint32_t baudrate;
+} DEBUG_config_t;
+#endif
+
 int8_t DEBUG_write(const uint8_t *data, uint8_t length);
 void DEBUG_configure(const DEBUG_config_t *config);
 
