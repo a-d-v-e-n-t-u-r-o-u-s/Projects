@@ -56,6 +56,8 @@ typedef struct
     USART_data_bits_t data_bits;
 } USART_config_t;
 
+void USART_transmit(uint8_t data);
 int8_t USART_configure(const USART_config_t *config);
+
 
 #endif

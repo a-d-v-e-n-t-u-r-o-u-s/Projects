@@ -25,6 +25,13 @@
 #include <stddef.h>
 #include <avr/io.h>
 
+void USART_transmit(uint8_t data)
+{
+    while(!(UCSRA & (1 << UDRE)));
+
+    UDR = data;
+}
+
 int8_t USART_configure(const USART_config_t *config)
 {
     if(config == NULL)
