@@ -30,7 +30,15 @@
 
 static inline void drivers_init(void)
 {
-    (void) USART_configure(NULL);
+    USART_config_t config =
+    {
+        .baudrate = 250000U,
+        .parity = USART_NO_PARITY,
+        .stop_bits = USART_1_STOP_BITS,
+        .data_bits = USART_8_DATA_BITS,
+    };
+
+    (void) USART_configure(&config);
 }
 
 static inline void modules_init(void)
