@@ -21,14 +21,16 @@
  *
  */
 #include <stdint.h>
-
+#include <stddef.h>
 #include <avr/io.h>
 #include <util/delay.h>
 #include "system.h"
+#include "usart.h"
 #include "system_timer.h"
 
 static inline void drivers_init(void)
 {
+    (void) USART_configure(NULL);
 }
 
 static inline void modules_init(void)
