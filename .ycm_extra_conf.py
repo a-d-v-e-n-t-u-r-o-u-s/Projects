@@ -57,6 +57,8 @@ flags = [
 #'-isystem','/opt/ycm_temp/llvm_root_dir/bin/../lib/clang/3.8.0/include',
 '-isystem','.',
 '-I', './drivers/common/include',
+'-I', './drivers/debug/include',
+'-I', './drivers/usart/include',
 '-I', './modules/System/include',
 '-I', './modules/MiniThermometer/include',
 ]
