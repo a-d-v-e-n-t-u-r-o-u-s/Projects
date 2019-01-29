@@ -23,6 +23,7 @@
 
 #include "usart.h"
 #include <stddef.h>
+#include <avr/io.h>
 
 int8_t USART_configure(const USART_config_t *config)
 {
@@ -30,8 +31,10 @@ int8_t USART_configure(const USART_config_t *config)
     {
         return -1;
     }
-    else
-    {
-        return 0;
-    }
+
+    UBRRH = 0U;
+    UBRRL = 0U;
+    UCSRB = (1 << RXEN)|(1 << TXEN);
+    UCSRC = (1 << URSEL)|(1 << USBS) | (3 << UCSZ0);
+    return 0;
 }
