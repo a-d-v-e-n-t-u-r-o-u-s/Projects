@@ -60,7 +60,7 @@ typedef struct
 } DEBUG_config_t;
 #endif
 
-int8_t DEBUG_transmit(const uint8_t *data, uint8_t length);
+void DEBUG_output(const char *format, ...);
 void DEBUG_configure(const DEBUG_config_t *config);
 
 /*@}*/

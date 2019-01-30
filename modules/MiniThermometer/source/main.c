@@ -59,9 +59,6 @@ static void callback(void)
     }
 }
 
-static const uint8_t line[] = "********************************\n";
-static const uint8_t logo[] = "******* Mini Thermometer *******\n";
-
 int main(void)
 {
     drivers_init();
@@ -72,9 +69,9 @@ int main(void)
     SYSTEM_init();
     SYSTEM_timer_register(callback);
 
-    DEBUG_write(line, sizeof(line));
-    DEBUG_write(logo, sizeof(logo));
-    DEBUG_write(line, sizeof(line));
+    DEBUG_output("********************************\n");
+    DEBUG_output("******* Mini Thermometer *******\n");
+    DEBUG_output("********************************\n");
 
     while(1)
     {

@@ -22,16 +22,26 @@
  */
 #include "debug.h"
 #include "usart.h"
+#include <stdarg.h>
+#include <stdio.h>
 
-int8_t DEBUG_transmit(const uint8_t *data, uint8_t length)
+#define DEBUG_BUFFER_SIZE  UINT8_MAX
+
+void DEBUG_output(const char *format, ...)
 {
-    for(uint8_t i = 0; i < length; i++)
-    {
-        USART_transmit(*data++);
-    }
+    char debug_buffer[DEBUG_BUFFER_SIZE] = {0};
 
-    return 0;
+    va_list args;
+    va_start( args, format);
+    int written = vsnprintf(debug_buffer, DEBUG_BUFFER_SIZE, format, args);
+    va_end(args);
+
+    for(uint8_t i = 0; i < written ; i++)
+    {
+        USART_transmit((uint8_t)debug_buffer[i]);
+    }
 }
+
 
 void DEBUG_configure(const DEBUG_config_t *config)
 {
