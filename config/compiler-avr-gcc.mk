@@ -14,7 +14,7 @@ CFLAGS = -c
 CFLAGS += -Wall
 CFLAGS += -mmcu=atmega8
 CFLAGS += -Os
-#CFLAGS += --std-c99
+CFLAGS += -std=c99
 CFLAGS += $(addprefix -I,$(INCLUDE_DIR))
 CFLAGS += $(addprefix -D,$(CDEFS))
 CFLAGS += -o $(OBJECTS_DIR)/$(@F)
