@@ -23,7 +23,7 @@
 #include "debug.h"
 #include "usart.h"
 
-int8_t DEBUG_write(const uint8_t *data, uint8_t length)
+int8_t DEBUG_transmit(const uint8_t *data, uint8_t length)
 {
     for(uint8_t i = 0; i < length; i++)
     {
