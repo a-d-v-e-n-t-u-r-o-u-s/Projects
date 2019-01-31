@@ -27,6 +27,7 @@
 #include "system.h"
 #include "usart.h"
 #include "debug.h"
+#include "ssd_display.h"
 #include "system_timer.h"
 
 static inline void drivers_init(void)
@@ -42,6 +43,23 @@ static inline void drivers_init(void)
     (void) USART_configure(&config);
 
     DEBUG_configure(NULL);
+
+    SSD_config_t ssd_config =
+    {
+        .a = { .port = SSD_PORTC, .pin = 0U, },
+        .b = { .port = SSD_PORTC, .pin = 1U, },
+        .c = { .port = SSD_PORTC, .pin = 2U, },
+        .d = { .port = SSD_PORTC, .pin = 3U, },
+        .e = { .port = SSD_PORTC, .pin = 4U, },
+        .f = { .port = SSD_PORTC, .pin = 5U, },
+        .g = { .port = SSD_PORTD, .pin = 6U, },
+        .dp = { .port = SSD_PORTD, .pin = 7U, },
+    };
+
+    if(SSD_configure(&ssd_config) != 0u)
+    {
+        DEBUG_output("SSD [fail]\n");
+    }
 }
 
 static inline void modules_init(void)
@@ -54,7 +72,9 @@ static void callback(void)
     uint32_t new_tick = SYSTEM_timer_get_tick();
     if(SYSTEM_timer_tick_difference(tick, new_tick) > 1000)
     {
-        PORTD ^= (1 << PD6);
+        //PORTD ^= (1 << PD6);
+        DEBUG_output("Lights %d\n",tick);
+        SSD_light();
         tick = new_tick;
     }
 }
@@ -64,7 +84,7 @@ int main(void)
     drivers_init();
     modules_init();
 
-    DDRD |= (1 << PD6);
+    //DDRD |= (1 << PD6);
 
     SYSTEM_init();
     SYSTEM_timer_register(callback);
