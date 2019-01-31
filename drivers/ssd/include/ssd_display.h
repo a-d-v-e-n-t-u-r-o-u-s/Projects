@@ -24,4 +24,26 @@
 #ifndef SSD_DISPLAY_H
 #define SSD_DISPLAY_H
 
+#include <stdint.h>
+
+typedef struct
+{
+    uint8_t port;
+    uint8_t pin;
+} SSD_pin_t;
+
+typedef struct
+{
+    SSD_pin_t a;
+    SSD_pin_t b;
+    SSD_pin_t c;
+    SSD_pin_t d;
+    SSD_pin_t e;
+    SSD_pin_t f;
+    SSD_pin_t g;
+    SSD_pin_t dp;
+} SSD_config_t;
+
+int8_t SSD_configure(const SSD_config_t *config);
+
 #endif

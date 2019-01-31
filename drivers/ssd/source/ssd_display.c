@@ -22,3 +22,14 @@
  */
 
 #include "ssd_display.h"
+#include <stddef.h>
+
+int8_t SSD_configure(const SSD_config_t *config)
+{
+    if(config == NULL)
+    {
+        return -1;
+    }
+
+    return 0;
+}
