@@ -73,9 +73,12 @@ static void callback(void)
     if(SYSTEM_timer_tick_difference(tick, new_tick) > 1000)
     {
         //PORTD ^= (1 << PD6);
+        static uint8_t counter;
         DEBUG_output("Lights %d\n",tick);
-        SSD_light();
+        SSD_light(counter);
         tick = new_tick;
+        counter++;
+        counter %= 10u;
     }
 }
 

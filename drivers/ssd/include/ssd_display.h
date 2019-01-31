@@ -48,7 +48,7 @@ typedef struct
     SSD_pin_t dp;
 } SSD_config_t;
 
-void SSD_light(void);
+void SSD_light(uint8_t value);
 int8_t SSD_configure(const SSD_config_t *config);
 
 #endif

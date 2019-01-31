@@ -70,21 +70,203 @@ static int8_t pin_configure(const SSD_pin_t data)
     return 0;
 }
 
-void SSD_light(void)
+static inline void clear(void)
 {
     volatile uint8_t *port_status_reg = get_port_status_register(driver_config.a.port);
-
-    *port_status_reg ^= ( 1 << driver_config.a.pin);
-    *port_status_reg ^= ( 1 << driver_config.b.pin);
-    *port_status_reg ^= ( 1 << driver_config.c.pin);
-    *port_status_reg ^= ( 1 << driver_config.d.pin);
-    *port_status_reg ^= ( 1 << driver_config.e.pin);
-    *port_status_reg ^= ( 1 << driver_config.f.pin);
-
+    *port_status_reg &= ~(1 << driver_config.a.pin);
+    port_status_reg = get_port_status_register(driver_config.b.port);
+    *port_status_reg &= ~(1 << driver_config.b.pin);
+    port_status_reg = get_port_status_register(driver_config.c.port);
+    *port_status_reg &= ~(1 << driver_config.c.pin);
+    port_status_reg = get_port_status_register(driver_config.d.port);
+    *port_status_reg &= ~(1 << driver_config.d.pin);
+    port_status_reg = get_port_status_register(driver_config.e.port);
+    *port_status_reg &= ~(1 << driver_config.e.pin);
+    port_status_reg = get_port_status_register(driver_config.f.port);
+    *port_status_reg &= ~(1 << driver_config.f.pin);
+    port_status_reg = get_port_status_register(driver_config.g.port);
+    *port_status_reg &= ~(1 << driver_config.g.pin);
     port_status_reg = get_port_status_register(driver_config.dp.port);
+    *port_status_reg &= ~(1 << driver_config.dp.pin);
+}
 
-    *port_status_reg ^= ( 1 << driver_config.g.pin);
-    *port_status_reg ^= ( 1 << driver_config.dp.pin);
+static inline void set0(void)
+{
+    volatile uint8_t *port_status_reg = get_port_status_register(driver_config.a.port);
+    *port_status_reg |= (1 << driver_config.a.pin);
+    port_status_reg = get_port_status_register(driver_config.b.port);
+    *port_status_reg |= (1 << driver_config.b.pin);
+    port_status_reg = get_port_status_register(driver_config.c.port);
+    *port_status_reg |= (1 << driver_config.c.pin);
+    port_status_reg = get_port_status_register(driver_config.d.port);
+    *port_status_reg |= (1 << driver_config.d.pin);
+    port_status_reg = get_port_status_register(driver_config.e.port);
+    *port_status_reg |= (1 << driver_config.e.pin);
+    port_status_reg = get_port_status_register(driver_config.f.port);
+    *port_status_reg |= (1 << driver_config.f.pin);
+}
+
+static inline void set1(void)
+{
+    volatile uint8_t *port_status_reg = get_port_status_register(driver_config.b.port);
+    *port_status_reg |= (1 << driver_config.b.pin);
+    port_status_reg = get_port_status_register(driver_config.c.port);
+    *port_status_reg |= (1 << driver_config.c.pin);
+}
+
+static inline void set2(void)
+{
+    volatile uint8_t *port_status_reg = get_port_status_register(driver_config.a.port);
+    *port_status_reg |= (1 << driver_config.a.pin);
+    port_status_reg = get_port_status_register(driver_config.b.port);
+    *port_status_reg |= (1 << driver_config.b.pin);
+    port_status_reg = get_port_status_register(driver_config.d.port);
+    *port_status_reg |= (1 << driver_config.d.pin);
+    port_status_reg = get_port_status_register(driver_config.e.port);
+    *port_status_reg |= (1 << driver_config.e.pin);
+    port_status_reg = get_port_status_register(driver_config.g.port);
+    *port_status_reg |= (1 << driver_config.g.pin);
+}
+
+static inline void set3(void)
+{
+    volatile uint8_t *port_status_reg = get_port_status_register(driver_config.a.port);
+    *port_status_reg |= (1 << driver_config.a.pin);
+    port_status_reg = get_port_status_register(driver_config.b.port);
+    *port_status_reg |= (1 << driver_config.b.pin);
+    port_status_reg = get_port_status_register(driver_config.c.port);
+    *port_status_reg |= (1 << driver_config.c.pin);
+    port_status_reg = get_port_status_register(driver_config.d.port);
+    *port_status_reg |= (1 << driver_config.d.pin);
+    port_status_reg = get_port_status_register(driver_config.g.port);
+    *port_status_reg |= (1 << driver_config.g.pin);
+}
+
+static inline void set4(void)
+{
+    volatile uint8_t *port_status_reg = get_port_status_register(driver_config.b.port);
+    *port_status_reg |= (1 << driver_config.b.pin);
+    port_status_reg = get_port_status_register(driver_config.c.port);
+    *port_status_reg |= (1 << driver_config.c.pin);
+    port_status_reg = get_port_status_register(driver_config.f.port);
+    *port_status_reg |= (1 << driver_config.f.pin);
+    port_status_reg = get_port_status_register(driver_config.g.port);
+    *port_status_reg |= (1 << driver_config.g.pin);
+}
+
+static inline void set5(void)
+{
+    volatile uint8_t *port_status_reg = get_port_status_register(driver_config.a.port);
+    *port_status_reg |= (1 << driver_config.a.pin);
+    port_status_reg = get_port_status_register(driver_config.c.port);
+    *port_status_reg |= (1 << driver_config.c.pin);
+    port_status_reg = get_port_status_register(driver_config.d.port);
+    *port_status_reg |= (1 << driver_config.d.pin);
+    port_status_reg = get_port_status_register(driver_config.f.port);
+    *port_status_reg |= (1 << driver_config.f.pin);
+    port_status_reg = get_port_status_register(driver_config.g.port);
+    *port_status_reg |= (1 << driver_config.g.pin);
+}
+
+static inline void set6(void)
+{
+    volatile uint8_t *port_status_reg = get_port_status_register(driver_config.a.port);
+    *port_status_reg |= (1 << driver_config.a.pin);
+    port_status_reg = get_port_status_register(driver_config.c.port);
+    *port_status_reg |= (1 << driver_config.c.pin);
+    port_status_reg = get_port_status_register(driver_config.d.port);
+    *port_status_reg |= (1 << driver_config.d.pin);
+    port_status_reg = get_port_status_register(driver_config.e.port);
+    *port_status_reg |= (1 << driver_config.e.pin);
+    port_status_reg = get_port_status_register(driver_config.f.port);
+    *port_status_reg |= (1 << driver_config.f.pin);
+    port_status_reg = get_port_status_register(driver_config.g.port);
+    *port_status_reg |= (1 << driver_config.g.pin);
+}
+
+static inline void set7(void)
+{
+    volatile uint8_t *port_status_reg = get_port_status_register(driver_config.a.port);
+    *port_status_reg |= (1 << driver_config.a.pin);
+    port_status_reg = get_port_status_register(driver_config.b.port);
+    *port_status_reg |= (1 << driver_config.b.pin);
+    port_status_reg = get_port_status_register(driver_config.c.port);
+    *port_status_reg |= (1 << driver_config.c.pin);
+}
+
+static inline void set8(void)
+{
+    volatile uint8_t *port_status_reg = get_port_status_register(driver_config.a.port);
+    *port_status_reg |= (1 << driver_config.a.pin);
+    port_status_reg = get_port_status_register(driver_config.b.port);
+    *port_status_reg |= (1 << driver_config.b.pin);
+    port_status_reg = get_port_status_register(driver_config.c.port);
+    *port_status_reg |= (1 << driver_config.c.pin);
+    port_status_reg = get_port_status_register(driver_config.d.port);
+    *port_status_reg |= (1 << driver_config.d.pin);
+    port_status_reg = get_port_status_register(driver_config.e.port);
+    *port_status_reg |= (1 << driver_config.e.pin);
+    port_status_reg = get_port_status_register(driver_config.f.port);
+    *port_status_reg |= (1 << driver_config.f.pin);
+    port_status_reg = get_port_status_register(driver_config.g.port);
+    *port_status_reg |= (1 << driver_config.g.pin);
+}
+
+static inline void set9(void)
+{
+    volatile uint8_t *port_status_reg = get_port_status_register(driver_config.a.port);
+    *port_status_reg |= (1 << driver_config.a.pin);
+    port_status_reg = get_port_status_register(driver_config.b.port);
+    *port_status_reg |= (1 << driver_config.b.pin);
+    port_status_reg = get_port_status_register(driver_config.c.port);
+    *port_status_reg |= (1 << driver_config.c.pin);
+    port_status_reg = get_port_status_register(driver_config.d.port);
+    *port_status_reg |= (1 << driver_config.d.pin);
+    port_status_reg = get_port_status_register(driver_config.f.port);
+    *port_status_reg |= (1 << driver_config.f.pin);
+    port_status_reg = get_port_status_register(driver_config.g.port);
+    *port_status_reg |= (1 << driver_config.g.pin);
+}
+
+void SSD_light(uint8_t value)
+{
+    clear();
+
+    switch(value)
+    {
+        case 0:
+            set0();
+            break;
+        case 1:
+            set1();
+            break;
+        case 2:
+            set2();
+            break;
+        case 3:
+            set3();
+            break;
+        case 4:
+            set4();
+            break;
+        case 5:
+            set5();
+            break;
+        case 6:
+            set6();
+            break;
+        case 7:
+            set7();
+            break;
+        case 8:
+            set8();
+            break;
+        case 9:
+            set9();
+            break;
+        default:
+            break;
+    }
 }
 
 int8_t SSD_configure(const SSD_config_t *config)
