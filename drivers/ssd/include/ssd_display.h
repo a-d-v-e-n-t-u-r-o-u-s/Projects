@@ -26,6 +26,10 @@
 
 #include <stdint.h>
 
+#define SSD_PORTB       1U
+#define SSD_PORTC       2U
+#define SSD_PORTD       3U
+
 typedef struct
 {
     uint8_t port;
@@ -44,6 +48,7 @@ typedef struct
     SSD_pin_t dp;
 } SSD_config_t;
 
+void SSD_light(void);
 int8_t SSD_configure(const SSD_config_t *config);
 
 #endif
