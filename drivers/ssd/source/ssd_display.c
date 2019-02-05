@@ -264,6 +264,8 @@ void SSD_light(uint8_t value)
         case 9:
             set9();
             break;
+        case UINT8_MAX:
+            break;
         default:
             break;
     }
