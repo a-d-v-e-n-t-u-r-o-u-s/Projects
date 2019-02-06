@@ -28,6 +28,7 @@
 #include "usart.h"
 #include "debug.h"
 #include "ssd_display.h"
+#include "ssd_mgr.h"
 #include "system_timer.h"
 
 static inline void drivers_init(void)
@@ -56,7 +57,7 @@ static inline void drivers_init(void)
         .dp = { .port = SSD_PORTD, .pin = 7U, },
     };
 
-    if(SSD_configure(&ssd_config) != 0u)
+    if(SSD_configure(&ssd_config) != 0)
     {
         DEBUG_output("SSD [fail]\n");
     }
@@ -64,22 +65,26 @@ static inline void drivers_init(void)
 
 static inline void modules_init(void)
 {
+    SSD_MGR_config_t ssd_mgr_config =
+    {
+        .config =
+        {
+            [0] = { .port = 1u, .pin = 0u },
+            [1] = { .port = 1u, .pin = 1u },
+            [2] = { .port = 1u, .pin = 2u },
+            [3] = { .port = 1u, .pin = 3u },
+        },
+        .size = 4u,
+    };
+
+    if(SSD_MGR_initialize(&ssd_mgr_config) != 0)
+    {
+        DEBUG_output("SSD MGR [fail]\n");
+    }
 }
 
 static void callback(void)
 {
-    static uint32_t tick;
-    uint32_t new_tick = SYSTEM_timer_get_tick();
-    if(SYSTEM_timer_tick_difference(tick, new_tick) > 1000)
-    {
-        //PORTD ^= (1 << PD6);
-        static uint8_t counter;
-        DEBUG_output("Lights %d\n",tick);
-        SSD_light(counter);
-        tick = new_tick;
-        counter++;
-        counter %= 10u;
-    }
 }
 
 int main(void)
@@ -87,7 +92,10 @@ int main(void)
     drivers_init();
     modules_init();
 
-    //DDRD |= (1 << PD6);
+    //DDRB |= ((1 << PB0) | (1 << PB1) | (1 << PB2) | (1 << PB3));
+    //DDRB |= (1 << PB0);
+    //PORTB |= ((1 << PB0) | (1 << PB1));
+    //PORTB |= (1 << PB0);
 
     SYSTEM_init();
     SYSTEM_timer_register(callback);
@@ -98,5 +106,6 @@ int main(void)
 
     while(1)
     {
+        SYSTEM_main();
     }
 }
