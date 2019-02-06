@@ -61,6 +61,7 @@ flags = [
 '-I', './drivers/ssd/include',
 '-I', './drivers/usart/include',
 '-I', './modules/System/include',
+'-I', './modules/SsdMgr/include',
 '-I', './modules/MiniThermometer/include',
 ]
 
