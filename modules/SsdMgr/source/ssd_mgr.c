@@ -73,8 +73,6 @@ static int8_t pin_configure(const SSD_MGR_pin_t data)
     return 0;
 }
 
-static uint32_t module_tick;
-
 static void ssd_mgr_main(void)
 {
     static uint8_t counter;
@@ -114,10 +112,6 @@ static void ssd_mgr_main(void)
     while(SYSTEM_timer_tick_difference(tick, SYSTEM_timer_get_tick()) < 5);
 }
 
-static void ssd_mgr_timer(void)
-{
-}
-
 int8_t SSD_MGR_initialize(const SSD_MGR_config_t *config)
 {
     if( config == NULL)
@@ -141,11 +135,6 @@ int8_t SSD_MGR_initialize(const SSD_MGR_config_t *config)
     }
 
     if(SYSTEM_register_task(ssd_mgr_main) != 0)
-    {
-        return -1;
-    }
-
-    if(SYSTEM_timer_register(ssd_mgr_timer) != 0)
     {
         return -1;
     }
