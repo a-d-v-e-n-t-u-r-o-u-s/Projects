@@ -33,5 +33,31 @@
 
 /*@{*/
 
+#include <stdint.h>
+#include <stdbool.h>
+
+typedef enum
+{
+    GPIO_PORTB = 1U,
+    GPIO_PORTC = 2U,
+    GPIO_PORTD = 3U,
+} GPIO_port_t;
+
+typedef enum
+{
+    GPIO_OUTPUT_PUSH_PULL,
+    GPIO_INPUT_FLOATING,
+    GPIO_INPUT_PULL_UP,
+} GPIO_mode_t;
+
+typedef struct
+{
+    GPIO_port_t port;
+    uint8_t pin;
+} GPIO_data_t;
+
+int8_t GPIO_config_pin(GPIO_mode_t mode, const GPIO_data_t *data);
+void GPIO_configure(bool is_global_pullup);
+
 /*@}*/
 #endif

@@ -22,3 +22,147 @@
  */
 
 #include "gpio.h"
+#include <stddef.h>
+#include <stdbool.h>
+#include <avr/io.h>
+
+static inline bool is_port_valid(GPIO_port_t port)
+{
+    switch(port)
+    {
+        case GPIO_PORTB:
+        case GPIO_PORTC:
+        case GPIO_PORTD:
+            return true;
+        default:
+            return false;
+    }
+}
+
+static inline bool is_pin_valid(const GPIO_data_t *data)
+{
+    switch(data->port)
+    {
+        case GPIO_PORTB:
+            /* no break */
+        case GPIO_PORTD:
+            if(data->pin > 7U)
+            {
+                return false;
+            }
+            break;
+        case GPIO_PORTC:
+            if(data->pin > 6U)
+            {
+                return false;
+            }
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+}
+
+static inline bool is_mode_valid(GPIO_mode_t mode)
+{
+    switch(mode)
+    {
+        case GPIO_OUTPUT_PUSH_PULL:
+            /* no break */
+        case GPIO_INPUT_FLOATING:
+            /* no break */
+        case GPIO_INPUT_PULL_UP:
+            return true;
+        default:
+            return false;
+    }
+}
+
+
+static volatile uint8_t *get_port_config_register(GPIO_port_t port)
+{
+    switch(port)
+    {
+        case GPIO_PORTB:
+            return &DDRB;
+        case GPIO_PORTC:
+            return &DDRC;
+        case GPIO_PORTD:
+            return &DDRD;
+        default:
+            return NULL;
+    }
+}
+
+static volatile uint8_t *get_port_status_register(GPIO_port_t port)
+{
+    switch(port)
+    {
+        case GPIO_PORTB:
+            return &PORTB;
+        case GPIO_PORTC:
+            return &PORTC;
+        case GPIO_PORTD:
+            return &PORTD;
+        default:
+            return NULL;
+    }
+}
+
+
+int8_t GPIO_config_pin(GPIO_mode_t mode, const GPIO_data_t *data)
+{
+    if(data == NULL)
+    {
+        return -1;
+    }
+
+    if(!is_mode_valid(mode))
+    {
+        return -1;
+    }
+
+    if(!is_port_valid(data->port))
+    {
+        return -1;
+    }
+
+    if(!is_pin_valid(data))
+    {
+        return -1;
+    }
+
+    volatile uint8_t *port_cfg_reg = get_port_config_register(data->port);
+    volatile uint8_t *port_status_reg = get_port_status_register(data->port);
+
+    /*! \todo think about intermediate steps */
+    *port_cfg_reg &= ~(1 << data->pin);
+    *port_status_reg &= ~(1 << data->pin);
+
+    switch(mode)
+    {
+        case GPIO_OUTPUT_PUSH_PULL:
+            *port_cfg_reg |= (1 << data->pin);
+            break;
+        case GPIO_INPUT_FLOATING:
+            break;
+        case GPIO_INPUT_PULL_UP:
+            *port_status_reg |= (1 << data->pin);
+            break;
+    }
+
+    return 0;
+}
+
+void GPIO_configure(bool is_global_pullup)
+{
+    if(is_global_pullup)
+    {
+        SFIOR |= (1 << PUD);
+    }
+    else
+    {
+        SFIOR &= ~(1 << PUD);
+    }
+}
