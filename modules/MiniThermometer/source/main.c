@@ -72,10 +72,10 @@ static inline void modules_init(void)
     {
         .config =
         {
-            [0] = { .port = 1u, .pin = 0u },
-            [1] = { .port = 1u, .pin = 1u },
-            [2] = { .port = 1u, .pin = 2u },
-            [3] = { .port = 1u, .pin = 3u },
+            [0] = { .port = GPIO_PORTB, .pin = 0u },
+            [1] = { .port = GPIO_PORTB, .pin = 1u },
+            [2] = { .port = GPIO_PORTB, .pin = 2u },
+            [3] = { .port = GPIO_PORTB, .pin = 3u },
         },
         .size = 4u,
     };
