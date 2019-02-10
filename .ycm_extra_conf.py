@@ -58,6 +58,7 @@ flags = [
 '-isystem','.',
 '-I', './drivers/common/include',
 '-I', './drivers/debug/include',
+'-I', './drivers/gpio/include',
 '-I', './drivers/ssd/include',
 '-I', './drivers/usart/include',
 '-I', './modules/System/include',
