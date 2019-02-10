@@ -110,6 +110,36 @@ static volatile uint8_t *get_port_status_register(GPIO_port_t port)
     }
 }
 
+int8_t GPIO_write_pin(const GPIO_data_t *data, bool is_high)
+{
+    if(data == NULL)
+    {
+        return -1;
+    }
+
+    if(!is_port_valid(data->port))
+    {
+        return -1;
+    }
+
+    if(!is_pin_valid(data))
+    {
+        return -1;
+    }
+
+    volatile uint8_t *port_status_reg = get_port_status_register(data->port);
+
+    if(is_high)
+    {
+        *port_status_reg |= (1 << data->pin);
+    }
+    else
+    {
+        *port_status_reg &= ~(1 << data->pin);
+    }
+
+    return 0;
+}
 
 int8_t GPIO_config_pin(GPIO_mode_t mode, const GPIO_data_t *data)
 {
