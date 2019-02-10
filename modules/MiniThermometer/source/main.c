@@ -30,9 +30,12 @@
 #include "ssd_display.h"
 #include "ssd_mgr.h"
 #include "system_timer.h"
+#include "gpio.h"
 
 static inline void drivers_init(void)
 {
+    GPIO_configure(true);
+
     USART_config_t config =
     {
         .baudrate = 250000U,
