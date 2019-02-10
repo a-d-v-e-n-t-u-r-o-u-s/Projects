@@ -50,14 +50,14 @@ static inline void drivers_init(void)
 
     SSD_config_t ssd_config =
     {
-        .a = { .port = SSD_PORTC, .pin = 0U, },
-        .b = { .port = SSD_PORTC, .pin = 1U, },
-        .c = { .port = SSD_PORTC, .pin = 2U, },
-        .d = { .port = SSD_PORTC, .pin = 3U, },
-        .e = { .port = SSD_PORTC, .pin = 4U, },
-        .f = { .port = SSD_PORTC, .pin = 5U, },
-        .g = { .port = SSD_PORTD, .pin = 6U, },
-        .dp = { .port = SSD_PORTD, .pin = 7U, },
+        .a = { .port = GPIO_PORTC, .pin = 0U, },
+        .b = { .port = GPIO_PORTC, .pin = 1U, },
+        .c = { .port = GPIO_PORTC, .pin = 2U, },
+        .d = { .port = GPIO_PORTC, .pin = 3U, },
+        .e = { .port = GPIO_PORTC, .pin = 4U, },
+        .f = { .port = GPIO_PORTC, .pin = 5U, },
+        .g = { .port = GPIO_PORTD, .pin = 6U, },
+        .dp = { .port = GPIO_PORTD, .pin = 7U, },
     };
 
     if(SSD_configure(&ssd_config) != 0)

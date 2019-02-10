@@ -25,27 +25,18 @@
 #define SSD_DISPLAY_H
 
 #include <stdint.h>
-
-#define SSD_PORTB       1U
-#define SSD_PORTC       2U
-#define SSD_PORTD       3U
+#include "gpio.h"
 
 typedef struct
 {
-    uint8_t port;
-    uint8_t pin;
-} SSD_pin_t;
-
-typedef struct
-{
-    SSD_pin_t a;
-    SSD_pin_t b;
-    SSD_pin_t c;
-    SSD_pin_t d;
-    SSD_pin_t e;
-    SSD_pin_t f;
-    SSD_pin_t g;
-    SSD_pin_t dp;
+    GPIO_data_t a;
+    GPIO_data_t b;
+    GPIO_data_t c;
+    GPIO_data_t d;
+    GPIO_data_t e;
+    GPIO_data_t f;
+    GPIO_data_t g;
+    GPIO_data_t dp;
 } SSD_config_t;
 
 void SSD_light(uint8_t value);
