@@ -30,49 +30,6 @@
 
 static SSD_MGR_config_t module_config;
 
-static volatile uint8_t *get_port_config_register(uint8_t port)
-{
-    switch(port)
-    {
-        case 1:
-            return &DDRB;
-        case 2:
-            return &DDRC;
-        case 3:
-            return &DDRD;
-        default:
-            return NULL;
-    }
-}
-
-static volatile uint8_t *get_port_status_register(uint8_t port)
-{
-    switch(port)
-    {
-        case 1:
-            return &PORTB;
-        case 2:
-            return &PORTC;
-        case 3:
-            return &PORTD;
-        default:
-            return NULL;
-    }
-}
-
-static int8_t pin_configure(const SSD_MGR_pin_t data)
-{
-    volatile uint8_t *port_cfg_reg = get_port_config_register(data.port);
-
-    if(port_cfg_reg == NULL)
-    {
-        return -1;
-    }
-
-    *port_cfg_reg |= (1 << data.pin);
-    return 0;
-}
-
 static void ssd_mgr_main(void)
 {
     static uint8_t counter;
@@ -80,9 +37,7 @@ static void ssd_mgr_main(void)
 
     for(uint8_t i = 0u; i< module_config.size; i++)
     {
-        volatile uint8_t *port_status_reg =
-            get_port_status_register(module_config.config[i].port);
-            *port_status_reg &= ~(1 << module_config.config[i].pin);
+        GPIO_write_pin(&module_config.config[i], false);
     }
 
     while(SYSTEM_timer_tick_difference(tick, SYSTEM_timer_get_tick()) < 2);
@@ -96,9 +51,7 @@ static void ssd_mgr_main(void)
         case 2:
         case 3:
         {
-            volatile uint8_t *port_status_reg =
-                get_port_status_register(module_config.config[counter].port);
-            *port_status_reg |= (1 << module_config.config[counter].pin);
+            GPIO_write_pin(&module_config.config[counter], true);
         }
             break;
         default:
@@ -126,9 +79,9 @@ int8_t SSD_MGR_initialize(const SSD_MGR_config_t *config)
 
     for(uint8_t i = 0u; i < config->size; i++)
     {
-        const SSD_MGR_pin_t pin = config->config[i];
+        const GPIO_data_t pin = config->config[i];
 
-        if(pin_configure(pin) != 0)
+        if(GPIO_config_pin(GPIO_OUTPUT_PUSH_PULL, &pin) != 0)
         {
             return -1;
         }

@@ -25,18 +25,13 @@
 #define SSD_MGR_H
 
 #include <stdint.h>
+#include "gpio.h"
 
 #define SSD_MGR_MAX_MULTIPLEXED_DISPLAYS        4U
 
 typedef struct
 {
-    uint8_t port;
-    uint8_t pin;
-} SSD_MGR_pin_t;
-
-typedef struct
-{
-    SSD_MGR_pin_t config[SSD_MGR_MAX_MULTIPLEXED_DISPLAYS];
+    GPIO_data_t config[SSD_MGR_MAX_MULTIPLEXED_DISPLAYS];
     uint8_t size;
 } SSD_MGR_config_t;
 
