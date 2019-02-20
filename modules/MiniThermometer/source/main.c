@@ -86,8 +86,21 @@ static inline void modules_init(void)
     }
 }
 
+static uint32_t tick;
+
 static void callback(void)
 {
+    static uint16_t counter;
+
+    if(SYSTEM_timer_tick_difference(tick, SYSTEM_timer_get_tick()) > 1000)
+    {
+        uint8_t hours = (counter/3600u) % 24u;
+        uint8_t minutes = (counter/60u) % 60u;
+        uint8_t seconds = counter % 60u;
+        SSD_MGR_set(minutes*100 + seconds);
+        tick = SYSTEM_timer_get_tick();
+        counter++;
+    }
 }
 
 int main(void)
@@ -101,6 +114,7 @@ int main(void)
     //PORTB |= (1 << PB0);
 
     SYSTEM_init();
+    tick = SYSTEM_timer_get_tick();
     SYSTEM_timer_register(callback);
 
     DEBUG_output("********************************\n");
