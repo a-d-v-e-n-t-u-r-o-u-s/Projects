@@ -128,6 +128,34 @@ static inline void set9(void)
     GPIO_write_pin(&driver_config.g, true);
 }
 
+void SSD_set_segment(uint8_t segment, bool value)
+{
+    switch(segment)
+    {
+        case 0:
+            GPIO_write_pin(&driver_config.a, value);
+            break;
+        case 1:
+            GPIO_write_pin(&driver_config.b, value);
+            break;
+        case 2:
+            GPIO_write_pin(&driver_config.c, value);
+            break;
+        case 3:
+            GPIO_write_pin(&driver_config.d, value);
+            break;
+        case 4:
+            GPIO_write_pin(&driver_config.e, value);
+            break;
+        case 5:
+            GPIO_write_pin(&driver_config.f, value);
+            break;
+        case 6:
+            GPIO_write_pin(&driver_config.g, value);
+            break;
+    }
+}
+
 void SSD_light(uint8_t value)
 {
     clear();

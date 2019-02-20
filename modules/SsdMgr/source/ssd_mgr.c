@@ -22,50 +22,107 @@
  */
 #include "ssd_mgr.h"
 #include <stddef.h>
+#include <stdio.h>
 #include <avr/io.h>
+#include <util/delay.h>
 #include "system.h"
-#include "system_timer.h"
 #include "ssd_display.h"
 #include "debug.h"
 
 static SSD_MGR_config_t module_config;
+static bool module_mode;
+static uint16_t display_value;
+
+static const bool data[10][7] =
+{
+    [0] = {  true, true, true, true, true, true, false},
+    [1] = {  false, true, true, false, false, false, false},
+    [2] = {  true, true, false, true, true, false, true},
+    [3] = {  true, true, true, true, false, false, true},
+    [4] = {  false, true, true, false, false, true, true},
+    [5] = {  true, false, true, true, false, true, true},
+    [6] = {  true, false, true, true, true, true, true},
+    [7] = {  true, true, true, false, false, false, false},
+    [8] = {  true, true, true, true, true, true, true},
+    [9] = {  true, true, true, true, false, true, true},
+};
+
+static inline uint8_t get_digit(uint16_t value, uint8_t position)
+{
+     switch(position)
+     {
+         case 0:
+             return (value/1000u)%10u;
+         case 1:
+             return (value/100u)%10u;
+         case 2:
+             return (value/10u)%10u;
+         case 3:
+             return value%10u;
+     }
+
+     return 0U;
+}
+
+static void multiplex_in_segment_mode(uint16_t value)
+{
+    for(uint8_t i = 0u; i < 4U ; i++)
+    {
+        uint8_t digit = get_digit(value, i);
+        GPIO_write_pin(&module_config.config[i], true);
+        for(uint8_t j = 0u; j < 7u ; j++)
+        {
+            SSD_set_segment(j, data[digit][j]);
+            _delay_us(500);
+            SSD_set_segment(j, false);
+        }
+        GPIO_write_pin(&module_config.config[i], false);
+    }
+}
+
+static void multiplex_in_digit_mode(uint16_t value)
+{
+    for(uint8_t i = 0U; i < 4U; i++)
+    {
+        for(uint8_t j = 0U; j< module_config.size; j++)
+        {
+            GPIO_write_pin(&module_config.config[j], false);
+        }
+        _delay_us(250);
+        SSD_light(get_digit(value, i));
+        GPIO_write_pin(&module_config.config[i], true);
+        _delay_us(250);
+    }
+}
 
 static void ssd_mgr_main(void)
 {
-    static uint8_t counter;
-    uint32_t tick = SYSTEM_timer_get_tick();
+    uint16_t value = display_value;
 
-    for(uint8_t i = 0u; i< module_config.size; i++)
+    if(module_mode)
     {
-        GPIO_write_pin(&module_config.config[i], false);
+        multiplex_in_segment_mode(value);
     }
-
-    while(SYSTEM_timer_tick_difference(tick, SYSTEM_timer_get_tick()) < 2);
-
-    SSD_light(0);
-
-    switch(counter)
+    else
     {
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-        {
-            GPIO_write_pin(&module_config.config[counter], true);
-        }
-            break;
-        default:
-            DEBUG_output("Shouldn't happen\n");
-            break;
+        multiplex_in_digit_mode(value);
     }
-
-    counter++;
-    counter %=4;
-
-    while(SYSTEM_timer_tick_difference(tick, SYSTEM_timer_get_tick()) < 5);
 }
 
-int8_t SSD_MGR_initialize(const SSD_MGR_config_t *config)
+int8_t SSD_MGR_set(uint16_t value)
+{
+    if( value > 9999U)
+    {
+        return -1;
+    }
+
+    display_value = value;
+
+    return 0;
+}
+
+int8_t SSD_MGR_initialize(const SSD_MGR_config_t *config,
+        bool is_segment_mode)
 {
     if( config == NULL)
     {
@@ -85,6 +142,8 @@ int8_t SSD_MGR_initialize(const SSD_MGR_config_t *config)
         {
             return -1;
         }
+
+        GPIO_write_pin(&pin, false);
     }
 
     if(SYSTEM_register_task(ssd_mgr_main) != 0)
@@ -93,6 +152,7 @@ int8_t SSD_MGR_initialize(const SSD_MGR_config_t *config)
     }
 
     module_config = *config;
+    module_mode = is_segment_mode;
 
     return 0;
 }

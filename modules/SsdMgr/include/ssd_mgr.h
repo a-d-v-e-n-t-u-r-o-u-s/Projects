@@ -35,5 +35,7 @@ typedef struct
     uint8_t size;
 } SSD_MGR_config_t;
 
-int8_t SSD_MGR_initialize(const SSD_MGR_config_t *config);
+int8_t SSD_MGR_set(uint16_t value);
+int8_t SSD_MGR_initialize(const SSD_MGR_config_t *config,
+        bool is_segment_mode);
 #endif

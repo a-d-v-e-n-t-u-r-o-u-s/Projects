@@ -80,7 +80,7 @@ static inline void modules_init(void)
         .size = 4u,
     };
 
-    if(SSD_MGR_initialize(&ssd_mgr_config) != 0)
+    if(SSD_MGR_initialize(&ssd_mgr_config, true) != 0)
     {
         DEBUG_output("SSD MGR [fail]\n");
     }
