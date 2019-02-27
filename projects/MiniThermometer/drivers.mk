@@ -5,5 +5,6 @@ USED_DRIVERS += usart
 USED_DRIVERS += debug
 USED_DRIVERS += ssd
 USED_DRIVERS += gpio
+USED_DRIVERS += 1wire
 #USED_DRIVERS += pwm
 #USED_DRIVERS += rtc

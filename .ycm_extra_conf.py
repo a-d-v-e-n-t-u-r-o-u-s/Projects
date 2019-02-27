@@ -56,6 +56,7 @@ flags = [
 #'-isystem','/usr/include/x86_64-linux-gnu',
 #'-isystem','/opt/ycm_temp/llvm_root_dir/bin/../lib/clang/3.8.0/include',
 '-isystem','.',
+'-I', './drivers/1wire/include',
 '-I', './drivers/common/include',
 '-I', './drivers/debug/include',
 '-I', './drivers/gpio/include',
