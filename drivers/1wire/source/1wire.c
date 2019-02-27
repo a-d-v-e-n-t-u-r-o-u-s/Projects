@@ -26,6 +26,102 @@
 
 static WIRE_config_t driver_config;
 
+static bool reset(void)
+{
+    bool ret = false;
+
+    DDRD |= (1 << PB7);
+    PORTD &= ~(1 << PB7);
+    _delay_us(500);
+
+    DDRD &= ~(1 << PB7);
+    _delay_us(45);
+
+    ret = ((PIND & (1 << PB7)) == 0U);
+
+    _delay_us(470);
+
+    return ret;
+}
+
+static void send_bit(bool bit)
+{
+    cli();
+    DDRD |= (1 << PB7);
+    PORTD &= ~(1 << PB7);
+    _delay_us(5);
+
+    if(bit)
+    {
+        DDRD &= ~(1 << PB7);
+    }
+
+    _delay_us(80);
+    DDRD &= ~(1 << PB7);
+    sei();
+}
+
+static bool flag;
+
+static bool read_bit(void)
+{
+    bool ret = false;
+    cli();
+    DDRD |= (1 << PB7);
+    //PORTD &= ~(1 << PB7);
+    _delay_us(2);
+    DDRD &= ~(1 << PB7);
+    _delay_us(15);
+
+    if(flag)
+    {
+        PORTD |= (1 << PD5);
+        flag = false;
+    }
+    else
+    {
+        PORTD &= ~(1 << PD5);
+        flag = true;
+    }
+
+    ret = (PIND & (1 << PB7)) != 0u;
+    sei();
+    return ret;
+}
+
+static void send_byte(uint8_t byte)
+{
+    //DEBUG_output("Send:");
+    for(uint8_t i = 0U; i < 8U; i++)
+    {
+        const bool bit = ((byte & 0x01U) == 0x01);
+        //DEBUG_output("%d",bit);
+        send_bit(bit);
+        byte >>= 1U;
+    }
+    _delay_us(100U);
+    //DEBUG_output("\n");
+}
+
+static uint8_t read_byte(void)
+{
+    uint8_t ret = 0U;
+    //DEBUG_output("Read:");
+    for(uint8_t i = 0U; i < 8U ; i++)
+    {
+        const bool bit = read_bit();
+        //DEBUG_output("%d",bit);
+        if(bit)
+        {
+            ret |= (1U << i);
+        }
+        _delay_us(15);
+    }
+    //DEBUG_output("\n");
+
+    return ret;
+}
+
 static inline bool is_mode_valid(WIRE_mode_t mode)
 {
     switch(mode)
