@@ -110,6 +110,50 @@ static volatile uint8_t *get_port_status_register(GPIO_port_t port)
     }
 }
 
+static volatile uint8_t *get_input_pin_register(GPIO_port_t port)
+{
+    switch(port)
+    {
+        case GPIO_PORTB:
+            return &PINB;
+        case GPIO_PORTC:
+            return &PINC;
+        case GPIO_PORTD:
+            return &PIND;
+        default:
+            return NULL;
+    }
+}
+
+int8_t GPIO_read_pin(const GPIO_data_t *data, bool *is_high)
+{
+    if(data == NULL)
+    {
+        return -1;
+    }
+
+    if(is_high == NULL)
+    {
+        return -1;
+    }
+
+    if(!is_port_valid(data->port))
+    {
+        return -1;
+    }
+
+    if(!is_pin_valid(data))
+    {
+        return -1;
+    }
+
+    volatile uint8_t *input_pin_reg = get_input_pin_register(data->port);
+
+    *is_high = (((*input_pin_reg) & ( 1 << data->pin)) != 0);
+
+    return 0;
+}
+
 int8_t GPIO_write_pin(const GPIO_data_t *data, bool is_high)
 {
     if(data == NULL)
