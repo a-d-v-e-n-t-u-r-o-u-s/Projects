@@ -82,47 +82,62 @@ static inline bool is_mode_valid(GPIO_mode_t mode)
 
 static volatile uint8_t *get_port_config_register(GPIO_port_t port)
 {
+    volatile uint8_t *reg = NULL;
+
     switch(port)
     {
         case GPIO_PORTB:
-            return &DDRB;
+            reg = &DDRB;
+            break;
         case GPIO_PORTC:
-            return &DDRC;
+            reg = &DDRC;
+            break;
         case GPIO_PORTD:
-            return &DDRD;
-        default:
-            return NULL;
+            reg = &DDRD;
+            break;
     }
+
+    return reg;
 }
 
 static volatile uint8_t *get_port_status_register(GPIO_port_t port)
 {
+    volatile uint8_t *reg = NULL;
+
     switch(port)
     {
         case GPIO_PORTB:
-            return &PORTB;
+            reg = &PORTB;
+            break;
         case GPIO_PORTC:
-            return &PORTC;
+            reg = &PORTC;
+            break;
         case GPIO_PORTD:
-            return &PORTD;
-        default:
-            return NULL;
+            reg = &PORTD;
+            break;
     }
+
+    return reg;
 }
 
 static volatile uint8_t *get_input_pin_register(GPIO_port_t port)
 {
+    volatile uint8_t *reg = NULL;
+
     switch(port)
     {
         case GPIO_PORTB:
-            return &PINB;
+            reg = &PINB;
+            break;
         case GPIO_PORTC:
-            return &PINC;
+            reg = &PINC;
+            break;
         case GPIO_PORTD:
-            return &PIND;
-        default:
-            return NULL;
+            reg = &PIND;
+            break;
     }
+
+    return reg;
 }
 
 int8_t GPIO_read_pin(const GPIO_data_t *data, bool *is_high)
