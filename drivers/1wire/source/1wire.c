@@ -23,26 +23,11 @@
 
 #include "1wire.h"
 #include <stddef.h>
+#include <util/delay.h>
+#include <avr/io.h>
+#include <avr/interrupt.h>
 
 static WIRE_config_t driver_config;
-
-static bool reset(void)
-{
-    bool ret = false;
-
-    DDRD |= (1 << PB7);
-    PORTD &= ~(1 << PB7);
-    _delay_us(500);
-
-    DDRD &= ~(1 << PB7);
-    _delay_us(45);
-
-    ret = ((PIND & (1 << PB7)) == 0U);
-
-    _delay_us(470);
-
-    return ret;
-}
 
 static void send_bit(bool bit)
 {
@@ -61,92 +46,67 @@ static void send_bit(bool bit)
     sei();
 }
 
-static bool flag;
-
 static bool read_bit(void)
 {
     bool ret = false;
     cli();
     DDRD |= (1 << PB7);
-    //PORTD &= ~(1 << PB7);
     _delay_us(2);
     DDRD &= ~(1 << PB7);
     _delay_us(15);
-
-    if(flag)
-    {
-        PORTD |= (1 << PD5);
-        flag = false;
-    }
-    else
-    {
-        PORTD &= ~(1 << PD5);
-        flag = true;
-    }
 
     ret = (PIND & (1 << PB7)) != 0u;
     sei();
     return ret;
 }
 
-static void send_byte(uint8_t byte)
+bool WIRE_reset(void)
 {
-    //DEBUG_output("Send:");
+    bool ret = false;
+
+    DDRD |= (1 << PB7);
+    PORTD &= ~(1 << PB7);
+    _delay_us(500);
+
+    DDRD &= ~(1 << PB7);
+    _delay_us(45);
+
+    ret = ((PIND & (1 << PB7)) == 0U);
+
+    _delay_us(470);
+
+    return ret;
+}
+
+void WIRE_send_byte(uint8_t byte)
+{
     for(uint8_t i = 0U; i < 8U; i++)
     {
         const bool bit = ((byte & 0x01U) == 0x01);
-        //DEBUG_output("%d",bit);
         send_bit(bit);
         byte >>= 1U;
     }
     _delay_us(100U);
-    //DEBUG_output("\n");
 }
 
-static uint8_t read_byte(void)
+uint8_t WIRE_read_byte(void)
 {
     uint8_t ret = 0U;
-    //DEBUG_output("Read:");
     for(uint8_t i = 0U; i < 8U ; i++)
     {
         const bool bit = read_bit();
-        //DEBUG_output("%d",bit);
         if(bit)
         {
             ret |= (1U << i);
         }
         _delay_us(15);
     }
-    //DEBUG_output("\n");
-
     return ret;
-}
-
-static inline bool is_mode_valid(WIRE_mode_t mode)
-{
-    switch(mode)
-    {
-        case WIRE_9BIT_MODE:
-            /* no break */
-        case WIRE_10BIT_MODE:
-            /* no break */
-        case WIRE_11BIT_MODE:
-            /* no break */
-        case WIRE_12BIT_MODE:
-            return true;
-        default:
-            return false;
-    }
 }
 
 int8_t WIRE_configure(const WIRE_config_t *config)
 {
     if(config == NULL)
-    {
-        return -1;
-    }
-
-    if(!is_mode_valid(config->mode))
     {
         return -1;
     }

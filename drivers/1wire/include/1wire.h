@@ -34,20 +34,14 @@
 /*@{*/
 #include "gpio.h"
 
-typedef enum
-{
-    WIRE_9BIT_MODE,
-    WIRE_10BIT_MODE,
-    WIRE_11BIT_MODE,
-    WIRE_12BIT_MODE,
-} WIRE_mode_t;
-
 typedef struct
 {
     GPIO_data_t data_pin;
-    WIRE_mode_t mode;
 } WIRE_config_t;
 
+bool WIRE_reset(void);
+uint8_t WIRE_read_byte(void);
+void WIRE_send_byte(uint8_t byte);
 int8_t WIRE_configure(const WIRE_config_t *config);
 
 /*@}*/
