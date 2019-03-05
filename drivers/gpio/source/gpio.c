@@ -142,6 +142,7 @@ static volatile uint8_t *get_input_pin_register(GPIO_port_t port)
 
 int8_t GPIO_read_pin(const GPIO_data_t *data, bool *is_high)
 {
+#if GPIO_DYNAMIC_CHECK == 1U
     if(data == NULL)
     {
         return -1;
@@ -161,6 +162,7 @@ int8_t GPIO_read_pin(const GPIO_data_t *data, bool *is_high)
     {
         return -1;
     }
+#endif
 
     volatile uint8_t *input_pin_reg = get_input_pin_register(data->port);
 
@@ -171,6 +173,7 @@ int8_t GPIO_read_pin(const GPIO_data_t *data, bool *is_high)
 
 int8_t GPIO_write_pin(const GPIO_data_t *data, bool is_high)
 {
+#if GPIO_DYNAMIC_CHECK == 1U
     if(data == NULL)
     {
         return -1;
@@ -185,6 +188,7 @@ int8_t GPIO_write_pin(const GPIO_data_t *data, bool is_high)
     {
         return -1;
     }
+#endif
 
     volatile uint8_t *port_status_reg = get_port_status_register(data->port);
 
@@ -202,6 +206,7 @@ int8_t GPIO_write_pin(const GPIO_data_t *data, bool is_high)
 
 int8_t GPIO_config_pin(GPIO_mode_t mode, const GPIO_data_t *data)
 {
+#if GPIO_DYNAMIC_CHECK == 1U
     if(data == NULL)
     {
         return -1;
@@ -221,6 +226,7 @@ int8_t GPIO_config_pin(GPIO_mode_t mode, const GPIO_data_t *data)
     {
         return -1;
     }
+#endif
 
     volatile uint8_t *port_cfg_reg = get_port_config_register(data->port);
     volatile uint8_t *port_status_reg = get_port_status_register(data->port);

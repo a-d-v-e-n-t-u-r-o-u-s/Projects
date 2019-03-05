@@ -36,6 +36,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define GPIO_DYNAMIC_CHECK 0U
+
 typedef enum
 {
     GPIO_PORTB = 1U,
