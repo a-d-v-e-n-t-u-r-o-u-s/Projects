@@ -17,7 +17,9 @@ CFLAGS += -Os
 CFLAGS += -std=c99
 CFLAGS += $(addprefix -I,$(INCLUDE_DIR))
 CFLAGS += $(addprefix -D,$(CDEFS))
+CFLAGS += -Wa,-adhlns=$(OBJECTS_DIR)/$(@F).lst
 CFLAGS += -o $(OBJECTS_DIR)/$(@F)
+
 
 LDFLAGS += -mmcu=atmega8
 LDFLAGS += -Wl,-Map,$(BIN_DIR_FORMATED)$(DELIM)$(OUTPUT).map
