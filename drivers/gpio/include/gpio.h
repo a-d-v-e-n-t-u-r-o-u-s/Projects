@@ -40,9 +40,9 @@
 
 typedef enum
 {
-    GPIO_PORTB = 1U,
-    GPIO_PORTC = 2U,
-    GPIO_PORTD = 3U,
+    GPIO_PORTD,
+    GPIO_PORTC,
+    GPIO_PORTB,
 } GPIO_port_t;
 
 typedef enum

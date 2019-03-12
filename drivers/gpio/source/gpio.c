@@ -26,6 +26,13 @@
 #include <stdbool.h>
 #include <avr/io.h>
 
+#define REG_BY_PORT(base_reg, port_no, port_offset)  \
+    *((volatile uint8_t *)((volatile uint8_t *)&base_reg + port_no * port_offset))
+
+#define DDR(port_no)    REG_BY_PORT(DDRD, port_no, 0x03)
+#define PORT(port_no)   REG_BY_PORT(PORTD, port_no, 0x03)
+#define PIN(port_no)    REG_BY_PORT(PIND, port_no, 0x03)
+
 static inline bool is_port_valid(GPIO_port_t port)
 {
     switch(port)
@@ -79,67 +86,6 @@ static inline bool is_mode_valid(GPIO_mode_t mode)
     }
 }
 
-
-static volatile uint8_t *get_port_config_register(GPIO_port_t port)
-{
-    volatile uint8_t *reg = NULL;
-
-    switch(port)
-    {
-        case GPIO_PORTB:
-            reg = &DDRB;
-            break;
-        case GPIO_PORTC:
-            reg = &DDRC;
-            break;
-        case GPIO_PORTD:
-            reg = &DDRD;
-            break;
-    }
-
-    return reg;
-}
-
-static volatile uint8_t *get_port_status_register(GPIO_port_t port)
-{
-    volatile uint8_t *reg = NULL;
-
-    switch(port)
-    {
-        case GPIO_PORTB:
-            reg = &PORTB;
-            break;
-        case GPIO_PORTC:
-            reg = &PORTC;
-            break;
-        case GPIO_PORTD:
-            reg = &PORTD;
-            break;
-    }
-
-    return reg;
-}
-
-static volatile uint8_t *get_input_pin_register(GPIO_port_t port)
-{
-    volatile uint8_t *reg = NULL;
-
-    switch(port)
-    {
-        case GPIO_PORTB:
-            reg = &PINB;
-            break;
-        case GPIO_PORTC:
-            reg = &PINC;
-            break;
-        case GPIO_PORTD:
-            reg = &PIND;
-            break;
-    }
-
-    return reg;
-}
-
 int8_t GPIO_read_pin(const GPIO_data_t *data, bool *is_high)
 {
 #if GPIO_DYNAMIC_CHECK == 1U
@@ -164,9 +110,7 @@ int8_t GPIO_read_pin(const GPIO_data_t *data, bool *is_high)
     }
 #endif
 
-    volatile uint8_t *input_pin_reg = get_input_pin_register(data->port);
-
-    *is_high = (((*input_pin_reg) & ( 1 << data->pin)) != 0);
+    *is_high = ((PIN(data->port) & ( 1 << data->pin)) != 0);
 
     return 0;
 }
@@ -190,15 +134,13 @@ int8_t GPIO_write_pin(const GPIO_data_t *data, bool is_high)
     }
 #endif
 
-    volatile uint8_t *port_status_reg = get_port_status_register(data->port);
-
     if(is_high)
     {
-        *port_status_reg |= (1 << data->pin);
+        PORT(data->port) |= (1 << data->pin);
     }
     else
     {
-        *port_status_reg &= ~(1 << data->pin);
+        PORT(data->port)  &= ~(1 << data->pin);
     }
 
     return 0;
@@ -228,22 +170,19 @@ int8_t GPIO_config_pin(GPIO_mode_t mode, const GPIO_data_t *data)
     }
 #endif
 
-    volatile uint8_t *port_cfg_reg = get_port_config_register(data->port);
-    volatile uint8_t *port_status_reg = get_port_status_register(data->port);
-
     /*! \todo think about intermediate steps */
-    *port_cfg_reg &= ~(1 << data->pin);
-    *port_status_reg &= ~(1 << data->pin);
+    DDR(data->port) &= ~(1 << data->pin);
+    PORT(data->port)  &= ~(1 << data->pin);
 
     switch(mode)
     {
         case GPIO_OUTPUT_PUSH_PULL:
-            *port_cfg_reg |= (1 << data->pin);
+            DDR(data->port) |= (1 << data->pin);
             break;
         case GPIO_INPUT_FLOATING:
             break;
         case GPIO_INPUT_PULL_UP:
-            *port_status_reg |= (1 << data->pin);
+            PORT(data->port) |= (1 << data->pin);
             break;
     }
 
