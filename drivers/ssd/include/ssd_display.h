@@ -27,20 +27,8 @@
 #include <stdint.h>
 #include "gpio.h"
 
-typedef struct
-{
-    GPIO_data_t a;
-    GPIO_data_t b;
-    GPIO_data_t c;
-    GPIO_data_t d;
-    GPIO_data_t e;
-    GPIO_data_t f;
-    GPIO_data_t g;
-    GPIO_data_t dp;
-} SSD_config_t;
-
 void SSD_light(uint8_t value);
 void SSD_set_segment(uint8_t segment, bool value);
-int8_t SSD_configure(const SSD_config_t *config);
+int8_t SSD_configure(const uint8_t config[8]);
 
 #endif

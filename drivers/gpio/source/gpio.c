@@ -86,7 +86,7 @@ static inline bool is_mode_valid(GPIO_mode_t mode)
     }
 }
 
-int8_t GPIO_read_pin(const GPIO_data_t *data, bool *is_high)
+int8_t GPIO_read_pin(uint8_t config, bool *is_high)
 {
 #if GPIO_DYNAMIC_CHECK == 1U
     if(data == NULL)
@@ -110,12 +110,15 @@ int8_t GPIO_read_pin(const GPIO_data_t *data, bool *is_high)
     }
 #endif
 
-    *is_high = ((PIN(data->port) & ( 1 << data->pin)) != 0);
+    const uint8_t port = config & GPIO_PORT_MASK;
+    const uint8_t pin = ((config & GPIO_PIN_MASK) >> GPIO_PIN_SHIFT);
+
+    *is_high = ((PIN(port) & ( 1 << pin)) != 0);
 
     return 0;
 }
 
-int8_t GPIO_write_pin(const GPIO_data_t *data, bool is_high)
+int8_t GPIO_write_pin(uint8_t config, bool is_high)
 {
 #if GPIO_DYNAMIC_CHECK == 1U
     if(data == NULL)
@@ -133,20 +136,22 @@ int8_t GPIO_write_pin(const GPIO_data_t *data, bool is_high)
         return -1;
     }
 #endif
+    const uint8_t port = config & GPIO_PORT_MASK;
+    const uint8_t pin = ((config & GPIO_PIN_MASK) >> GPIO_PIN_SHIFT);
 
     if(is_high)
     {
-        PORT(data->port) |= (1 << data->pin);
+        PORT(port) |= (1 << pin);
     }
     else
     {
-        PORT(data->port)  &= ~(1 << data->pin);
+        PORT(port)  &= ~(1 << pin);
     }
 
     return 0;
 }
 
-int8_t GPIO_config_pin(GPIO_mode_t mode, const GPIO_data_t *data)
+int8_t GPIO_config_pin(uint8_t config)
 {
 #if GPIO_DYNAMIC_CHECK == 1U
     if(data == NULL)
@@ -169,27 +174,29 @@ int8_t GPIO_config_pin(GPIO_mode_t mode, const GPIO_data_t *data)
         return -1;
     }
 #endif
+    const uint8_t port = config & GPIO_PORT_MASK;
+    const uint8_t pin = ((config & GPIO_PIN_MASK) >> GPIO_PIN_SHIFT);
+    const uint8_t mode = ((config & GPIO_MODE_MASK) >> GPIO_MODE_SHIFT);
 
-    /*! \todo think about intermediate steps */
-    DDR(data->port) &= ~(1 << data->pin);
-    PORT(data->port)  &= ~(1 << data->pin);
+    DDR(port) &= ~(1 << pin);
+    PORT(port)  &= ~(1 << pin);
 
     switch(mode)
     {
         case GPIO_OUTPUT_PUSH_PULL:
-            DDR(data->port) |= (1 << data->pin);
+            DDR(port) |= (1 << pin);
             break;
         case GPIO_INPUT_FLOATING:
             break;
         case GPIO_INPUT_PULL_UP:
-            PORT(data->port) |= (1 << data->pin);
+            PORT(port) |= (1 << pin);
             break;
     }
 
     return 0;
 }
 
-void GPIO_configure(bool is_global_pullup)
+void GPIO_configure(const uint8_t *config, uint8_t size, bool is_global_pullup)
 {
     if(is_global_pullup)
     {
@@ -198,5 +205,10 @@ void GPIO_configure(bool is_global_pullup)
     else
     {
         SFIOR &= ~(1 << PUD);
+    }
+
+    for(uint8_t i = 0; i < size; i++, config++)
+    {
+        GPIO_config_pin(*config);
     }
 }

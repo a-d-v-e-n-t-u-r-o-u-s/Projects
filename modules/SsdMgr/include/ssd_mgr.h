@@ -29,13 +29,7 @@
 
 #define SSD_MGR_MAX_MULTIPLEXED_DISPLAYS        4U
 
-typedef struct
-{
-    GPIO_data_t config[SSD_MGR_MAX_MULTIPLEXED_DISPLAYS];
-    uint8_t size;
-} SSD_MGR_config_t;
-
 int8_t SSD_MGR_set(uint16_t value);
-int8_t SSD_MGR_initialize(const SSD_MGR_config_t *config,
+int8_t SSD_MGR_initialize(const uint8_t config[4],
         bool is_segment_mode);
 #endif

@@ -23,137 +23,115 @@
 
 #include "ssd_display.h"
 #include <stddef.h>
+#include <string.h>
 #include <avr/io.h>
 
-static SSD_config_t driver_config;
+static uint8_t driver_config[8];
 
 static inline void clear(void)
 {
-    GPIO_write_pin(&driver_config.a, false);
-    GPIO_write_pin(&driver_config.b, false);
-    GPIO_write_pin(&driver_config.c, false);
-    GPIO_write_pin(&driver_config.d, false);
-    GPIO_write_pin(&driver_config.e, false);
-    GPIO_write_pin(&driver_config.f, false);
-    GPIO_write_pin(&driver_config.g, false);
-    GPIO_write_pin(&driver_config.dp, false);
+    GPIO_write_pin(driver_config[0], false);
+    GPIO_write_pin(driver_config[1], false);
+    GPIO_write_pin(driver_config[2], false);
+    GPIO_write_pin(driver_config[3], false);
+    GPIO_write_pin(driver_config[4], false);
+    GPIO_write_pin(driver_config[5], false);
+    GPIO_write_pin(driver_config[6], false);
+    GPIO_write_pin(driver_config[7], false);
 }
 
 static inline void set0(void)
 {
-    GPIO_write_pin(&driver_config.a, true);
-    GPIO_write_pin(&driver_config.b, true);
-    GPIO_write_pin(&driver_config.c, true);
-    GPIO_write_pin(&driver_config.d, true);
-    GPIO_write_pin(&driver_config.e, true);
-    GPIO_write_pin(&driver_config.f, true);
+    GPIO_write_pin(driver_config[0], true);
+    GPIO_write_pin(driver_config[1], true);
+    GPIO_write_pin(driver_config[2], true);
+    GPIO_write_pin(driver_config[3], true);
+    GPIO_write_pin(driver_config[4], true);
+    GPIO_write_pin(driver_config[5], true);
 }
 
 static inline void set1(void)
 {
-    GPIO_write_pin(&driver_config.b, true);
-    GPIO_write_pin(&driver_config.c, true);
+    GPIO_write_pin(driver_config[1], true);
+    GPIO_write_pin(driver_config[2], true);
 }
 
 static inline void set2(void)
 {
-    GPIO_write_pin(&driver_config.a, true);
-    GPIO_write_pin(&driver_config.b, true);
-    GPIO_write_pin(&driver_config.d, true);
-    GPIO_write_pin(&driver_config.e, true);
-    GPIO_write_pin(&driver_config.g, true);
+    GPIO_write_pin(driver_config[0], true);
+    GPIO_write_pin(driver_config[1], true);
+    GPIO_write_pin(driver_config[3], true);
+    GPIO_write_pin(driver_config[4], true);
+    GPIO_write_pin(driver_config[6], true);
 }
 
 static inline void set3(void)
 {
-    GPIO_write_pin(&driver_config.a, true);
-    GPIO_write_pin(&driver_config.b, true);
-    GPIO_write_pin(&driver_config.c, true);
-    GPIO_write_pin(&driver_config.d, true);
-    GPIO_write_pin(&driver_config.g, true);
+    GPIO_write_pin(driver_config[0], true);
+    GPIO_write_pin(driver_config[1], true);
+    GPIO_write_pin(driver_config[2], true);
+    GPIO_write_pin(driver_config[3], true);
+    GPIO_write_pin(driver_config[6], true);
 }
 
 static inline void set4(void)
 {
-    GPIO_write_pin(&driver_config.b, true);
-    GPIO_write_pin(&driver_config.c, true);
-    GPIO_write_pin(&driver_config.f, true);
-    GPIO_write_pin(&driver_config.g, true);
+    GPIO_write_pin(driver_config[1], true);
+    GPIO_write_pin(driver_config[2], true);
+    GPIO_write_pin(driver_config[5], true);
+    GPIO_write_pin(driver_config[6], true);
 }
 
 static inline void set5(void)
 {
-    GPIO_write_pin(&driver_config.a, true);
-    GPIO_write_pin(&driver_config.c, true);
-    GPIO_write_pin(&driver_config.d, true);
-    GPIO_write_pin(&driver_config.f, true);
-    GPIO_write_pin(&driver_config.g, true);
+    GPIO_write_pin(driver_config[0], true);
+    GPIO_write_pin(driver_config[2], true);
+    GPIO_write_pin(driver_config[3], true);
+    GPIO_write_pin(driver_config[5], true);
+    GPIO_write_pin(driver_config[6], true);
 }
 
 static inline void set6(void)
 {
-    GPIO_write_pin(&driver_config.a, true);
-    GPIO_write_pin(&driver_config.c, true);
-    GPIO_write_pin(&driver_config.d, true);
-    GPIO_write_pin(&driver_config.e, true);
-    GPIO_write_pin(&driver_config.f, true);
-    GPIO_write_pin(&driver_config.g, true);
+    GPIO_write_pin(driver_config[0], true);
+    GPIO_write_pin(driver_config[2], true);
+    GPIO_write_pin(driver_config[3], true);
+    GPIO_write_pin(driver_config[4], true);
+    GPIO_write_pin(driver_config[5], true);
+    GPIO_write_pin(driver_config[6], true);
 }
 
 static inline void set7(void)
 {
-    GPIO_write_pin(&driver_config.a, true);
-    GPIO_write_pin(&driver_config.b, true);
-    GPIO_write_pin(&driver_config.c, true);
+    GPIO_write_pin(driver_config[0], true);
+    GPIO_write_pin(driver_config[1], true);
+    GPIO_write_pin(driver_config[2], true);
 }
 
 static inline void set8(void)
 {
-    GPIO_write_pin(&driver_config.a, true);
-    GPIO_write_pin(&driver_config.b, true);
-    GPIO_write_pin(&driver_config.c, true);
-    GPIO_write_pin(&driver_config.d, true);
-    GPIO_write_pin(&driver_config.e, true);
-    GPIO_write_pin(&driver_config.f, true);
-    GPIO_write_pin(&driver_config.g, true);
+    GPIO_write_pin(driver_config[0], true);
+    GPIO_write_pin(driver_config[1], true);
+    GPIO_write_pin(driver_config[2], true);
+    GPIO_write_pin(driver_config[3], true);
+    GPIO_write_pin(driver_config[4], true);
+    GPIO_write_pin(driver_config[5], true);
+    GPIO_write_pin(driver_config[6], true);
 }
 
 static inline void set9(void)
 {
-    GPIO_write_pin(&driver_config.a, true);
-    GPIO_write_pin(&driver_config.b, true);
-    GPIO_write_pin(&driver_config.c, true);
-    GPIO_write_pin(&driver_config.d, true);
-    GPIO_write_pin(&driver_config.f, true);
-    GPIO_write_pin(&driver_config.g, true);
+    GPIO_write_pin(driver_config[0], true);
+    GPIO_write_pin(driver_config[1], true);
+    GPIO_write_pin(driver_config[2], true);
+    GPIO_write_pin(driver_config[3], true);
+    GPIO_write_pin(driver_config[5], true);
+    GPIO_write_pin(driver_config[6], true);
 }
 
 void SSD_set_segment(uint8_t segment, bool value)
 {
-    switch(segment)
-    {
-        case 0:
-            GPIO_write_pin(&driver_config.a, value);
-            break;
-        case 1:
-            GPIO_write_pin(&driver_config.b, value);
-            break;
-        case 2:
-            GPIO_write_pin(&driver_config.c, value);
-            break;
-        case 3:
-            GPIO_write_pin(&driver_config.d, value);
-            break;
-        case 4:
-            GPIO_write_pin(&driver_config.e, value);
-            break;
-        case 5:
-            GPIO_write_pin(&driver_config.f, value);
-            break;
-        case 6:
-            GPIO_write_pin(&driver_config.g, value);
-            break;
-    }
+    GPIO_write_pin(driver_config[segment], value);
 }
 
 void SSD_light(uint8_t value)
@@ -199,25 +177,14 @@ void SSD_light(uint8_t value)
     }
 }
 
-int8_t SSD_configure(const SSD_config_t *config)
+int8_t SSD_configure(const uint8_t config[8])
 {
     if(config == NULL)
     {
         return -1;
     }
 
-    const GPIO_data_t *pin_config = (const GPIO_data_t *) config;
-
-    for(uint8_t i = 0; i < 8u; i++)
-    {
-        if(GPIO_config_pin(GPIO_OUTPUT_PUSH_PULL, pin_config) != 0)
-        {
-            return -1;
-        }
-        pin_config++;
-    }
-
-    driver_config = *config;
+    memcpy(driver_config, config, 8);
 
     return 0;
 }

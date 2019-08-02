@@ -36,7 +36,24 @@
 
 static inline void drivers_init(void)
 {
-    GPIO_configure(true);
+    uint8_t gpio_config[] =
+    {
+        GPIO_CONFIG(GPIO_PORTB, 0U, GPIO_OUTPUT_PUSH_PULL),
+        GPIO_CONFIG(GPIO_PORTB, 1U, GPIO_OUTPUT_PUSH_PULL),
+        GPIO_CONFIG(GPIO_PORTB, 2U, GPIO_OUTPUT_PUSH_PULL),
+        GPIO_CONFIG(GPIO_PORTB, 3U, GPIO_OUTPUT_PUSH_PULL),
+        GPIO_CONFIG(GPIO_PORTC, 0U, GPIO_OUTPUT_PUSH_PULL),
+        GPIO_CONFIG(GPIO_PORTC, 1U, GPIO_OUTPUT_PUSH_PULL),
+        GPIO_CONFIG(GPIO_PORTC, 2U, GPIO_OUTPUT_PUSH_PULL),
+        GPIO_CONFIG(GPIO_PORTC, 3U, GPIO_OUTPUT_PUSH_PULL),
+        GPIO_CONFIG(GPIO_PORTC, 4U, GPIO_OUTPUT_PUSH_PULL),
+        GPIO_CONFIG(GPIO_PORTC, 5U, GPIO_OUTPUT_PUSH_PULL),
+        GPIO_CONFIG(GPIO_PORTD, 5U, GPIO_OUTPUT_PUSH_PULL),
+        GPIO_CONFIG(GPIO_PORTD, 6U, GPIO_OUTPUT_PUSH_PULL),
+        GPIO_CONFIG(GPIO_PORTD, 7U, GPIO_OUTPUT_PUSH_PULL),
+    };
+
+    GPIO_configure(gpio_config, sizeof(gpio_config), true);
 
     USART_config_t config =
     {
@@ -50,19 +67,19 @@ static inline void drivers_init(void)
 
     DEBUG_configure(NULL);
 
-    SSD_config_t ssd_config =
+    uint8_t ssd_config[8] =
     {
-        .a = { .port = GPIO_PORTC, .pin = 0U, },
-        .b = { .port = GPIO_PORTC, .pin = 1U, },
-        .c = { .port = GPIO_PORTC, .pin = 2U, },
-        .d = { .port = GPIO_PORTC, .pin = 3U, },
-        .e = { .port = GPIO_PORTC, .pin = 4U, },
-        .f = { .port = GPIO_PORTC, .pin = 5U, },
-        .g = { .port = GPIO_PORTD, .pin = 6U, },
-        .dp = { .port = GPIO_PORTD, .pin = 5U, },
+        GPIO_PORT_PIN_CONFIG(GPIO_PORTC, 0U),
+        GPIO_PORT_PIN_CONFIG(GPIO_PORTC, 1U),
+        GPIO_PORT_PIN_CONFIG(GPIO_PORTC, 2U),
+        GPIO_PORT_PIN_CONFIG(GPIO_PORTC, 3U),
+        GPIO_PORT_PIN_CONFIG(GPIO_PORTC, 4U),
+        GPIO_PORT_PIN_CONFIG(GPIO_PORTC, 5U),
+        GPIO_PORT_PIN_CONFIG(GPIO_PORTD, 6U),
+        GPIO_PORT_PIN_CONFIG(GPIO_PORTD, 5U),
     };
 
-    if(SSD_configure(&ssd_config) != 0)
+    if(SSD_configure(ssd_config) != 0)
     {
         DEBUG_output("SSD [fail]\n");
     }
@@ -80,19 +97,15 @@ static inline void drivers_init(void)
 
 static inline void modules_init(void)
 {
-    SSD_MGR_config_t ssd_mgr_config =
+    uint8_t ssd_mgr_config[4] =
     {
-        .config =
-        {
-            [0] = { .port = GPIO_PORTB, .pin = 0u },
-            [1] = { .port = GPIO_PORTB, .pin = 1u },
-            [2] = { .port = GPIO_PORTB, .pin = 2u },
-            [3] = { .port = GPIO_PORTB, .pin = 3u },
-        },
-        .size = 4u,
+        GPIO_PORT_PIN_CONFIG(GPIO_PORTB, 0U),
+        GPIO_PORT_PIN_CONFIG(GPIO_PORTB, 1U),
+        GPIO_PORT_PIN_CONFIG(GPIO_PORTB, 2U),
+        GPIO_PORT_PIN_CONFIG(GPIO_PORTB, 3U),
     };
 
-    if(SSD_MGR_initialize(&ssd_mgr_config, true) != 0)
+    if(SSD_MGR_initialize(ssd_mgr_config, true) != 0)
     {
         DEBUG_output("SSD MGR [fail]\n");
     }

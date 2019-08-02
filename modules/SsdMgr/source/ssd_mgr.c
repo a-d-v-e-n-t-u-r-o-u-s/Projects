@@ -23,13 +23,14 @@
 #include "ssd_mgr.h"
 #include <stddef.h>
 #include <stdio.h>
+#include <string.h>
 #include <avr/io.h>
 #include <util/delay.h>
 #include "system.h"
 #include "ssd_display.h"
 #include "debug.h"
 
-static SSD_MGR_config_t module_config;
+static uint8_t module_config[4];
 static bool module_mode;
 static uint16_t display_value;
 
@@ -69,14 +70,14 @@ static void multiplex_in_segment_mode(uint16_t value)
     for(uint8_t i = 0u; i < 4U ; i++)
     {
         uint8_t digit = get_digit(value, i);
-        GPIO_write_pin(&module_config.config[i], true);
+        GPIO_write_pin(module_config[i], true);
         for(uint8_t j = 0u; j < 7u ; j++)
         {
             SSD_set_segment(j, data[digit][j]);
             _delay_us(500);
             SSD_set_segment(j, false);
         }
-        GPIO_write_pin(&module_config.config[i], false);
+        GPIO_write_pin(module_config[i], false);
     }
 }
 
@@ -84,13 +85,13 @@ static void multiplex_in_digit_mode(uint16_t value)
 {
     for(uint8_t i = 0U; i < 4U; i++)
     {
-        for(uint8_t j = 0U; j< module_config.size; j++)
+        for(uint8_t j = 0U; j< 4U; j++)
         {
-            GPIO_write_pin(&module_config.config[j], false);
+            GPIO_write_pin(module_config[j], false);
         }
         _delay_us(250);
         SSD_light(get_digit(value, i));
-        GPIO_write_pin(&module_config.config[i], true);
+        GPIO_write_pin(module_config[i], true);
         _delay_us(250);
     }
 }
@@ -121,7 +122,7 @@ int8_t SSD_MGR_set(uint16_t value)
     return 0;
 }
 
-int8_t SSD_MGR_initialize(const SSD_MGR_config_t *config,
+int8_t SSD_MGR_initialize(const uint8_t config[4],
         bool is_segment_mode)
 {
     if( config == NULL)
@@ -129,21 +130,16 @@ int8_t SSD_MGR_initialize(const SSD_MGR_config_t *config,
         return -1;
     }
 
-    if(config->size > SSD_MGR_MAX_MULTIPLEXED_DISPLAYS)
+    /*
+     *if(config->size > SSD_MGR_MAX_MULTIPLEXED_DISPLAYS)
+     *{
+     *    return -1;
+     *}
+     */
+
+    for(uint8_t i = 0u; i < 4u; i++)
     {
-        return -1;
-    }
-
-    for(uint8_t i = 0u; i < config->size; i++)
-    {
-        const GPIO_data_t pin = config->config[i];
-
-        if(GPIO_config_pin(GPIO_OUTPUT_PUSH_PULL, &pin) != 0)
-        {
-            return -1;
-        }
-
-        GPIO_write_pin(&pin, false);
+        GPIO_write_pin(config[i], false);
     }
 
     if(SYSTEM_register_task(ssd_mgr_main) != 0)
@@ -151,7 +147,7 @@ int8_t SSD_MGR_initialize(const SSD_MGR_config_t *config,
         return -1;
     }
 
-    module_config = *config;
+    memcpy(module_config, config, 4);
     module_mode = is_segment_mode;
 
     return 0;
