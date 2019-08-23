@@ -27,106 +27,107 @@
 #include <avr/io.h>
 
 static uint8_t driver_config[8];
+static bool is_inverted_logic;
 
 static inline void clear(void)
 {
-    GPIO_write_pin(driver_config[0], false);
-    GPIO_write_pin(driver_config[1], false);
-    GPIO_write_pin(driver_config[2], false);
-    GPIO_write_pin(driver_config[3], false);
-    GPIO_write_pin(driver_config[4], false);
-    GPIO_write_pin(driver_config[5], false);
-    GPIO_write_pin(driver_config[6], false);
-    GPIO_write_pin(driver_config[7], false);
+    GPIO_write_pin(driver_config[0], is_inverted_logic);
+    GPIO_write_pin(driver_config[1], is_inverted_logic);
+    GPIO_write_pin(driver_config[2], is_inverted_logic);
+    GPIO_write_pin(driver_config[3], is_inverted_logic);
+    GPIO_write_pin(driver_config[4], is_inverted_logic);
+    GPIO_write_pin(driver_config[5], is_inverted_logic);
+    GPIO_write_pin(driver_config[6], is_inverted_logic);
+    GPIO_write_pin(driver_config[7], is_inverted_logic);
 }
 
 static inline void set0(void)
 {
-    GPIO_write_pin(driver_config[0], true);
-    GPIO_write_pin(driver_config[1], true);
-    GPIO_write_pin(driver_config[2], true);
-    GPIO_write_pin(driver_config[3], true);
-    GPIO_write_pin(driver_config[4], true);
-    GPIO_write_pin(driver_config[5], true);
+    GPIO_write_pin(driver_config[0], !is_inverted_logic);
+    GPIO_write_pin(driver_config[1], !is_inverted_logic);
+    GPIO_write_pin(driver_config[2], !is_inverted_logic);
+    GPIO_write_pin(driver_config[3], !is_inverted_logic);
+    GPIO_write_pin(driver_config[4], !is_inverted_logic);
+    GPIO_write_pin(driver_config[5], !is_inverted_logic);
 }
 
 static inline void set1(void)
 {
-    GPIO_write_pin(driver_config[1], true);
-    GPIO_write_pin(driver_config[2], true);
+    GPIO_write_pin(driver_config[1], !is_inverted_logic);
+    GPIO_write_pin(driver_config[2], !is_inverted_logic);
 }
 
 static inline void set2(void)
 {
-    GPIO_write_pin(driver_config[0], true);
-    GPIO_write_pin(driver_config[1], true);
-    GPIO_write_pin(driver_config[3], true);
-    GPIO_write_pin(driver_config[4], true);
-    GPIO_write_pin(driver_config[6], true);
+    GPIO_write_pin(driver_config[0], !is_inverted_logic);
+    GPIO_write_pin(driver_config[1], !is_inverted_logic);
+    GPIO_write_pin(driver_config[3], !is_inverted_logic);
+    GPIO_write_pin(driver_config[4], !is_inverted_logic);
+    GPIO_write_pin(driver_config[6], !is_inverted_logic);
 }
 
 static inline void set3(void)
 {
-    GPIO_write_pin(driver_config[0], true);
-    GPIO_write_pin(driver_config[1], true);
-    GPIO_write_pin(driver_config[2], true);
-    GPIO_write_pin(driver_config[3], true);
-    GPIO_write_pin(driver_config[6], true);
+    GPIO_write_pin(driver_config[0], !is_inverted_logic);
+    GPIO_write_pin(driver_config[1], !is_inverted_logic);
+    GPIO_write_pin(driver_config[2], !is_inverted_logic);
+    GPIO_write_pin(driver_config[3], !is_inverted_logic);
+    GPIO_write_pin(driver_config[6], !is_inverted_logic);
 }
 
 static inline void set4(void)
 {
-    GPIO_write_pin(driver_config[1], true);
-    GPIO_write_pin(driver_config[2], true);
-    GPIO_write_pin(driver_config[5], true);
-    GPIO_write_pin(driver_config[6], true);
+    GPIO_write_pin(driver_config[1], !is_inverted_logic);
+    GPIO_write_pin(driver_config[2], !is_inverted_logic);
+    GPIO_write_pin(driver_config[5], !is_inverted_logic);
+    GPIO_write_pin(driver_config[6], !is_inverted_logic);
 }
 
 static inline void set5(void)
 {
-    GPIO_write_pin(driver_config[0], true);
-    GPIO_write_pin(driver_config[2], true);
-    GPIO_write_pin(driver_config[3], true);
-    GPIO_write_pin(driver_config[5], true);
-    GPIO_write_pin(driver_config[6], true);
+    GPIO_write_pin(driver_config[0], !is_inverted_logic);
+    GPIO_write_pin(driver_config[2], !is_inverted_logic);
+    GPIO_write_pin(driver_config[3], !is_inverted_logic);
+    GPIO_write_pin(driver_config[5], !is_inverted_logic);
+    GPIO_write_pin(driver_config[6], !is_inverted_logic);
 }
 
 static inline void set6(void)
 {
-    GPIO_write_pin(driver_config[0], true);
-    GPIO_write_pin(driver_config[2], true);
-    GPIO_write_pin(driver_config[3], true);
-    GPIO_write_pin(driver_config[4], true);
-    GPIO_write_pin(driver_config[5], true);
-    GPIO_write_pin(driver_config[6], true);
+    GPIO_write_pin(driver_config[0], !is_inverted_logic);
+    GPIO_write_pin(driver_config[2], !is_inverted_logic);
+    GPIO_write_pin(driver_config[3], !is_inverted_logic);
+    GPIO_write_pin(driver_config[4], !is_inverted_logic);
+    GPIO_write_pin(driver_config[5], !is_inverted_logic);
+    GPIO_write_pin(driver_config[6], !is_inverted_logic);
 }
 
 static inline void set7(void)
 {
-    GPIO_write_pin(driver_config[0], true);
-    GPIO_write_pin(driver_config[1], true);
-    GPIO_write_pin(driver_config[2], true);
+    GPIO_write_pin(driver_config[0], !is_inverted_logic);
+    GPIO_write_pin(driver_config[1], !is_inverted_logic);
+    GPIO_write_pin(driver_config[2], !is_inverted_logic);
 }
 
 static inline void set8(void)
 {
-    GPIO_write_pin(driver_config[0], true);
-    GPIO_write_pin(driver_config[1], true);
-    GPIO_write_pin(driver_config[2], true);
-    GPIO_write_pin(driver_config[3], true);
-    GPIO_write_pin(driver_config[4], true);
-    GPIO_write_pin(driver_config[5], true);
-    GPIO_write_pin(driver_config[6], true);
+    GPIO_write_pin(driver_config[0], !is_inverted_logic);
+    GPIO_write_pin(driver_config[1], !is_inverted_logic);
+    GPIO_write_pin(driver_config[2], !is_inverted_logic);
+    GPIO_write_pin(driver_config[3], !is_inverted_logic);
+    GPIO_write_pin(driver_config[4], !is_inverted_logic);
+    GPIO_write_pin(driver_config[5], !is_inverted_logic);
+    GPIO_write_pin(driver_config[6], !is_inverted_logic);
 }
 
 static inline void set9(void)
 {
-    GPIO_write_pin(driver_config[0], true);
-    GPIO_write_pin(driver_config[1], true);
-    GPIO_write_pin(driver_config[2], true);
-    GPIO_write_pin(driver_config[3], true);
-    GPIO_write_pin(driver_config[5], true);
-    GPIO_write_pin(driver_config[6], true);
+    GPIO_write_pin(driver_config[0], !is_inverted_logic);
+    GPIO_write_pin(driver_config[1], !is_inverted_logic);
+    GPIO_write_pin(driver_config[2], !is_inverted_logic);
+    GPIO_write_pin(driver_config[3], !is_inverted_logic);
+    GPIO_write_pin(driver_config[5], !is_inverted_logic);
+    GPIO_write_pin(driver_config[6], !is_inverted_logic);
 }
 
 void SSD_set_segment(uint8_t segment, bool value)
@@ -177,13 +178,14 @@ void SSD_light(uint8_t value)
     }
 }
 
-int8_t SSD_configure(const uint8_t config[8])
+int8_t SSD_configure(const uint8_t config[8], bool inverted_logic)
 {
     if(config == NULL)
     {
         return -1;
     }
 
+    is_inverted_logic = inverted_logic;
     memcpy(driver_config, config, 8);
 
     return 0;

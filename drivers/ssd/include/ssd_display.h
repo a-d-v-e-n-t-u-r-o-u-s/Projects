@@ -29,6 +29,6 @@
 
 void SSD_light(uint8_t value);
 void SSD_set_segment(uint8_t segment, bool value);
-int8_t SSD_configure(const uint8_t config[8]);
+int8_t SSD_configure(const uint8_t config[8], bool inverted_logic);
 
 #endif

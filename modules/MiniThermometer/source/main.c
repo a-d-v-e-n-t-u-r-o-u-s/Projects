@@ -79,7 +79,7 @@ static inline void drivers_init(void)
         GPIO_PORT_PIN_CONFIG(GPIO_PORTD, 5U),
     };
 
-    if(SSD_configure(ssd_config) != 0)
+    if(SSD_configure(ssd_config, true) != 0)
     {
         DEBUG_output("SSD [fail]\n");
     }
@@ -105,7 +105,7 @@ static inline void modules_init(void)
         GPIO_PORT_PIN_CONFIG(GPIO_PORTB, 3U),
     };
 
-    if(SSD_MGR_initialize(ssd_mgr_config, true) != 0)
+    if(SSD_MGR_initialize(ssd_mgr_config, false) != 0)
     {
         DEBUG_output("SSD MGR [fail]\n");
     }
