@@ -27,7 +27,7 @@
 
 typedef void (*SYSTEM_task_t)(void);
 
-int8_t SYSTEM_register_task(SYSTEM_task_t task);
+int8_t SYSTEM_register_task(SYSTEM_task_t task, uint8_t interval);
 void SYSTEM_main(void);
 void SYSTEM_init(void);
 

@@ -29,12 +29,14 @@
 typedef struct
 {
     SYSTEM_task_t task;
+    uint32_t last_tick;
+    uint8_t interval;
 } task_data_t;
 
 static task_data_t tasks[SYSTEM_MAX_TASKS];
 static uint8_t task_counter;
 
-int8_t SYSTEM_register_task(SYSTEM_task_t task)
+int8_t SYSTEM_register_task(SYSTEM_task_t task, uint8_t interval)
 {
     if(task == NULL || task_counter == SYSTEM_MAX_TASKS)
     {
@@ -42,6 +44,7 @@ int8_t SYSTEM_register_task(SYSTEM_task_t task)
     }
 
     tasks[task_counter].task = task;
+    tasks[task_counter].interval = interval;
     task_counter++;
     return 0;
 }
@@ -52,9 +55,12 @@ void SYSTEM_main(void)
 
     for(i=0;i<task_counter;i++)
     {
-        if(tasks[i].task != NULL)
+        uint32_t curr_tick = SYSTEM_timer_get_tick();
+
+        if(SYSTEM_timer_tick_difference(tasks[i].last_tick, curr_tick) >= tasks[i].interval)
         {
             tasks[i].task();
+            tasks[i].last_tick = curr_tick;
         }
     }
 }
