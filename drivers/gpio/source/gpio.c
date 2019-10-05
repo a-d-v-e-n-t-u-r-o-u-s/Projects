@@ -33,45 +33,33 @@
 #define PORT(port_no)   REG_BY_PORT(PORTD, port_no, 0x03)
 #define PIN(port_no)    REG_BY_PORT(PIND, port_no, 0x03)
 
-static inline bool is_port_valid(GPIO_port_t port)
+#if GPIO_DYNAMIC_CHECK == 1U
+static inline bool is_port_pin_valid(uint8_t port, uint8_t pin)
 {
     switch(port)
     {
         case GPIO_PORTB:
-        case GPIO_PORTC:
-        case GPIO_PORTD:
-            return true;
-        default:
-            return false;
-    }
-}
-
-static inline bool is_pin_valid(const GPIO_data_t *data)
-{
-    switch(data->port)
-    {
-        case GPIO_PORTB:
             /* no break */
         case GPIO_PORTD:
-            if(data->pin > 7U)
+            if(pin <= 7U)
             {
-                return false;
+                return true;
             }
             break;
         case GPIO_PORTC:
-            if(data->pin > 6U)
+            if(pin <= 6U)
             {
-                return false;
+                return true;
             }
             break;
         default:
-            return false;
+            break;
     }
 
-    return true;
+    return false;
 }
 
-static inline bool is_mode_valid(GPIO_mode_t mode)
+static inline bool is_mode_valid(uint8_t mode)
 {
     switch(mode)
     {
@@ -85,33 +73,24 @@ static inline bool is_mode_valid(GPIO_mode_t mode)
             return false;
     }
 }
+#endif
 
 int8_t GPIO_read_pin(uint8_t config, bool *is_high)
 {
-#if GPIO_DYNAMIC_CHECK == 1U
-    if(data == NULL)
-    {
-        return -1;
-    }
+    const uint8_t port = config & GPIO_PORT_MASK;
+    const uint8_t pin = ((config & GPIO_PIN_MASK) >> GPIO_PIN_SHIFT);
 
+#if GPIO_DYNAMIC_CHECK == 1U
     if(is_high == NULL)
     {
         return -1;
     }
 
-    if(!is_port_valid(data->port))
-    {
-        return -1;
-    }
-
-    if(!is_pin_valid(data))
+    if(!is_port_pin_valid(port, pin))
     {
         return -1;
     }
 #endif
-
-    const uint8_t port = config & GPIO_PORT_MASK;
-    const uint8_t pin = ((config & GPIO_PIN_MASK) >> GPIO_PIN_SHIFT);
 
     *is_high = ((PIN(port) & ( 1 << pin)) != 0);
 
@@ -120,24 +99,15 @@ int8_t GPIO_read_pin(uint8_t config, bool *is_high)
 
 int8_t GPIO_write_pin(uint8_t config, bool is_high)
 {
+    const uint8_t port = config & GPIO_PORT_MASK;
+    const uint8_t pin = ((config & GPIO_PIN_MASK) >> GPIO_PIN_SHIFT);
+
 #if GPIO_DYNAMIC_CHECK == 1U
-    if(data == NULL)
-    {
-        return -1;
-    }
-
-    if(!is_port_valid(data->port))
-    {
-        return -1;
-    }
-
-    if(!is_pin_valid(data))
+    if(!is_port_pin_valid(port, pin))
     {
         return -1;
     }
 #endif
-    const uint8_t port = config & GPIO_PORT_MASK;
-    const uint8_t pin = ((config & GPIO_PIN_MASK) >> GPIO_PIN_SHIFT);
 
     if(is_high)
     {
@@ -153,30 +123,21 @@ int8_t GPIO_write_pin(uint8_t config, bool is_high)
 
 int8_t GPIO_config_pin(uint8_t config)
 {
-#if GPIO_DYNAMIC_CHECK == 1U
-    if(data == NULL)
-    {
-        return -1;
-    }
+    const uint8_t port = config & GPIO_PORT_MASK;
+    const uint8_t pin = ((config & GPIO_PIN_MASK) >> GPIO_PIN_SHIFT);
+    const uint8_t mode = ((config & GPIO_MODE_MASK) >> GPIO_MODE_SHIFT);
 
+#if GPIO_DYNAMIC_CHECK == 1U
     if(!is_mode_valid(mode))
     {
         return -1;
     }
 
-    if(!is_port_valid(data->port))
-    {
-        return -1;
-    }
-
-    if(!is_pin_valid(data))
+    if(!is_port_pin_valid(port, pin))
     {
         return -1;
     }
 #endif
-    const uint8_t port = config & GPIO_PORT_MASK;
-    const uint8_t pin = ((config & GPIO_PIN_MASK) >> GPIO_PIN_SHIFT);
-    const uint8_t mode = ((config & GPIO_MODE_MASK) >> GPIO_MODE_SHIFT);
 
     DDR(port) &= ~(1 << pin);
     PORT(port)  &= ~(1 << pin);

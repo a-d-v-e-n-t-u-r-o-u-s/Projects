@@ -68,6 +68,7 @@ typedef struct
 #define GPIO_PORTD              (0U)
 #define GPIO_PORTC              (1U)
 #define GPIO_PORTB              (2U)
+
 #define GPIO_OUTPUT_PUSH_PULL   (0U)
 #define GPIO_INPUT_FLOATING     (1U)
 #define GPIO_INPUT_PULL_UP      (2U)
