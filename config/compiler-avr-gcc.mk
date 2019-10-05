@@ -13,7 +13,7 @@ ARFLAGS = rcs
 CFLAGS = -c
 CFLAGS += -Wall
 CFLAGS += -mmcu=atmega8
-CFLAGS += -Os
+CFLAGS += -O2
 CFLAGS += -std=c99
 CFLAGS += $(addprefix -I,$(INCLUDE_DIR))
 CFLAGS += $(addprefix -D,$(CDEFS))
