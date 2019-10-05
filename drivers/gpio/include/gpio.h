@@ -80,8 +80,8 @@ typedef struct
     ((mode << GPIO_MODE_SHIFT) | GPIO_PORT_PIN_CONFIG(port, pin))
 
 int8_t GPIO_read_pin(uint8_t config, bool *is_high);
-int8_t GPIO_write_pin(uint8_t config, bool is_high);
-int8_t GPIO_config_pin(uint8_t config);
+void GPIO_write_pin(uint8_t config, bool is_high);
+void GPIO_config_pin(uint8_t config);
 void GPIO_configure(bool is_global_pullup);
 
 /*@}*/

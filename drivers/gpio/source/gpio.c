@@ -25,6 +25,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <avr/io.h>
+#include "debug.h"
 
 #define REG_BY_PORT(base_reg, port_no, port_offset)  \
     *((volatile uint8_t *)((volatile uint8_t *)&base_reg + port_no * port_offset))
@@ -97,15 +98,18 @@ int8_t GPIO_read_pin(uint8_t config, bool *is_high)
     return 0;
 }
 
-int8_t GPIO_write_pin(uint8_t config, bool is_high)
+void GPIO_write_pin(uint8_t config, bool is_high)
 {
     const uint8_t port = config & GPIO_PORT_MASK;
     const uint8_t pin = ((config & GPIO_PIN_MASK) >> GPIO_PIN_SHIFT);
 
 #if GPIO_DYNAMIC_CHECK == 1U
+    uint16_t line;
+
     if(!is_port_pin_valid(port, pin))
     {
-        return -1;
+        line = __LINE__;
+        goto error;
     }
 #endif
 
@@ -118,24 +122,33 @@ int8_t GPIO_write_pin(uint8_t config, bool is_high)
         PORT(port)  &= ~(1 << pin);
     }
 
-    return 0;
+    return;
+
+#if GPIO_DYNAMIC_CHECK == 1U
+    error:
+        DEBUG_halt(__FILE__, line);
+#endif
 }
 
-int8_t GPIO_config_pin(uint8_t config)
+void GPIO_config_pin(uint8_t config)
 {
     const uint8_t port = config & GPIO_PORT_MASK;
     const uint8_t pin = ((config & GPIO_PIN_MASK) >> GPIO_PIN_SHIFT);
     const uint8_t mode = ((config & GPIO_MODE_MASK) >> GPIO_MODE_SHIFT);
 
 #if GPIO_DYNAMIC_CHECK == 1U
+    uint16_t line;
+
     if(!is_mode_valid(mode))
     {
-        return -1;
+        line = __LINE__;
+        goto error;
     }
 
     if(!is_port_pin_valid(port, pin))
     {
-        return -1;
+        line = __LINE__;
+        goto error;
     }
 #endif
 
@@ -154,7 +167,12 @@ int8_t GPIO_config_pin(uint8_t config)
             break;
     }
 
-    return 0;
+    return;
+
+#if GPIO_DYNAMIC_CHECK == 1U
+    error:
+        DEBUG_halt(__FILE__, line);
+#endif
 }
 
 void GPIO_configure(bool is_global_pullup)
