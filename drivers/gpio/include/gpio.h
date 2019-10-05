@@ -81,8 +81,7 @@ typedef struct
 int8_t GPIO_read_pin(uint8_t config, bool *is_high);
 int8_t GPIO_write_pin(uint8_t config, bool is_high);
 int8_t GPIO_config_pin(uint8_t config);
-
-void GPIO_configure(const uint8_t *config, uint8_t size, bool is_global_pullup);
+void GPIO_configure(bool is_global_pullup);
 
 /*@}*/
 #endif

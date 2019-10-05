@@ -196,7 +196,7 @@ int8_t GPIO_config_pin(uint8_t config)
     return 0;
 }
 
-void GPIO_configure(const uint8_t *config, uint8_t size, bool is_global_pullup)
+void GPIO_configure(bool is_global_pullup)
 {
     if(is_global_pullup)
     {
@@ -205,10 +205,5 @@ void GPIO_configure(const uint8_t *config, uint8_t size, bool is_global_pullup)
     else
     {
         SFIOR &= ~(1 << PUD);
-    }
-
-    for(uint8_t i = 0; i < size; i++, config++)
-    {
-        GPIO_config_pin(*config);
     }
 }
