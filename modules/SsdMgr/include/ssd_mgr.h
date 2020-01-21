@@ -29,7 +29,15 @@
 
 #define SSD_MGR_MAX_MULTIPLEXED_DISPLAYS        4U
 
+typedef struct
+{
+    uint8_t seg_config[8];
+    uint8_t disp_config[4];
+    bool is_segment_mode;
+    bool is_disp_inverted_logic;
+    bool is_segment_inverted_logic;
+} SSD_MGR_config_t;
+
 int8_t SSD_MGR_set(uint16_t value);
-int8_t SSD_MGR_initialize(const uint8_t config[4],
-        bool is_segment_mode);
+int8_t SSD_MGR_initialize(const SSD_MGR_config_t *config);
 #endif

@@ -26,15 +26,20 @@
 #include <string.h>
 #include <avr/io.h>
 #include <util/delay.h>
+#include <assert.h>
 #include "system.h"
-#include "ssd_display.h"
 #include "debug.h"
 
-static uint8_t module_config[4];
-static bool module_mode;
-static uint16_t display_value;
+typedef struct
+{
+    SSD_MGR_config_t config;
+    uint16_t value;
+} SSD_MGR_module_t;
 
-static const bool data[10][7] =
+static SSD_MGR_module_t ssd_mgr;
+
+/*! \todo make it really in FLASH memory */
+static const bool digits_data[10][7] =
 {
     [0] = {  true, true, true, true, true, true, false},
     [1] = {  false, true, true, false, false, false, false},
@@ -47,6 +52,29 @@ static const bool data[10][7] =
     [8] = {  true, true, true, true, true, true, true},
     [9] = {  true, true, true, true, false, true, true},
 };
+
+static inline void clear(const uint8_t *gpio, uint8_t size,
+        bool is_inverted_logic)
+{
+    bool val = is_inverted_logic ? true : false;
+
+    for(uint8_t i = 0u; i < size;  i++)
+    {
+        GPIO_write_pin(gpio[i], val);
+    }
+}
+
+static void light_digit(const uint8_t *gpio, const bool *data, uint8_t size,
+        bool is_inverted_logic)
+{
+    //clear(gpio, size, is_inverted_logic);
+
+    for(uint8_t i = 0u; i < size; i++)
+    {
+        bool val = is_inverted_logic ? !data[i]: data[i];
+        GPIO_write_pin(gpio[i], val);
+    }
+}
 
 static inline uint8_t get_digit(uint16_t value, uint8_t position)
 {
@@ -65,44 +93,222 @@ static inline uint8_t get_digit(uint16_t value, uint8_t position)
      return 0U;
 }
 
-static void multiplex_in_segment_mode(uint16_t value)
+/*! \todo fix this mode after receiving logic analyzer probes */
+/*
+ *static void multiplex_in_segment_mode(uint16_t value)
+ *{
+ *    static uint8_t display_no;
+ *    static uint8_t old_display_no = UINT8_MAX;
+ *    static uint8_t segment_no;
+ *
+ *    static uint8_t digit;
+ *
+ *    if(display_no != old_display_no)
+ *    {
+ *        digit = get_digit(value, display_no);
+ *        old_display_no = display_no;
+ *    }
+ *
+ *    GPIO_write_pin(module_config[display_no], true);
+ *
+ *    const uint8_t real_seg = segment_no/2;
+ *
+ *    if((segment_no % 2u) == 0)
+ *    {
+ *        SSD_set_segment(real_seg, !data[digit][real_seg]);
+ *    }
+ *    else
+ *    {
+ *        SSD_set_segment(real_seg, true);
+ *    }
+ *
+ *    segment_no++;
+ *    segment_no %= 14u;
+ *
+ *    if(segment_no == 0u)
+ *    {
+ *        GPIO_write_pin(module_config[display_no], false);
+ *        display_no++;
+ *        display_no %= 4u;
+ *    }
+ *}
+ */
+/*! \todo find out later what is more efficient */
+#if 0
+static inline void clear2(void)
 {
-    for(uint8_t i = 0u; i < 4U ; i++)
+    GPIO_write_pin(ssd_mgr.config.seg_config[0], ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[1], ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[2], ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[3], ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[4], ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[5], ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[6], ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[7], ssd_mgr.config.is_segment_inverted_logic);
+}
+
+static inline void set0(void)
+{
+    GPIO_write_pin(ssd_mgr.config.seg_config[0], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[1], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[2], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[3], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[4], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[5], !ssd_mgr.config.is_segment_inverted_logic);
+}
+
+static inline void set1(void)
+{
+    GPIO_write_pin(ssd_mgr.config.seg_config[1], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[2], !ssd_mgr.config.is_segment_inverted_logic);
+}
+
+static inline void set2(void)
+{
+    GPIO_write_pin(ssd_mgr.config.seg_config[0], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[1], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[3], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[4], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[6], !ssd_mgr.config.is_segment_inverted_logic);
+}
+
+static inline void set3(void)
+{
+    GPIO_write_pin(ssd_mgr.config.seg_config[0], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[1], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[2], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[3], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[6], !ssd_mgr.config.is_segment_inverted_logic);
+}
+
+static inline void set4(void)
+{
+    GPIO_write_pin(ssd_mgr.config.seg_config[1], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[2], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[5], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[6], !ssd_mgr.config.is_segment_inverted_logic);
+}
+
+static inline void set5(void)
+{
+    GPIO_write_pin(ssd_mgr.config.seg_config[0], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[2], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[3], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[5], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[6], !ssd_mgr.config.is_segment_inverted_logic);
+}
+
+static inline void set6(void)
+{
+    GPIO_write_pin(ssd_mgr.config.seg_config[0], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[2], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[3], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[4], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[5], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[6], !ssd_mgr.config.is_segment_inverted_logic);
+}
+
+static inline void set7(void)
+{
+    GPIO_write_pin(ssd_mgr.config.seg_config[0], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[1], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[2], !ssd_mgr.config.is_segment_inverted_logic);
+}
+
+static inline void set8(void)
+{
+    GPIO_write_pin(ssd_mgr.config.seg_config[0], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[1], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[2], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[3], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[4], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[5], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[6], !ssd_mgr.config.is_segment_inverted_logic);
+}
+
+static inline void set9(void)
+{
+    GPIO_write_pin(ssd_mgr.config.seg_config[0], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[1], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[2], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[3], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[5], !ssd_mgr.config.is_segment_inverted_logic);
+    GPIO_write_pin(ssd_mgr.config.seg_config[6], !ssd_mgr.config.is_segment_inverted_logic);
+}
+
+static void light(uint8_t value)
+{
+    clear2();
+
+    switch(value)
     {
-        uint8_t digit = get_digit(value, i);
-        GPIO_write_pin(module_config[i], true);
-        for(uint8_t j = 0u; j < 7u ; j++)
-        {
-            SSD_set_segment(j, data[digit][j]);
-            _delay_us(500);
-            SSD_set_segment(j, false);
-        }
-        GPIO_write_pin(module_config[i], false);
+        case 0:
+            set0();
+            break;
+        case 1:
+            set1();
+            break;
+        case 2:
+            set2();
+            break;
+        case 3:
+            set3();
+            break;
+        case 4:
+            set4();
+            break;
+        case 5:
+            set5();
+            break;
+        case 6:
+            set6();
+            break;
+        case 7:
+            set7();
+            break;
+        case 8:
+            set8();
+            break;
+        case 9:
+            set9();
+            break;
+        case UINT8_MAX:
+            break;
+        default:
+            break;
     }
 }
+#endif
 
 static void multiplex_in_digit_mode(uint16_t value)
 {
-    for(uint8_t i = 0U; i < 4U; i++)
-    {
-        for(uint8_t j = 0U; j< 4U; j++)
-        {
-            GPIO_write_pin(module_config[j], false);
-        }
-        _delay_us(250);
-        SSD_light(get_digit(value, i));
-        GPIO_write_pin(module_config[i], true);
-        _delay_us(250);
-    }
+    static uint8_t display_no;
+    const uint8_t *disp_config = ssd_mgr.config.disp_config;
+    const uint8_t disp_config_size = sizeof(ssd_mgr.config.disp_config);
+    const bool is_disp_inverted_logic = ssd_mgr.config.is_disp_inverted_logic;
+
+    clear(disp_config, disp_config_size, is_disp_inverted_logic);
+
+    uint8_t digit = get_digit(value, display_no);
+
+    light_digit(ssd_mgr.config.seg_config, &digits_data[digit][0], 7U,
+            ssd_mgr.config.is_segment_inverted_logic);
+    //light(digit);
+
+    bool val = is_disp_inverted_logic ? false : true;
+    GPIO_write_pin(disp_config[display_no], val);
+
+    display_no++;
+    display_no %= 4u;
 }
 
 static void ssd_mgr_main(void)
 {
-    uint16_t value = display_value;
+    uint16_t value = ssd_mgr.value;
 
-    if(module_mode)
+    if(ssd_mgr.config.is_segment_mode)
     {
-        multiplex_in_segment_mode(value);
+        //multiplex_in_segment_mode(value);
     }
     else
     {
@@ -117,38 +323,39 @@ int8_t SSD_MGR_set(uint16_t value)
         return -1;
     }
 
-    display_value = value;
+    ssd_mgr.value = value;
 
     return 0;
 }
 
-int8_t SSD_MGR_initialize(const uint8_t config[4],
-        bool is_segment_mode)
+int8_t SSD_MGR_initialize(const SSD_MGR_config_t *config)
 {
-    if( config == NULL)
+    if(config == NULL)
     {
         return -1;
     }
 
-    /*
-     *if(config->size > SSD_MGR_MAX_MULTIPLEXED_DISPLAYS)
-     *{
-     *    return -1;
-     *}
-     */
-
-    for(uint8_t i = 0u; i < 4u; i++)
+    for(uint8_t i = 0; i < 8u; i++)
     {
-        GPIO_write_pin(config[i], false);
+        GPIO_config_pin(config->seg_config[i]);
     }
 
-    if(SYSTEM_register_task(ssd_mgr_main) != 0)
+    for(uint8_t i = 0; i < 4u; i++)
+    {
+        GPIO_config_pin(config->disp_config[i]);
+    }
+
+    clear(config->disp_config, sizeof(config->disp_config),
+                config->is_disp_inverted_logic);
+
+    uint8_t interval = config->is_segment_mode ? 0u : 5u;
+
+    if(SYSTEM_register_task(ssd_mgr_main, interval) != 0)
     {
         return -1;
     }
 
-    memcpy(module_config, config, 4);
-    module_mode = is_segment_mode;
+    ssd_mgr.config = *config;
 
     return 0;
 }
