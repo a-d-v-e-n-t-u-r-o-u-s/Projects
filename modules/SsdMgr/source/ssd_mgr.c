@@ -29,6 +29,7 @@
 #include <assert.h>
 #include "system.h"
 #include "debug.h"
+#include "common.h"
 
 typedef struct
 {
@@ -53,18 +54,18 @@ static const bool digits_data[10][7] =
     [9] = {  true, true, true, true, false, true, true},
 };
 
-static inline void clear(const uint8_t *gpio, uint8_t size,
+static inline void clear(const uint8_t (*gpio)[2], uint8_t size,
         bool is_inverted_logic)
 {
     bool val = is_inverted_logic ? true : false;
 
     for(uint8_t i = 0u; i < size;  i++)
     {
-        GPIO_write_pin(gpio[i], val);
+        GPIO_write_pin(gpio[i][0], gpio[i][1], val);
     }
 }
 
-static void light_digit(const uint8_t *gpio, const bool *data, uint8_t size,
+static void light_digit(const uint8_t (*gpio)[2], const bool *data, uint8_t size,
         bool is_inverted_logic)
 {
     //clear(gpio, size, is_inverted_logic);
@@ -72,7 +73,7 @@ static void light_digit(const uint8_t *gpio, const bool *data, uint8_t size,
     for(uint8_t i = 0u; i < size; i++)
     {
         bool val = is_inverted_logic ? !data[i]: data[i];
-        GPIO_write_pin(gpio[i], val);
+        GPIO_write_pin(gpio[i][0], gpio[i][1], val);
     }
 }
 
@@ -283,8 +284,8 @@ static void light(uint8_t value)
 static void multiplex_in_digit_mode(uint16_t value)
 {
     static uint8_t display_no;
-    const uint8_t *disp_config = ssd_mgr.config.disp_config;
-    const uint8_t disp_config_size = sizeof(ssd_mgr.config.disp_config);
+    const uint8_t (*disp_config)[2] = ssd_mgr.config.disp_config;
+    const uint8_t disp_config_size = ARRAY_2D_ROW(ssd_mgr.config.disp_config);
     const bool is_disp_inverted_logic = ssd_mgr.config.is_disp_inverted_logic;
 
     clear(disp_config, disp_config_size, is_disp_inverted_logic);
@@ -296,7 +297,8 @@ static void multiplex_in_digit_mode(uint16_t value)
     //light(digit);
 
     bool val = is_disp_inverted_logic ? false : true;
-    GPIO_write_pin(disp_config[display_no], val);
+    GPIO_write_pin(disp_config[display_no][0],
+            disp_config[display_no][1], val);
 
     display_no++;
     display_no %= 4u;
@@ -330,30 +332,33 @@ int8_t SSD_MGR_set(uint16_t value)
 
 int8_t SSD_MGR_initialize(const SSD_MGR_config_t *config)
 {
+    uint8_t interval = config->is_segment_mode ? 0u : 5u;
+
     if(config == NULL)
+    {
+        return -1;
+    }
+
+    if(SYSTEM_register_task(ssd_mgr_main, interval) != 0)
     {
         return -1;
     }
 
     for(uint8_t i = 0; i < 8u; i++)
     {
-        GPIO_config_pin(config->seg_config[i]);
+        GPIO_config_pin(config->seg_config[i][0], config->seg_config[i][1],
+                GPIO_OUTPUT_PUSH_PULL);
     }
 
     for(uint8_t i = 0; i < 4u; i++)
     {
-        GPIO_config_pin(config->disp_config[i]);
+        GPIO_config_pin(config->disp_config[i][0], config->disp_config[i][1],
+                GPIO_OUTPUT_PUSH_PULL);
     }
 
-    clear(config->disp_config, sizeof(config->disp_config),
+    clear(config->disp_config, ARRAY_2D_ROW(config->disp_config),
                 config->is_disp_inverted_logic);
 
-    uint8_t interval = config->is_segment_mode ? 0u : 5u;
-
-    if(SYSTEM_register_task(ssd_mgr_main, interval) != 0)
-    {
-        return -1;
-    }
 
     ssd_mgr.config = *config;
 

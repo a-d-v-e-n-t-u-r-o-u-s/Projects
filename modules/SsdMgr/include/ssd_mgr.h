@@ -31,8 +31,8 @@
 
 typedef struct
 {
-    uint8_t seg_config[8];
-    uint8_t disp_config[4];
+    uint8_t seg_config[8][2];
+    uint8_t disp_config[4][2];
     bool is_segment_mode;
     bool is_disp_inverted_logic;
     bool is_segment_inverted_logic;
