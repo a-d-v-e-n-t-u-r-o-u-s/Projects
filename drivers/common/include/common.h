@@ -23,6 +23,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include <stdint.h>
 /*!
  *
  * \addtogroup common
@@ -38,7 +39,9 @@
 /*!
  * \brief Macro gets amount of elements from array
  */
-#define ARRAY_SIZE(x) sizeof(x)/sizeof(x[0])
+#define ARRAY_SIZE(x)           sizeof(x)/sizeof(x[0])
+#define ARRAY_2D_ROW(x)         sizeof(x)/sizeof(x[0])
+#define ARRAY_2D_COLUMN(x)      sizeof(x[0])/sizeof(x[0][0])
 
 /*!
  * \brief Definition of NULL macro for pointer comparision

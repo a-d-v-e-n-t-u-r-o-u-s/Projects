@@ -21,6 +21,9 @@
  *
  */
 #include "common.h"
+#include <stdbool.h>
+#include "debug.h"
+
 
 void COMMON_dummy(void)
 {
