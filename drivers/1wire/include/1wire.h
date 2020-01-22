@@ -34,15 +34,10 @@
 /*@{*/
 #include "gpio.h"
 
-typedef struct
-{
-    GPIO_data_t data_pin;
-} WIRE_config_t;
-
 bool WIRE_reset(void);
 uint8_t WIRE_read_byte(void);
 void WIRE_send_byte(uint8_t byte);
-int8_t WIRE_configure(const WIRE_config_t *config);
+int8_t WIRE_configure(uint8_t port, uint8_t pin);
 
 /*@}*/
 #endif

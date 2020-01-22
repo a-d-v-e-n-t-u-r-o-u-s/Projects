@@ -27,22 +27,23 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-static WIRE_config_t driver_config;
+static uint8_t data_port;
+static uint8_t data_pin;
 
 static void send_bit(bool bit)
 {
     cli();
-    DDRD |= (1 << PB7);
-    PORTD &= ~(1 << PB7);
+
+    GPIO_config_pin(data_port, data_pin, GPIO_OUTPUT_PUSH_PULL);
     _delay_us(5);
 
     if(bit)
     {
-        DDRD &= ~(1 << PB7);
+        GPIO_config_pin(data_port, data_pin, GPIO_INPUT_FLOATING);
     }
 
     _delay_us(80);
-    DDRD &= ~(1 << PB7);
+    GPIO_config_pin(data_port, data_pin, GPIO_INPUT_FLOATING);
     sei();
 }
 
@@ -50,12 +51,12 @@ static bool read_bit(void)
 {
     bool ret = false;
     cli();
-    DDRD |= (1 << PB7);
+    GPIO_config_pin(data_port, data_pin, GPIO_OUTPUT_PUSH_PULL);
     _delay_us(2);
-    DDRD &= ~(1 << PB7);
+    GPIO_config_pin(data_port, data_pin, GPIO_INPUT_FLOATING);
     _delay_us(15);
 
-    ret = (PIND & (1 << PB7)) != 0u;
+    ret = GPIO_read_pin(data_port, data_pin);
     sei();
     return ret;
 }
@@ -64,14 +65,13 @@ bool WIRE_reset(void)
 {
     bool ret = false;
 
-    DDRD |= (1 << PB7);
-    PORTD &= ~(1 << PB7);
+    GPIO_config_pin(data_port, data_pin, GPIO_OUTPUT_PUSH_PULL);
     _delay_us(500);
 
-    DDRD &= ~(1 << PB7);
+    GPIO_config_pin(data_port, data_pin, GPIO_INPUT_FLOATING);
     _delay_us(45);
 
-    ret = ((PIND & (1 << PB7)) == 0U);
+    ret = !GPIO_read_pin(data_port, data_pin);
 
     _delay_us(470);
 
@@ -104,14 +104,10 @@ uint8_t WIRE_read_byte(void)
     return ret;
 }
 
-int8_t WIRE_configure(const WIRE_config_t *config)
+int8_t WIRE_configure(uint8_t port, uint8_t pin)
 {
-    if(config == NULL)
-    {
-        return -1;
-    }
-
-    driver_config = *config;
-
+    GPIO_config_pin(port, pin, GPIO_INPUT_FLOATING);
+    data_port = port;
+    data_pin = pin;
     return 0;
 }
