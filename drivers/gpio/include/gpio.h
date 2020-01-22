@@ -36,27 +36,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define GPIO_DYNAMIC_CHECK 0U
-
-typedef enum
-{
-    GPIO_PORTD,
-    GPIO_PORTC,
-    GPIO_PORTB,
-} GPIO_port_t;
-
-typedef enum
-{
-    GPIO_OUTPUT_PUSH_PULL,
-    GPIO_INPUT_FLOATING,
-    GPIO_INPUT_PULL_UP,
-} GPIO_mode_t;
-
-typedef struct
-{
-    GPIO_port_t port;
-    uint8_t pin;
-} GPIO_data_t;
+#define GPIO_DYNAMIC_CHECK 1U
 
 #define GPIO_PIN_SHIFT          (2U)
 #define GPIO_MODE_SHIFT         (5U)
@@ -73,15 +53,9 @@ typedef struct
 #define GPIO_INPUT_FLOATING     (1U)
 #define GPIO_INPUT_PULL_UP      (2U)
 
-#define GPIO_PORT_PIN_CONFIG(port, pin) \
-    ((pin << GPIO_PIN_SHIFT) | (port))
-
-#define GPIO_CONFIG(port, pin, mode) \
-    ((mode << GPIO_MODE_SHIFT) | GPIO_PORT_PIN_CONFIG(port, pin))
-
-int8_t GPIO_read_pin(uint8_t config, bool *is_high);
-void GPIO_write_pin(uint8_t config, bool is_high);
-void GPIO_config_pin(uint8_t config);
+bool GPIO_read_pin(uint8_t port, uint8_t pin);
+void GPIO_write_pin(uint8_t port, uint8_t pin, bool is_high);
+void GPIO_config_pin(uint8_t port, uint8_t pin, uint8_t mode);
 void GPIO_configure(bool is_global_pullup);
 
 /*@}*/

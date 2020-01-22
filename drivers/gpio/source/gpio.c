@@ -25,7 +25,9 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <avr/io.h>
+#include <avr/pgmspace.h>
 #include "debug.h"
+
 
 #define REG_BY_PORT(base_reg, port_no, port_offset)  \
     *((volatile uint8_t *)((volatile uint8_t *)&base_reg + port_no * port_offset))
@@ -35,6 +37,10 @@
 #define PIN(port_no)    REG_BY_PORT(PIND, port_no, 0x03)
 
 #if GPIO_DYNAMIC_CHECK == 1U
+
+//static const char debug_prefix[] PROGMEM = "GPIO";
+static const char debug_prefix[] = "GPIO";
+
 static inline bool is_port_pin_valid(uint8_t port, uint8_t pin)
 {
     switch(port)
@@ -76,33 +82,28 @@ static inline bool is_mode_valid(uint8_t mode)
 }
 #endif
 
-int8_t GPIO_read_pin(uint8_t config, bool *is_high)
+bool GPIO_read_pin(uint8_t port, uint8_t pin)
 {
-    const uint8_t port = config & GPIO_PORT_MASK;
-    const uint8_t pin = ((config & GPIO_PIN_MASK) >> GPIO_PIN_SHIFT);
-
 #if GPIO_DYNAMIC_CHECK == 1U
-    if(is_high == NULL)
-    {
-        return -1;
-    }
-
+    uint16_t line;
     if(!is_port_pin_valid(port, pin))
     {
-        return -1;
+        line = __LINE__;
+        goto error;
     }
 #endif
 
-    *is_high = ((PIN(port) & ( 1 << pin)) != 0);
+    return ((PIN(port) & ( 1 << pin)) != 0);
 
-    return 0;
+#if GPIO_DYNAMIC_CHECK == 1U
+    error:
+        DEBUG_halt(debug_prefix, line);
+        return false;
+#endif
 }
 
-void GPIO_write_pin(uint8_t config, bool is_high)
+void GPIO_write_pin(uint8_t port, uint8_t pin, bool is_high)
 {
-    const uint8_t port = config & GPIO_PORT_MASK;
-    const uint8_t pin = ((config & GPIO_PIN_MASK) >> GPIO_PIN_SHIFT);
-
 #if GPIO_DYNAMIC_CHECK == 1U
     uint16_t line;
 
@@ -126,16 +127,12 @@ void GPIO_write_pin(uint8_t config, bool is_high)
 
 #if GPIO_DYNAMIC_CHECK == 1U
     error:
-        DEBUG_halt(__FILE__, line);
+        DEBUG_halt(debug_prefix, line);
 #endif
 }
 
-void GPIO_config_pin(uint8_t config)
+void GPIO_config_pin(uint8_t port, uint8_t pin, uint8_t mode)
 {
-    const uint8_t port = config & GPIO_PORT_MASK;
-    const uint8_t pin = ((config & GPIO_PIN_MASK) >> GPIO_PIN_SHIFT);
-    const uint8_t mode = ((config & GPIO_MODE_MASK) >> GPIO_MODE_SHIFT);
-
 #if GPIO_DYNAMIC_CHECK == 1U
     uint16_t line;
 
@@ -171,7 +168,7 @@ void GPIO_config_pin(uint8_t config)
 
 #if GPIO_DYNAMIC_CHECK == 1U
     error:
-        DEBUG_halt(__FILE__, line);
+        DEBUG_halt(debug_prefix, line);
 #endif
 }
 
