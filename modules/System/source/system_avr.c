@@ -32,13 +32,13 @@ typedef struct
 {
     SYSTEM_task_t task;
     uint32_t last_tick;
-    uint8_t interval;
+    uint16_t interval;
 } task_data_t;
 
 static task_data_t tasks[SYSTEM_MAX_TASKS];
 static uint8_t task_counter;
 
-int8_t SYSTEM_register_task(SYSTEM_task_t task, uint8_t interval)
+int8_t SYSTEM_register_task(SYSTEM_task_t task, uint16_t interval)
 {
     if(task == NULL || task_counter == SYSTEM_MAX_TASKS)
     {
