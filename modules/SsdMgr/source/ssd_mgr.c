@@ -42,9 +42,11 @@ static SSD_MGR_module_t ssd_mgr;
 static uint8_t segments[8][2];
 static uint8_t displays[SSD_MGR_MAX_MULTIPLEXED_DISPLAYS][2];
 static uint8_t displays_size;
+static uint8_t display_no;
 static bool is_segment_mode;
 static bool is_disp_inverted_logic;
 static bool is_segment_inverted_logic;
+static bool is_turned_on;
 
 /*! \todo make it really in FLASH memory */
 static const bool digits_data[10][7] =
@@ -290,7 +292,6 @@ static void light(uint8_t value)
 
 static void multiplex_in_digit_mode(uint16_t value)
 {
-    static uint8_t display_no;
 
     clear(displays, displays_size, is_disp_inverted_logic);
 
@@ -309,26 +310,39 @@ static void multiplex_in_digit_mode(uint16_t value)
 
 static void ssd_mgr_main(void)
 {
-    uint16_t value = ssd_mgr.value;
+    if(is_turned_on)
+    {
+        uint16_t value = ssd_mgr.value;
 
-    if(ssd_mgr.config.is_segment_mode)
-    {
-        //multiplex_in_segment_mode(value);
-    }
-    else
-    {
-        multiplex_in_digit_mode(value);
+        if(ssd_mgr.config.is_segment_mode)
+        {
+            //multiplex_in_segment_mode(value);
+        }
+        else
+        {
+            multiplex_in_digit_mode(value);
+        }
     }
 }
 
 int8_t SSD_MGR_set(uint16_t value)
 {
-    if( value > 9999U)
+    if((value != UINT16_MAX) && (value > 9999U))
     {
         return -1;
     }
 
-    ssd_mgr.value = value;
+    if(value == UINT16_MAX)
+    {
+        is_turned_on = false;
+        clear(displays, displays_size, is_disp_inverted_logic);
+        display_no = 0u;
+    }
+    else
+    {
+        is_turned_on = true;
+        ssd_mgr.value = value;
+    }
 
     return 0;
 }
@@ -363,6 +377,7 @@ int8_t SSD_MGR_initialize(const SSD_MGR_config_t *config)
     is_segment_mode = config->is_segment_mode;
     is_disp_inverted_logic = config->is_disp_inverted_logic;
     is_segment_inverted_logic = config->is_segment_inverted_logic;
+    is_turned_on = true;
 
     for(uint8_t i = 0; i < 8u; i++)
     {
