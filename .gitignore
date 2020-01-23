@@ -5,5 +5,6 @@
 /documentation
 cscope.out
 config-user.mk
+.vim-bookmarks
 *.swp
 *.swo
