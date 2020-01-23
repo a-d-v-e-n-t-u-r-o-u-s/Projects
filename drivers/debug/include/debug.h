@@ -61,6 +61,7 @@ typedef struct
 #endif
 
 void DEBUG_output(const char *format, ...);
+void DEBUG_halt(const char *module, uint16_t line);
 void DEBUG_configure(const DEBUG_config_t *config);
 
 /*@}*/

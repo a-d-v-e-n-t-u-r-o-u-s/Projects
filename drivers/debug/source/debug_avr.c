@@ -24,6 +24,8 @@
 #include "usart.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <avr/pgmspace.h>
 
 #define DEBUG_BUFFER_SIZE  UINT8_MAX
 
@@ -42,6 +44,21 @@ void DEBUG_output(const char *format, ...)
     }
 }
 
+void DEBUG_halt(const char *module, uint16_t line)
+{
+    /*! \todo change this naive implementation */
+/*
+ *    char tmp[5] = {0};
+ *
+ *    for(uint8_t i = 0; i < 4; i++, module++)
+ *    {
+ *        tmp[i] = pgm_read_byte(module);
+ *    }
+ */
+
+    DEBUG_output("%s : Halt at %d line \n", module, line);
+    while(true);
+}
 
 void DEBUG_configure(const DEBUG_config_t *config)
 {
