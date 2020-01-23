@@ -23,6 +23,8 @@
 #include "system.h"
 #include "system_timer.h"
 #include "system_common.h"
+#include <stdbool.h>
+#include "debug.h"
 
 #define SYSTEM_MAX_TASKS    5
 

@@ -39,6 +39,13 @@ typedef struct
 
 static SSD_MGR_module_t ssd_mgr;
 
+static uint8_t segments[8][2];
+static uint8_t displays[SSD_MGR_MAX_MULTIPLEXED_DISPLAYS][2];
+static uint8_t displays_size;
+static bool is_segment_mode;
+static bool is_disp_inverted_logic;
+static bool is_segment_inverted_logic;
+
 /*! \todo make it really in FLASH memory */
 static const bool digits_data[10][7] =
 {
@@ -65,8 +72,8 @@ static inline void clear(const uint8_t (*gpio)[2], uint8_t size,
     }
 }
 
-static void light_digit(const uint8_t (*gpio)[2], const bool *data, uint8_t size,
-        bool is_inverted_logic)
+static void light_digit(const uint8_t (*gpio)[2], const bool *data,
+        uint8_t size, bool is_inverted_logic)
 {
     //clear(gpio, size, is_inverted_logic);
 
@@ -82,13 +89,13 @@ static inline uint8_t get_digit(uint16_t value, uint8_t position)
      switch(position)
      {
          case 0:
-             return (value/1000u)%10u;
-         case 1:
-             return (value/100u)%10u;
-         case 2:
-             return (value/10u)%10u;
-         case 3:
              return value%10u;
+         case 1:
+             return (value/10u)%10u;
+         case 2:
+             return (value/100u)%10u;
+         case 3:
+             return (value/1000u)%10u;
      }
 
      return 0U;
@@ -284,24 +291,20 @@ static void light(uint8_t value)
 static void multiplex_in_digit_mode(uint16_t value)
 {
     static uint8_t display_no;
-    const uint8_t (*disp_config)[2] = ssd_mgr.config.disp_config;
-    const uint8_t disp_config_size = ARRAY_2D_ROW(ssd_mgr.config.disp_config);
-    const bool is_disp_inverted_logic = ssd_mgr.config.is_disp_inverted_logic;
 
-    clear(disp_config, disp_config_size, is_disp_inverted_logic);
+    clear(displays, displays_size, is_disp_inverted_logic);
 
     uint8_t digit = get_digit(value, display_no);
 
-    light_digit(ssd_mgr.config.seg_config, &digits_data[digit][0], 7U,
-            ssd_mgr.config.is_segment_inverted_logic);
+    light_digit(segments, &digits_data[digit][0], 7U,
+            is_segment_inverted_logic);
     //light(digit);
 
     bool val = is_disp_inverted_logic ? false : true;
-    GPIO_write_pin(disp_config[display_no][0],
-            disp_config[display_no][1], val);
+    GPIO_write_pin(displays[display_no][0], displays[display_no][1], val);
 
     display_no++;
-    display_no %= 4u;
+    display_no %= displays_size;
 }
 
 static void ssd_mgr_main(void)
@@ -344,23 +347,34 @@ int8_t SSD_MGR_initialize(const SSD_MGR_config_t *config)
         return -1;
     }
 
+    if(config->disp_config_size == 0)
+    {
+        return -1;
+    }
+
+    if(config->disp_config_size > SSD_MGR_MAX_MULTIPLEXED_DISPLAYS)
+    {
+        return -1;
+    }
+
+    memcpy(segments, config->seg_config, sizeof(config->seg_config));
+    memcpy(displays, config->disp_config, 2*config->disp_config_size);
+    displays_size = config->disp_config_size;
+    is_segment_mode = config->is_segment_mode;
+    is_disp_inverted_logic = config->is_disp_inverted_logic;
+    is_segment_inverted_logic = config->is_segment_inverted_logic;
+
     for(uint8_t i = 0; i < 8u; i++)
     {
-        GPIO_config_pin(config->seg_config[i][0], config->seg_config[i][1],
-                GPIO_OUTPUT_PUSH_PULL);
+        GPIO_config_pin(segments[i][0], segments[i][1], GPIO_OUTPUT_PUSH_PULL);
     }
 
     for(uint8_t i = 0; i < 4u; i++)
     {
-        GPIO_config_pin(config->disp_config[i][0], config->disp_config[i][1],
-                GPIO_OUTPUT_PUSH_PULL);
+        GPIO_config_pin(displays[i][0], displays[i][1], GPIO_OUTPUT_PUSH_PULL);
     }
 
-    clear(config->disp_config, ARRAY_2D_ROW(config->disp_config),
-                config->is_disp_inverted_logic);
-
-
-    ssd_mgr.config = *config;
+    clear(displays, displays_size, is_disp_inverted_logic);
 
     return 0;
 }
