@@ -26,9 +26,38 @@
 /*!
  *
  * \addtogroup hardware
- * \ingroup RemoteControl
+ * \ingroup MiniThermo
  * \brief Configures pin assignment for PCB0000
  */
+
+#define WIRE_DATA_PORT          (GPIO_PORTC)
+#define WIRE_DATA_PIN           (5U)
+
+#define DISPLAY0_PORT           (GPIO_PORTC)
+#define DISPLAY0_PIN            (4U)
+#define DISPLAY1_PORT           (GPIO_PORTD)
+#define DISPLAY1_PIN            (2U)
+#define DISPLAY2_PORT           (GPIO_PORTD)
+#define DISPLAY2_PIN            (3U)
+#define DISPLAY3_PORT           (GPIO_PORTD)
+#define DISPLAY3_PIN            (4U)
+
+#define SEGMENTA_PORT           (GPIO_PORTD)
+#define SEGMENTA_PIN            (5U)
+#define SEGMENTB_PORT           (GPIO_PORTD)
+#define SEGMENTB_PIN            (6U)
+#define SEGMENTC_PORT           (GPIO_PORTB)
+#define SEGMENTC_PIN            (4U)
+#define SEGMENTD_PORT           (GPIO_PORTB)
+#define SEGMENTD_PIN            (3U)
+#define SEGMENTE_PORT           (GPIO_PORTB)
+#define SEGMENTE_PIN            (1U)
+#define SEGMENTF_PORT           (GPIO_PORTD)
+#define SEGMENTF_PIN            (7U)
+#define SEGMENTG_PORT           (GPIO_PORTB)
+#define SEGMENTG_PIN            (0U)
+#define SEGMENTDP_PORT          (GPIO_PORTB)
+#define SEGMENTDP_PIN           (2U)
 
 /*@{*/
 
