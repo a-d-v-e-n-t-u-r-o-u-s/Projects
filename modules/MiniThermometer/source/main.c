@@ -39,10 +39,10 @@ static inline void drivers_init(void)
 
     USART_config_t config =
     {
-        .baudrate = 250000U,
+        .baudrate = USART_115200_BAUDRATE,
+        .databits = USART_8_DATA_BITS,
         .parity = USART_NO_PARITY,
-        .stop_bits = USART_1_STOP_BITS,
-        .data_bits = USART_8_DATA_BITS,
+        .stopbits = USART_1_STOP_BITS,
     };
 
     (void) USART_configure(&config);
