@@ -26,34 +26,37 @@
 
 #include <stdint.h>
 
-typedef enum
-{
-    USART_NO_PARITY,
-    USART_EVEN_PARITY,
-    USART_ODD_PARITY,
-} USART_parity_t;
+#define USART_300_BAUDRATE      (0U)
+#define USART_1200_BAUDRATE     (1U)
+#define USART_2400_BAUDRATE     (2U)
+#define USART_4800_BAUDRATE     (3U)
+#define USART_9600_BAUDRATE     (4U)
+#define USART_19200_BAUDRATE    (5U)
+#define USART_38400_BAUDRATE    (6U)
+#define USART_57600_BAUDRATE    (7U)
+#define USART_115200_BAUDRATE   (8U)
+#define USART_230400_BAUDRATE   (9U)
 
-typedef enum
-{
-    USART_1_STOP_BITS,
-    USART_2_STOP_BITS
-} USART_stop_bits_t;
+#define USART_5_DATA_BITS       (0U)
+#define USART_6_DATA_BITS       (1U)
+#define USART_7_DATA_BITS       (2U)
+#define USART_8_DATA_BITS       (3U)
+#define USART_9_DATA_BITS       (4U)
 
-typedef enum
-{
-    USART_5_DATA_BITS,
-    USART_6_DATA_BITS,
-    USART_7_DATA_BITS,
-    USART_8_DATA_BITS,
-    USART_9_DATA_BITS
-} USART_data_bits_t;
+#define USART_NO_PARITY         (0U)
+#define USART_EVEN_PARITY       (1U)
+#define USART_ODD_PARITY        (2U)
+
+#define USART_1_STOP_BITS       (0U)
+#define USART_2_STOP_BITS       (1U)
+
 
 typedef struct
 {
-    uint32_t baudrate;
-    USART_parity_t parity;
-    USART_stop_bits_t stop_bits;
-    USART_data_bits_t data_bits;
+    uint8_t baudrate;
+    uint8_t databits;
+    uint8_t parity;
+    uint8_t stopbits;
 } USART_config_t;
 
 void USART_transmit(uint8_t data);
