@@ -9,10 +9,11 @@ INCLUDE_DIR += ../../projects/$(PROJECT) $(patsubst %,../../%,$(GLOBAL_INCLUDE_D
 
 vpath
 vpath %.c 		$(subst  ,:,$(SOURCE_DIR))
+vpath %.S 		$(subst  ,:,$(SOURCE_DIR))
 vpath %.o 		$(OBJECTS_DIR)
 
 .SUFFIXES:
-.SUFFIXES: .c .o
+.SUFFIXES: .c .o .S
 
 .PHONY: all
 
@@ -39,5 +40,9 @@ $(EXECUTABLE): $(OBJECTS)
 	$(patsubst %,$(OBJECTS_DIR)/%,$(OBJECTS)) -Wl,$(addprefix -l,$(TARGET_LINK_LIBRARIES))
 
 %.o: %.c
+	@echo $(<F)
+	$(CC) $(CFLAGS) $(subst /,$(DELIM),$(CURDIR))$(DELIM)$(subst /,$(DELIM),$<)
+
+%.o: %.S
 	@echo $(<F)
 	$(CC) $(CFLAGS) $(subst /,$(DELIM),$(CURDIR))$(DELIM)$(subst /,$(DELIM),$<)
