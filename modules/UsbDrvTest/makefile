@@ -1,0 +1,18 @@
+SOURCE += main.c
+
+SOURCE_DIR := source
+INCLUDE_DIR := include
+
+#LINKER_SCRIPT := source/$(PROJECT).lkf
+LIBRARY := UsbDrvTest
+
+TARGET_LINK_LIBRARIES := System
+TARGET_LINK_LIBRARIES += usart
+TARGET_LINK_LIBRARIES += debug
+TARGET_LINK_LIBRARIES += gpio
+TARGET_LINK_LIBRARIES += usbdrv
+
+EXTENSION_EXE := elf
+EXECUTABLE := $(OUTPUT).$(EXTENSION_EXE)
+
+include rules-$(COMPILER).mk
