@@ -25,6 +25,9 @@
 #include <stddef.h>
 #include <avr/io.h>
 
+#define BAUDRATE 500000UL
+#define UBRR F_CPU/16/BAUDRATE - 1
+
 void USART_transmit(uint8_t data)
 {
     while(!(UCSRA & (1 << UDRE)));
@@ -39,8 +42,8 @@ int8_t USART_configure(const USART_config_t *config)
         return -1;
     }
 
-    UBRRH = 0U;
-    UBRRL = 0U;
+    UBRRH = (UBRR >> 8);
+    UBRRL = (UBRR);
     UCSRB = (1 << RXEN)|(1 << TXEN);
     UCSRC = (1 << URSEL)|(1 << USBS) | (3 << UCSZ0);
     return 0;
