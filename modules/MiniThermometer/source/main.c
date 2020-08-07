@@ -30,6 +30,7 @@
 #include "gpio.h"
 #include "1wire.h"
 #include "1wire_mgr.h"
+#include "ds1302.h"
 #include "app.h"
 #include "PCB0000.h"
 
@@ -49,10 +50,13 @@ static inline void drivers_init(void)
 
     DEBUG_configure(NULL);
 
-    if(WIRE_configure(WIRE_DATA_PORT, WIRE_DATA_PIN) != 0)
-    {
-        DEBUG_output("WIRE [fail]\n");
-    }
+    DS1302_configure(0, 0);
+    /*
+     *if(WIRE_configure(WIRE_DATA_PORT, WIRE_DATA_PIN) != 0)
+     *{
+     *    DEBUG_output("WIRE [fail]\n");
+     *}
+     */
 }
 
 static inline void modules_init(void)
@@ -90,10 +94,12 @@ static inline void modules_init(void)
         DEBUG_output("SSD MGR [fail]\n");
     }
 
-    if(WIRE_MGR_initialize() != 0)
-    {
-        DEBUG_output("WIRE MGR [fail]\n");
-    }
+    /*
+     *if(WIRE_MGR_initialize() != 0)
+     *{
+     *    DEBUG_output("WIRE MGR [fail]\n");
+     *}
+     */
 }
 
 int main(void)

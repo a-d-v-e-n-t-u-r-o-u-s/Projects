@@ -59,6 +59,7 @@ flags = [
 '-I', './drivers/1wire/include',
 '-I', './drivers/common/include',
 '-I', './drivers/debug/include',
+'-I', './drivers/ds1302/include',
 '-I', './drivers/gpio/include',
 '-I', './drivers/ssd/include',
 '-I', './drivers/usart/include',

@@ -6,5 +6,6 @@ USED_DRIVERS += debug
 #USED_DRIVERS += ssd
 USED_DRIVERS += gpio
 USED_DRIVERS += 1wire
+USED_DRIVERS += ds1302
 #USED_DRIVERS += pwm
 #USED_DRIVERS += rtc
