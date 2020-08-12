@@ -61,6 +61,12 @@
 #define SEGMENTDP_PORT          (GPIO_PORTB)
 #define SEGMENTDP_PIN           (0U)
 
+#define RTC_CLK_PORT            (GPIO_PORTD)
+#define RTC_CLK_PIN             (5U)
+#define RTC_IO_PORT             (GPIO_PORTD)
+#define RTC_IO_PIN              (6U)
+#define RTC_CE_PORT             (GPIO_PORTD)
+#define RTC_CE_PIN              (7U)
 /*@{*/
 
 /*@}*/
