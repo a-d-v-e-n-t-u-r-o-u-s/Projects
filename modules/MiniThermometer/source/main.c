@@ -32,7 +32,7 @@
 #include "1wire_mgr.h"
 #include "ds1302.h"
 #include "app.h"
-#include "PCB0000.h"
+#include "PCB0001.h"
 
 static inline void drivers_init(void)
 {
@@ -99,14 +99,16 @@ static inline void modules_init(void)
         .disp_config = displays,
         .disp_config_size = 4u,
         .is_segment_mode = false,
-        .is_disp_inverted_logic = false,
+        .is_disp_inverted_logic = true,
         .is_segment_inverted_logic = false,
     };
+
 
     if(SSD_MGR_initialize(&ssd_mgr_config) != 0)
     {
         DEBUG_output("SSD MGR [fail]\n");
     }
+
 
     /*
      *if(WIRE_MGR_initialize() != 0)
