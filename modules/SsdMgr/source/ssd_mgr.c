@@ -349,12 +349,12 @@ int8_t SSD_MGR_set(uint16_t value)
 
 int8_t SSD_MGR_initialize(const SSD_MGR_config_t *config)
 {
-    uint8_t interval = config->is_segment_mode ? 0u : 5u;
-
     if(config == NULL)
     {
         return -1;
     }
+
+    uint8_t interval = config->is_segment_mode ? 0u : 5u;
 
     if(SYSTEM_register_task(ssd_mgr_main, interval) != 0)
     {
