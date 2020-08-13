@@ -50,7 +50,21 @@ static inline void drivers_init(void)
 
     DEBUG_configure(NULL);
 
-    DS1302_configure(0, 0);
+    const DS1302_config_t rtc_config =
+    {
+        .pins =
+        {
+            [0] = { RTC_CLK_PORT, RTC_CLK_PIN },
+            [1] = { RTC_IO_PORT , RTC_IO_PIN  },
+            [2] = { RTC_CE_PORT , RTC_CE_PIN  },
+        }
+    };
+
+    if(DS1302_configure(&rtc_config))
+    {
+        DEBUG_output("DS1302 [fail]\n");
+    }
+
     /*
      *if(WIRE_configure(WIRE_DATA_PORT, WIRE_DATA_PIN) != 0)
      *{
