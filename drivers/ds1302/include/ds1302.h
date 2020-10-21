@@ -33,12 +33,34 @@
 
 /*@{*/
 #include <stdint.h>
+#include <stdbool.h>
+
+#define DS1302_CLK_IDX              (0U)
+#define DS1302_IO_IDX               (1U)
+#define DS1302_CE_IDX               (2U)
 
 typedef struct
 {
     uint8_t pins[3][2];
 } DS1302_config_t;
 
+typedef struct
+{
+    uint8_t secs;
+    uint8_t min;
+    uint8_t hours;
+    uint8_t weekday;
+    uint8_t date;
+    uint8_t month;
+    uint8_t year;
+    uint8_t format;
+} DS1302_datetime_t;
+
+uint8_t DS1302_get_seconds(void);
+uint8_t DS1302_get_minutes(void);
+uint8_t DS1302_get_hours(void);
+void DS1302_set_write_protection(bool val);
+void DS1302_set(DS1302_datetime_t *config);
 int8_t DS1302_configure(const DS1302_config_t *config);
 
 /*@}*/
