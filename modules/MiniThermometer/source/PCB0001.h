@@ -30,10 +30,8 @@
  * \brief Configures pin assignment for PCB0000
  */
 
-/*
- *#define WIRE_DATA_PORT          (GPIO_PORTC)
- *#define WIRE_DATA_PIN           (5U)
- */
+#define WIRE_DATA_PORT          (GPIO_PORTD)
+#define WIRE_DATA_PIN           (4U)
 
 #define DISPLAY3_PORT           (GPIO_PORTB)
 #define DISPLAY3_PIN            (3U)
@@ -60,6 +58,9 @@
 #define SEGMENTG_PIN            (5U)
 #define SEGMENTDP_PORT          (GPIO_PORTB)
 #define SEGMENTDP_PIN           (0U)
+
+#define COLON_PORT              (GPIO_PORTB)
+#define COLON_PIN               (0U)
 
 #define RTC_CLK_PORT            (GPIO_PORTD)
 #define RTC_CLK_PIN             (5U)
