@@ -27,5 +27,5 @@ LDFLAGS += -Wl,--cref
 LDFLAGS += -Wl,-L$(LIB_DIR)
 
 LOADER_FLAGS += -c usbasp
-LOADER_FLAGS += -p m8
+LOADER_FLAGS += -p m8 -B 8
 LOADER_FLAGS += -U flash:w:$(BIN_DIR_FORMATED)$(DELIM)$(OUTPUT).elf
